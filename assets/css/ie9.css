@@ -1,0 +1,50 @@
+/* IE 9 specific */
+
+.wcp-toolbar {
+	height: 64px;
+}
+
+.wcp-search,
+.log-search {
+	margin-top: 8px;
+}
+.wcp-search::before, .log-search::before {
+	top: -8px;
+	height: 64px;
+}
+
+input.wcp-search-input,
+input.log-search-input {
+	height: 26px;
+}
+
+i.add-lead {
+	margin-bottom: 8px;
+}
+
+.login-link {
+}
+
+.wcp-breadcrumb {
+}
+
+.pure-toggle-label[data-toggle-label='left'] {
+	margin-top: -4px;
+  left: 0px;
+  right: auto; }
+
+
+.pure-toggle-label .pure-toggle-icon:before {
+	top: -12px;
+	left: 0px;
+}
+
+.pure-toggle-label .pure-toggle-icon:after {
+    top: 12px;
+	left: 0px;
+}
+
+.pure-toggle[data-toggle='left']:checked ~ .pure-toggle-label[data-toggle-label='left'] .pure-toggle-icon:before,
+.pure-toggle[data-toggle='left']:checked ~ .pure-toggle-label[data-toggle-label='left'] .pure-toggle-icon:after {
+	left: 15px !important;
+}

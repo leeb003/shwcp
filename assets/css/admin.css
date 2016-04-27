@@ -1,0 +1,131 @@
+.wcp_logo_image {
+	margin-left: 40px;
+	border: 1px solid #ccc;
+}
+
+.row1 {
+	background-color: #fefefe;
+}
+.row0 {
+	background-color: rgba(255,255,255,0.25);
+}
+
+.database-name {
+	border: 0;
+}
+
+.wcp-license {
+	width: 300px;
+	border: 0;
+}
+
+textarea {
+	min-width: 300px;
+}
+
+.custom-css,
+.custom-js {
+	min-height: 300px;
+}
+
+.contact-upload.hide-contact {
+	display: none;
+}
+
+/* Initially hide submit and show for option pages that need it */
+form #submit {
+	display: none;
+}
+
+.button-primary.button-warning {
+	background-color: #ef5350;
+	border: 1px solid #f44336;
+	box-shadow: none;
+}
+
+.button-primary.button-warning:hover,
+.button-primary.button-warning:focus {
+	box-shadow: none;
+	background-color: #f44336;
+    border: 1px solid #e53935;
+}
+
+.wp-core-ui .button-warning.button-primary[disabled],
+.wp-core-ui .button-warning.button-primary:disabled {
+	box-shadow: none !important;
+	background-color: #777777 !important;
+	border: 1px solid #777777 !important;
+	color: #333 !important;
+}
+
+
+.reset-db-confirm.button-primary,
+.backup-db-confirm.button-primary,
+.restore-db-confirm.button-primary {
+	display:none;
+}
+
+.reset-success,
+.backup-success,
+.restore-success,
+.restore-db-file,
+.backup-wait,
+.restore-wait {
+	display: none;
+}
+.success-msg {
+	font-size: 16px;
+	background-color: #8c9eff;
+	padding: 10px;
+}
+
+.left-content {
+	float: left;
+}
+.right-content {
+	float: left;
+	margin-left: 10px;
+}
+.clear-both {
+	clear: both;
+}
+
+.hide-me {
+	display: none;
+}
+
+.wcp-custom-links {
+	white-space:nowrap;
+	border-collapse: seperate;
+	border-spacing: 0 10px;
+}
+
+.wcp-custom-links td {
+	background-color: #ddd;
+}
+
+.wcp-cust-link,
+.wcp-cust-url {
+	border:0;
+}
+
+.wcp-cust-url {
+	width: 300px;
+}
+
+.wcp-md.md-sort {
+	cursor: pointer;
+	margin-left: 10px;
+	font-size: 20px;
+}
+
+.ui-sortable-helper {
+    display: table;
+}
+
+.shwcp-small-htext {
+	font-size: 12px;
+	padding-left: 5px;
+	color: #777;
+	display:inline-block;
+}
