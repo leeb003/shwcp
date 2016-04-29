@@ -3,7 +3,7 @@
  * Plugin Name: WP Contacts
  * Plugin URI: http://www.sh-themes.com
  * Description: Powerful and feature rich contact management: manage contacts, leads, inventory or just about anything else you need to keep track of.  Create multiple databases and assign different users to each.
- * Version: 2.0.2
+ * Version: 2.0.3
  * Author: SH-Themes
  * Author URI: http://www.sh-themes.com
  */

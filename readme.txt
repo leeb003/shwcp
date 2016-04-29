@@ -31,6 +31,11 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 2.0.3 = 
+* Fixed file upload url reporting incorrect path for non-default database
+* Added jpeg extension support for main image upload
+* New Spanish translation files - Thanks to Ruben Villar
+
 = 2.0.2 =
 * Fixed non-default database reset folder recreation
 * Fixed small bug on mobile search overlapping first entry

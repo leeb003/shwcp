@@ -1065,7 +1065,7 @@ EOC;
 
                 if (!empty($lead_files)) {
                     foreach ($lead_files as $file => $v) {
-                        $lead_file_url = $this->shwcp_upload_url . '/' . $lead_id . '-files/' . $v['name'];
+                        $lead_file_url = $this->shwcp_upload_url . $db . '/' . $lead_id . '-files/' . $v['name'];
                         $file_link = '<a class="leadfile-link" href="' . $lead_file_url . '">' . $v['name'] . '</a>';
                         $last_modified_text = __('Last Modified', 'shwcp');
                         $lead_content .= <<<EOC
