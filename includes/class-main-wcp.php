@@ -18,7 +18,7 @@
 
 		protected $allowedtags;    // allowed tags for notes with html (and anywhere else we need it)
 		protected $current_user;
-		protected $all_users;     
+		protected $all_users;      // all wordpress users
 
 		protected $curr_page;      // Current page
 		protected $scheme;		   // http or https scheme
@@ -279,10 +279,28 @@
 		}
 
 		/**
-		 * Get all users
+		 * Get all WordPress users
 		 */
 		public function get_all_users() {
 			$this->all_users =  get_users();
+		}
+
+		/**
+		 * Get wcp users only
+		 * compare with WP user list and get users with access
+		 * @since 2.0.3
+		 * @return array
+		 */
+		public function get_all_wcp_users() {
+			$users = get_users();
+			$wcp_users = $this->second_tab['permission_settings'];
+			$all_wcp_users = array();
+			foreach ($users as $user) {
+				if (array_key_exists($user->ID, $wcp_users) && $wcp_users[$user->ID] != 'none') {
+					$all_wcp_users[$user->ID] = $user;
+				}
+			}
+			return $all_wcp_users;
 		}
 
 		/**

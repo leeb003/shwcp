@@ -308,8 +308,8 @@ jQuery(function ($) {  // use $ for jQuery
 						}
 					});
 				modalBody += '<div class="col-xs-12 col-sm-6">'
-					+ '<input class="checkbox notify-user" id="user-' + k + '" value="' + v + '" type="checkbox" ' + checked + ' />'
-                       + '<label for="user-' + k + '">' + v + '</label></div>'
+					+ '<input class="checkbox notify-user" id="user-' + k + '" value="' + v.data.user_login + '" type="checkbox" ' + checked + ' />'
+                       + '<label for="user-' + k + '">' + v.data.user_login + '</label></div>'
 
 			});
 

@@ -186,7 +186,8 @@
 				$response['sst'] = $sst;
 				$response['sorting'] = $sorting;
 				$response['current_user'] = $this->current_user->data->user_login;
-				$response['all_users'] = $this->all_users;
+				//$response['all_users'] = $this->all_users;
+				$response['all_users'] = $this->get_all_wcp_users();
 				$response['translated'] = $translated;
 				if ($new) {
 					$response['title'] = __('Add A New Entry', 'shwcp');
@@ -1927,17 +1928,8 @@
 
 			// Add New or edit existing Event Dialog
 			} elseif (isset($_POST['add_event']) && $_POST['add_event'] == 'true') {
-				$wcp_users = $this->second_tab['permission_settings'];
 				$notifications = $this->first_tab['calendar_notify'];
-				$wp_users = get_users();
-				$users = array();
-				foreach ($wp_users as $k => $v) {
-					if (array_key_exists($v->ID, $wcp_users)
-						&& $wcp_users[$v->ID] != 'none' 
-					) { // if they've been added to this db and they have access
-						$users[$v->ID] = $v->data->user_login;
-					}
-				}
+				$users = $this->get_all_wcp_users();
 				$event_id = $_POST['event_id'];
 				if ($event_id != 'new') {           // Existing Entry
 					$event_id = intval($event_id);
