@@ -90,6 +90,7 @@
 			$sst_sources = $wpdb->get_results("select * from $this->table_sst where sst_type='1' order by sst_order asc");
 			$sst_status  = $wpdb->get_results("select * from $this->table_sst where sst_type='2' order by sst_order asc");
 			$sst_types   = $wpdb->get_results("select * from $this->table_sst where sst_type='3' order by sst_order asc");
+			$sst_all = $wpdb->get_results("select * from $this->table_sst order by sst_id asc");
 
 			// Searching query
             if (isset($_GET['wcp_search']) && $_GET['wcp_search'] == 'true') {
@@ -105,17 +106,29 @@
 						}
 					}
                 }
+				// check for dropdown type field (similar to source, status, type)
+                $dropdown_search = false;
+                foreach($all_sort as $k => $v) {
+                    if ($field == $v->orig_name) {
+                        if ($v->field_type == '10') {
+                            $dropdown_search = true;
+                        }
+                    }
+                }
+
+
                 if (isset($_GET['q']) && $_GET['q'] != '') {
 				 	// field conditionals
 					if ('l_source' == $field
 						|| 'l_status' == $field
 						|| 'l_type' == $field
+						|| $dropdown_search
 					) {
 						$q = $wpdb->esc_like($_GET['q']);
 						$check = $wpdb->get_row(
 							"select * from $this->table_sst where sst_type_desc='$field' and sst_name LIKE '%$q%'"
 						);
-						$real_val = $check->sst_id;
+						$real_val = isset($check->sst_id) ? $check->sst_id : 'NULL'; // To avoid db errors
 						$search = 'AND l.' . $field . '=' . $real_val;
 					} elseif ( $field == 'wcp_all_fields' ) {  // all fields search
 						$search = '';
@@ -658,6 +671,7 @@ EOC;
 						 * 7 = date time picker - treated as text on front
 						 * 8 = star rating
 						 * 9 = checkbox
+						 * 10 = dropdown field
 						 */
 						$td_content = '';
 						$now = date('Y-m-d H:i:s');
@@ -665,7 +679,19 @@ EOC;
 
 						foreach ($sorting as $sk => $sv) {
 							if ($k == $sv->translated_name) {  // match up the sorting for each field to get the field type display
-								if ($sv->field_type == '9') { // checkbox
+								if ($sv->field_type == '10') { // dropdown fields
+									$selected = '';
+									foreach($sst_all as $k2 => $v2) {
+                                        if ($sv->orig_name == $v2->sst_type_desc) {   // matching sst's
+                                            if ($v == $v2->sst_id) { // selected
+                                                $selected = $v2->sst_name;
+                                            }
+                                        }
+                                    }
+									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;lead=' 
+											    . $lead['wcp_lead_id'] . '">' . $selected . '</a>';
+
+								} elseif ($sv->field_type == '9') { // checkbox
 									$checked = '';
 									$disabled = 'disabled="disabled"';
 									$checkbox = ($v == '1') ? $v : '';

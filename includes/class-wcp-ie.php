@@ -13,7 +13,7 @@
         //}
 
         /**
-         * Logging activity
+         * Importing and Exporting tabs
          **/
         public function import_export() {
             global $wpdb;

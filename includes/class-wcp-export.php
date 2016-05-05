@@ -152,8 +152,22 @@
                             	elseif ($k2 == 'l_status') { $trans = 'status'; }
                             	elseif ($k2 == 'l_type') { $trans = 'type'; }
                             	else { $trans = $k2; }
-								$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $leads[$k]->$trans);
+								
+								$real_value = $leads[$k]->$trans;
+								/* 
+								 * check for dropdown type to lookup real value instead of integer
+								 */
+								foreach ($export_fields as $e => $ev) {
+                        			if ($k2 == $ev->orig_name) {
+										if ($ev->field_type == '10') { // 10 is dropdown field type
+											$real_value = $wpdb->get_var(
+											"SELECT sst_name FROM $this->table_sst where sst_id=" . $real_value . " limit 1"
+											);
+										}
+									}
+								}
 
+								$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $real_value);
 								$col++;
 							}
                         }

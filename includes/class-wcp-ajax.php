@@ -33,7 +33,6 @@
 
 			$logged_in = is_user_logged_in();
 			$this->get_the_current_user();
-			$this->get_all_users();
 			if (!wp_verify_nonce( $nonce, 'myajax-next-nonce' ) 
 				|| !$logged_in ) {
 
@@ -186,7 +185,6 @@
 				$response['sst'] = $sst;
 				$response['sorting'] = $sorting;
 				$response['current_user'] = $this->current_user->data->user_login;
-				//$response['all_users'] = $this->all_users;
 				$response['all_users'] = $this->get_all_wcp_users();
 				$response['translated'] = $translated;
 				if ($new) {
@@ -211,6 +209,7 @@
                 );
 
 				$field_vals = $_POST['field_vals'];
+				$dropdown_fields = $_POST['dropdown_fields'];
 				/* Check required fields */
 				$field_checks = $this->field_checks($sorting, $field_vals);
 
@@ -340,6 +339,13 @@
 								) {
 									$display_date = date("$this->date_format $this->time_format", strtotime($v2));
 									$output_fields[$k2] = $display_date;
+							 	} elseif ( $v->field_type == '10') { // dropdown fields , send back translated value
+                                    foreach ($dropdown_fields as $k3 => $v3) {
+                                        if ($k3 == $v2) { 
+                                            $output_fields[$k2] = $v3;
+                                        }
+                                    }
+
 								} else {
 									$output_fields[$k2] = $v2;
 								}
@@ -458,6 +464,88 @@
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
 				$response['message'] = 'success';
 
+			// Manage Dropdowns
+			} elseif (isset($_POST['manage_dropdowns']) && $_POST['manage_dropdowns'] == 'true') {
+				$lead_columns = $wpdb->get_results (
+                	"
+                    SELECT * from $this->table_sort order by sort_ind_number asc
+                	"
+            	);
+				foreach ($lead_columns as $k => $v) {  // lead_columns from sort generated above
+                	if ($v->field_type == '10') {
+                    	$dropdowns[$v->orig_name] = $v->translated_name;
+                	}
+            	}
+				$response['dropdowns'] = $dropdowns;
+
+			// Select Specific Dropdown options
+			} elseif (isset($_POST['dropdown_select']) && $_POST['dropdown_select'] == 'true') {
+				$list = $_POST['dropdown_list'];
+				$options = $wpdb->get_results (
+					"
+					SELECT * from $this->table_sst WHERE sst_type_desc='$list' order by sst_order asc
+					"
+				);
+				$response['options'] = $options;
+
+			// Save Dropdown options
+			} elseif (isset($_POST['save_dropdown_options']) && $_POST['save_dropdown_options'] == 'true') {
+				$sst_type_desc = $_POST['sst_type_desc'];
+				// get the current sst_type for the dropdown
+				$sst_type = $wpdb->get_var("SELECT sst_type FROM $this->table_sst where sst_type_desc='$sst_type_desc' limit 1");
+				$new_options = array();
+				$i = 1;
+				foreach ($_POST['optlist'] as $k => $v) {
+					// insert
+					if ($v['action'] == 'add' ) {
+						$wpdb->insert(
+                            $this->table_sst,
+                            array(
+                                'sst_name' => $v['sst_name'],
+                                'sst_type_desc' => $sst_type_desc,
+                                'sst_type' => $sst_type,
+                                'sst_default' => 0,
+                                'sst_order' => $i,
+                            ),
+                            array(
+                                '%s',
+                                '%s',
+                                '%d',
+                                '%d',
+                                '%d',
+                            )
+                        );
+						$i++;
+						$new_options[$v['unique']] = $wpdb->insert_id;
+					// update
+					} elseif ($v['action'] == 'update') {
+						$wpdb->update(
+                        	$this->table_sst,
+                            array(
+                            	'sst_order' => $i,
+								'sst_name' => $v['sst_name']
+                            ),
+                            array(
+                                'sst_id' => $v['sst_id']
+                            ),
+                            array( '%d', '%s' ),
+                            array( '%d' )
+                        );
+						$i++;
+					// delete
+					} elseif ($v['action'] == 'delete') {
+						$wpdb->delete(
+							$this->table_sst,
+							array( 'sst_id' => $v['sst_id']),
+							array( '%d')
+						);
+						// don't add it
+					}
+				}
+				$response['options'] = 'saved';
+				$response['new_options'] = $new_options;
+				$response['sst_type'] = $sst_type;
+
 			// Manage Fields
 			} elseif (isset($_POST['manage_fields']) && $_POST['manage_fields'] == 'true') { 
 				$new_fields = array();
@@ -477,6 +565,10 @@
 
 						if ($v['field_type'] == '7') {  // Date picker, date time type
 							$field_type = "datetime NOT NULL DEFAULT '000-00-00 00:00:00'";
+
+						} elseif ($v['field_type'] == '10') { // Dropdown, integer for mapping to ssts
+							$field_type = "bigint(20) NOT NULL";
+
 						} else {
 							// $field_type = "varchar(255) NOT NULL";
 							// larger data accepted for custom fields, might slow down searches significantly but oh well
@@ -518,6 +610,33 @@
 								'%d'
                         	)
                     	);
+						/* Dropdowns add to sst table with unique sst_type above 3 */
+						if ($v['field_type'] == '10') {
+							$query = "SELECT DISTINCT(sst_type) as sst_type FROM $this->table_sst ORDER BY sst_type DESC";
+							$existing_sst = $wpdb->get_results ( $query );
+							$sst_array = array();
+							foreach ($existing_sst as $k2 => $v2) {
+								$sst_array[] = $v2->sst_type;
+							}
+							$sst_inc = 4; // start with 4 (above the defaults)
+							$response['sst_array'] = $sst_array;
+							while(in_array($sst_inc, $sst_array)) {
+								$sst_inc++;
+							}
+							$wpdb->insert(
+                            	$this->table_sst,
+                            	array(
+                                	'sst_name' => 'Default',
+                                	'sst_type_desc' => $extra_column,
+                                	'sst_type' => $sst_inc,
+									'sst_default' => 1,
+                                	'sst_order' => 1
+                            	),
+                            	array( '%s','%s','%d','%d','%d' )
+                        	);
+                        	$insert_id = $wpdb->insert_id;
+						}
+							
 						$i++;
 						$c_inc++;
 					} elseif ( $v['action'] == 'delete' ) {
@@ -526,6 +645,10 @@
 						if (in_array($v['orig_name'], $existing_cols)) {
 							$wpdb->query( "ALTER TABLE $this->table_main drop column {$v['orig_name']}" );
 						}
+						if ($v['field_type'] == '10') {  // delete from sst as well
+							$wpdb->delete($this->table_sst, array( 'sst_type_desc' => $v['orig_name'] ), array('%s') );
+						}
+
 					} else { // update
 						// Modify field types in main table if changed, just to avoid touching the builtin fields
 						// we just won't even consider those fields even though we check for changed field_type from last sort
@@ -560,10 +683,45 @@
 								if ($v['field_type'] == '7') {  // changed to date time type
                             		$field_type = "datetime NOT NULL DEFAULT '000-00-00 00:00:00'";
 									$wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
-                        		} elseif ( $last_field_type == '7' ) {  // changed from date time to varchar
-                            		$field_type = "varchar(255) NOT NULL";
+									if ($last_field_type == '10') { // need to remove from sst
+										 $wpdb->delete($this->table_sst, array( 'sst_type_desc' => $v['orig_name'] ), array('%s') );
+									}
+                        		} elseif ( $last_field_type == '7' 
+									&& $v['field_type'] != '10' 
+								) {  // changed from date time to varchar
+                            		$field_type = "text NOT NULL";
 									$wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
-                        		}
+
+                        		} elseif ( $last_field_type == '10' ) { // changed from dropdown to something else, delete sst
+									$field_type = "text NOT NULL";
+                                    $wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
+									$wpdb->delete($this->table_sst, array( 'sst_type_desc' => $v['orig_name'] ), array('%s') );
+
+								} elseif ( $v['field_type'] == '10' ) { // to dropdown, need to create it and alter
+									$field_type = "bigint(20) NOT NULL";
+									$wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
+									$query = "SELECT DISTINCT(sst_type) as sst_type FROM $this->table_sst ORDER BY sst_type DESC";
+                            		$existing_sst = $wpdb->get_results ( $query );
+                            		$sst_array = array();
+                            		foreach ($existing_sst as $k2 => $v2) {
+                                		$sst_array[] = $v2->sst_type;
+                           	 		}
+                            		$sst_inc = 4; // start with 4 (above the defaults)
+                            		while(in_array($sst_inc, $sst_array)) {
+                                		$sst_inc++;
+                            		}
+                            		$wpdb->insert(
+                                		$this->table_sst,
+                                		array(
+                                    		'sst_name' => 'Default',
+                                    		'sst_type_desc' => $v['orig_name'],
+                                    		'sst_type' => $sst_inc,
+                                    		'sst_default' => 1,
+                                    		'sst_order' => 1
+                                		),
+                                		array( '%s','%s','%d','%d', '%d' )
+                            		);
+								}
 							}
 						}
 
@@ -1033,6 +1191,13 @@
 										$timestamp = strtotime($v);
 										$datetime_format = date("Y-m-d H:i:s", $timestamp);
 										$insert_array[$k] = $datetime_format;
+
+									} elseif ($field_type == '10') { // dropdown type field need id or create
+										$sst_type = $wpdb->get_var(
+											"SELECT sst_type FROM $this->table_sst where sst_type_desc='$k' limit 1"
+										);
+										$real_value = $this->sst_update_db($v, $sst, $k, $sst_type);
+										$insert_array[$k] = $real_value;
 	
 									} else {  // all other varchar fields
 										$insert_array[$k] = $v;
