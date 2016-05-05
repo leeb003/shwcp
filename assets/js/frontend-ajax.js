@@ -194,6 +194,21 @@ jQuery(function ($) {  // use $ for jQuery
 									+ '</label><textarea class="lead_field ' 
 									+ k + ' materialize-textarea">' + v.value + '</textarea></div></div>';
 
+					} else if (fieldType == '10') { // Dropdowns
+						modalBody += '<div class="col-md-6"><div class="input-field">'
+								  + '<label for="' + k + '">' + v.trans + '</label>'
+								  + '<select id="' + k + '" class="lead_select ' + k + ' dropdown-field input-select">';
+						$.each(response.sst, function(k2,v2) {
+                        	var selected = '';
+                        	if (k == v2.sst_type_desc) {   // matching sst's
+                            	if (v.value == v2.sst_id) { // selected
+                                	selected = 'selected="selected"';
+                            	}
+                            	modalBody += '<option value="' + v2.sst_id + '" ' + selected + '>' + v2.sst_name + '</option>';
+                        	}
+                    	});
+                    	modalBody += '</select></div></div>';
+
 					} else if (fieldType == '9') { // Checkboxes
 						var checkbox = v.value=='1' ? v.value : '';
 						var checked = '';
@@ -261,9 +276,14 @@ jQuery(function ($) {  // use $ for jQuery
 	$('.wcp-modal').on('click', '.wcp-save-lead', function() {
         var leadID = $('.wcp-edit-lead').attr('class').split(' ')[1].split('-')[1];
         var fieldVals = {};
+		var dropdownFields = {};
         $('.lead_field, .lead_select').each( function() {
             var name = $(this).attr('class').split(' ')[1];
             var value = $(this).val();
+			if ($(this).hasClass('dropdown-field')) { // dropdown build name association
+				var sst_name = $('option:selected', this).text();
+                dropdownFields[value] = sst_name;
+			}
             fieldVals[name] = value;
         });
 
@@ -281,14 +301,15 @@ jQuery(function ($) {  // use $ for jQuery
             // wp ajax action
             action: 'ajax-wcpfrontend',
             // vars
-            save_lead  : 'true',
-            lead_id    : leadID,
-            nextNonce  : WCP_Ajax.nextNonce,
-			postID     : WCP_Ajax.postID,
-            field_vals : fieldVals,
-            l_source   : lsource,
-            l_status   : lstatus,
-            l_type     : ltype
+            save_lead      : 'true',
+            lead_id        : leadID,
+            nextNonce      : WCP_Ajax.nextNonce,
+			postID         : WCP_Ajax.postID,
+            field_vals     : fieldVals,
+			dropdown_fields: dropdownFields,
+            l_source       : lsource,
+            l_status       : lstatus,
+            l_type         : ltype
         }, function(response) {
 			if (response.logged_in == 'false') {
                 showLogInDiag(response.title, response.body, response.login_button, response.close);
@@ -591,6 +612,182 @@ jQuery(function ($) {  // use $ for jQuery
 
 	/* Manage Fields */
 
+	// load dropdowns
+	$(document).on('click', '.dropdown-options-tab', function() {
+		$('.options-div').html(''); // clear out anything left
+		var dropdownLabel = $(document).find('.dropdown-label').text();
+		var defaultOption = $(document).find('.default-option').text();
+		$.post(WCP_Ajax.ajaxurl, {
+			action: 'ajax-wcpfrontend',
+			// vars
+			manage_dropdowns: 'true',
+			nextNonce : WCP_Ajax.nextNonce,
+            postID    : WCP_Ajax.postID,
+        }, function(response) {
+            if (response.logged_in == 'false') {
+                showLogInDiag(response.title, response.body, response.login_button, response.close);
+                return false;
+            } else if (response.dropdowns) {
+				var newDropdown = '<div class="input-field">'
+								+ '<label for="dropdown-options">' + dropdownLabel + '</label>'
+								+ '<select class="dropdown-select input-select" id="dropdown-options">'
+								+ '<option value="">' + defaultOption + '</option>';
+								
+				$.each(response.dropdowns, function(k,v) {
+					newDropdown += '<option value="' + k + '">' + v + '</option>';
+                });
+				newDropdown += '</select>';
+				$('.dropdown-container').html(newDropdown);
+				selectFieldGenerate();
+			}
+		});
+	});
+
+	// Get dropdown options after change
+	$(document).on('change', '.dropdown-container select.input-select', function() {
+		var selected = $(this).find(':selected').val();
+		if (selected) {
+			//alert(selected);	
+			$.post(WCP_Ajax.ajaxurl, {
+				action:  'ajax-wcpfrontend',
+				// vars
+				dropdown_select: 'true',
+				dropdown_list: selected,
+				nextNonce : WCP_Ajax.nextNonce,
+				postID    : WCP_Ajax.postID,
+			}, function(response) {
+				if (response.logged_in == 'false') {
+                	showLogInDiag(response.title, response.body, response.login_button, response.close);
+                	return false;
+            	} else if (response.options) {
+					var toggleText = $(document).find('.toggle-text').text();
+					var sortText = $(document).find('.sort-text').text();
+					var optionsText = $(document).find('.options-text').text();
+					var addOptionText = $(document).find('.add-option-text').text();
+					var saveOptionsText = $(document).find('.save-options-text').text();
+
+					var optionsDiv = '<div class="wcp-button save-options">' + saveOptionsText + '</div>'
+								   + '<h4>' + optionsText + '<i class="add-option wcp-md md-add-circle" title="' 
+								   + addOptionText + '"></i></h4>'
+								   + '<div class="options-div-holder">';
+
+					$.each(response.options, function(k,v) {
+						optionsDiv += '<div class="wcp-selops optid-' + v.sst_id + '">'
+									+ '<input class="wcp-selname" value="' + v.sst_name + '" type="text">'
+									+ '<i class="remove-option wcp-red wcp-md md-remove-circle-outline" title="' 
+									+ toggleText + '"></i>'
+									+ '<i class="option-sort wcp-md md-sort" title="' + sortText + '"></i>'
+									+ '</div>';
+				
+					});
+					optionsDiv += '</div>';
+					$('.options-div').html(optionsDiv);
+					$(function() {
+        				$('.options-div-holder').sortable ({});
+    				});
+					/* options-div sorting */
+    				$(document).on('mousedown touchstart', '.wcp-selops', function() {
+        				$(this).addClass('active-selops');
+    				});
+    				$(document).on('mouseup touchend', '.wcp-selops', function() {
+        				$(this).removeClass('active-selops');
+    				});
+				}
+			});
+		} else { // none selected, empty div
+			$('.options-div').html('');
+		}
+	});
+
+	// Add Dropdown Option
+    $(document).on('click', '.add-option', function() {
+        // set a unique identifier to set the id on saves
+        var unique = randomString();
+        var entry = $(this).closest('.options-container').find('.option-clone').html();
+        var wrap = '<div class="wcp-selops option-new"></div>';
+        $(this).closest('.options-div').find('.options-div-holder').prepend(wrap);
+        $(this).closest('.options-div').find('.options-div-holder div:first').attr('data-unique', unique);
+        $(this).closest('.options-div').find('.options-div-holder div:first').hide().prepend(entry).slideDown();
+    });
+
+	// Remove Dropdown Option
+    $(document).on('click', '.remove-option', function() {
+        $(this).closest('div').addClass('removal-set');
+        $(this).closest('div').find('input').addClass('remove').attr('disabled', 'disabled');
+        $(this).removeClass('remove-sst wcp-red md-remove-circle-outline').addClass('no-remove-sst md-highlight-remove');
+    });
+
+	// Unset Remove Dropdown Option
+    $(document).on('click', '.no-remove-option', function() {
+        $(this).closest('div').removeClass('removal-set');
+        $(this).closest('div').find('input').removeClass('remove').removeAttr('disabled');
+        $(this).removeClass('no-remove-sst md-highlight-remove').addClass('remove-sst wcp-red md-remove-circle-outline');
+    });
+
+	// Save Dropdown Options
+	$(document).on('click', '.save-options', function() {
+		var optList = {};
+		var inc = 1;
+		var sst_type_desc = $('.dropdown-select').find(':selected').val();
+		$('.options-div-holder .wcp-selops').each(function() {
+			var action = 'update';
+			var sst_id = $(this).attr('class').split(' ')[1].split('-')[1];
+			var sst_name = $(this).find('.wcp-selname').val().trim();
+			var unique = '';
+			if ($(this).hasClass('option-new')) { // new options
+				action = 'add';
+				sst_id = "new";
+				unique = $(this).data('unique');
+			}
+
+			if ($(this).hasClass('removal-set')) { // Remove Option
+				action = 'delete';
+			}
+			optList[inc] = {
+				sst_name : sst_name,
+				sst_type_desc : sst_type_desc,
+				action : action,
+				unique: unique,
+				sst_id: sst_id,
+			}
+			inc++;
+		});
+
+		$.post(WCP_Ajax.ajaxurl, {
+            // wp ajax action
+            action: 'ajax-wcpfrontend',
+            // vars
+            save_dropdown_options: 'true',
+            nextNonce            : WCP_Ajax.nextNonce,
+            postID               : WCP_Ajax.postID,
+            optlist              : optList,
+			sst_type_desc        : sst_type_desc
+        }, function(response) {
+			if (response.logged_in == 'false') {
+                showLogInDiag(response.title, response.body, response.login_button, response.close);
+                return false;
+            }
+            $('.removal-set').slideUp("400", function() {$(this).remove();} );
+
+            var newOptions = response.new_options;
+            $('.option-new').each( function() {
+                var unique = $(this).data('unique');
+                var newOption = $(this);
+                $.each(newOptions, function(k,v) {
+                    if (k == unique) {
+                        newOption.removeClass().addClass('wcp-selops optid-' + v + ' ui-sortable-handle');
+                    }
+                });
+            });
+
+            $('.save-options').addClass('saved').delay(5000).queue(function() {
+                $('.save-options').removeClass('saved').dequeue();
+            });
+        });
+        return false;
+
+	});
+
 	// save fields
 	$(document).on('click', '.save-fields', function() {
 		var fieldList = {};
@@ -678,17 +875,18 @@ jQuery(function ($) {  // use $ for jQuery
 	$(document).on('click', '.add-field', function() {
 		var unique = randomString();
 		var text = $(document).find('.new-text').text();
-		var fieldTypeText = $(document).find('.field-type-text').text();
-		var textFieldText = $(document).find('.textfield-text').text();
-		var textAreaText = $(document).find('.textarea-text').text();
-		var phoneText = $(document).find('.phone-text').text();
-		var emailText = $(document).find('.email-text').text();
-		var websiteText = $(document).find('.website-text').text();
-		var dateText = $(document).find('.date-text').text();
-		var rateText = $(document).find('.rate-text').text();
-		var checkText = $(document).find('.check-text').text();
-		var mapText = $(document).find('.map-text').text();
-		var requiredText = $(document).find('.required-text').text();
+		var fieldTypeText  = $(document).find('.field-type-text').text();
+		var textFieldText  = $(document).find('.textfield-text').text();
+		var textAreaText   = $(document).find('.textarea-text').text();
+		var phoneText      = $(document).find('.phone-text').text();
+		var emailText      = $(document).find('.email-text').text();
+		var websiteText    = $(document).find('.website-text').text();
+		var dateText       = $(document).find('.date-text').text();
+		var rateText       = $(document).find('.rate-text').text();
+		var dropdownText   = $(document).find('.dropdown-text').text();
+		var checkText      = $(document).find('.check-text').text();
+		var mapText        = $(document).find('.map-text').text();
+		var requiredText   = $(document).find('.required-text').text();
 		var groupTitleText = $(document).find('.group-title-text').text();
 		var newFieldHolder = '<div class="wcp-fielddiv"></div>';
 		var newField = '<div class="wcp-group input-field"><label class="field-label" for="new-field">' + text + '</label>'
@@ -717,6 +915,8 @@ jQuery(function ($) {  // use $ for jQuery
 					 + ' data-text="' + rateText + '" />'+ rateText + '<br />'
 					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="9"'
 					 + ' data-text="' + checkText + '" />' + checkText + '<br />'
+					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="10"'
+                     + ' data-text="' + dropdownText + '" />' + dropdownText + '<br />'
 					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="99"'
                      + ' data-text="' + groupTitleText + '" />'+ groupTitleText + '<br />'
                      + '</div></div>'
@@ -756,6 +956,7 @@ jQuery(function ($) {  // use $ for jQuery
 		var requiredField =  $(this).closest('.wcp-fielddiv').find('.required-field-holder');
 		if (value == 8        // Remove required check for fields that don't need it
 			|| value == 9
+			|| value == 10
 			|| value == 99
 	    ) {	
 			requiredField.remove();

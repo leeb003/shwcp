@@ -197,9 +197,9 @@ jQuery(function ($) {  // use $ for jQuery
 				if (!$(this).closest('.input-select').find('.input-select-hidden').prop('disabled')) {
             	e.stopPropagation();
             	$('div.input-select-styled.active').each(function(){
-                	$(this).removeClass('active').next('ul.input-select-options').fadeOut(300);
+                	$(this).removeClass('active').next('ul.input-select-options').fadeOut(200);
             	});
-            	$(this).toggleClass('active').next('ul.input-select-options').fadeToggle(300);
+            	$(this).toggleClass('active').next('ul.input-select-options').fadeToggle(200);
 				var currentVal = $(this).text();
 				var inputSelect = $(this).closest('.input-select');
 				inputSelect.find('li').each(function() {
@@ -217,17 +217,17 @@ jQuery(function ($) {  // use $ for jQuery
             	e.stopPropagation();
             	$styledSelect.text($(this).text()).removeClass('active');
             	$this.val($(this).attr('rel'));
-            	$list.fadeOut(300);
+            	$list.hide();
+				$this.trigger('change');
             	//console.log($this.val());
         	});
 			$(document).click(function() {
             	$styledSelect.removeClass('active');
-            	$list.fadeOut(300);
+            	$list.fadeOut(200);
         	});
 
     	});
 	};
-
 
 	if ($('.wcp-table').length) {
 		// responsive table layouts - main

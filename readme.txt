@@ -31,6 +31,12 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 2.0.4 =
+* Fixed bug with database selection if using default db and assigning it
+* Added user id to body class for Custom CSS targetting 
+* Several minor improvements
+* New! Dropdown fields added as a new field type
+
 = 2.0.3 = 
 * Fixed file upload url reporting incorrect path for non-default database
 * Added jpeg extension support for main image upload

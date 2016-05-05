@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Contacts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-18 18:59-0700\n"
+"POT-Creation-Date: 2016-05-05 15:15-0700\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lee Beck <info@scripthat.com>\n"
 "Language-Team: SH-Themes <info@sh-themes.com>\n"
@@ -245,8 +245,7 @@ msgstr ""
 
 #: includes/class-wcp-front.php:304
 #: includes/class-wcp-front.php:374
-#: includes/class-wcp-front.php:1669
-#: includes/class-wcp-events.php:27
+#: includes/class-wcp-fields.php:68
 msgid "Close"
 msgstr ""
 
@@ -362,6 +361,7 @@ msgid "Front Page Sorting"
 msgstr ""
 
 #: includes/class-wcp-front.php:451
+#: includes/class-wcp-fields.php:29
 msgid "Manage Fields"
 msgstr ""
 
@@ -409,247 +409,175 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: includes/class-wcp-front.php:534
+#: includes/class-wcp-front.php:537
 msgid "Remove all log entries"
 msgstr ""
 
-#: includes/class-wcp-front.php:536
-#: includes/class-wcp-front.php:1908
-#: includes/class-allleads.php:301
+#: includes/class-wcp-front.php:539
+#: includes/class-wcp-front.php:1757
+#: includes/class-allleads.php:314
 msgid "Search"
 msgstr ""
 
-#: includes/class-wcp-front.php:544
+#: includes/class-wcp-front.php:547
 msgid "Add New Event"
 msgstr ""
 
-#: includes/class-wcp-front.php:556
+#: includes/class-wcp-front.php:559
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: includes/class-wcp-front.php:590
+#: includes/class-wcp-front.php:593
 #: includes/class-wcp-logging.php:155
 msgid "Unknown"
 msgstr ""
 
-#: includes/class-wcp-front.php:596
+#: includes/class-wcp-front.php:599
 msgid "Logo"
 msgstr ""
 
-#: includes/class-wcp-front.php:755
-#: includes/class-wcp-front.php:1635
-#: includes/class-wcp-front.php:1831
+#: includes/class-wcp-front.php:759
+#: includes/class-wcp-front.php:1680
 #: includes/class-wcp-ie.php:25
 #: includes/class-wcp-stats.php:17
 #: includes/class-wcp-logging.php:48
-#: includes/class-wcp-events.php:22
+#: includes/class-wcp-fields.php:22
 msgid "You do not have access to this page"
 msgstr ""
 
-#: includes/class-wcp-front.php:801
+#: includes/class-wcp-front.php:805
 msgid "Sources, Status & Types"
 msgstr ""
 
-#: includes/class-wcp-front.php:802
+#: includes/class-wcp-front.php:806
+msgid "These can be renamed under Manage Fields"
+msgstr ""
+
+#: includes/class-wcp-front.php:807
 #: includes/class-wcp-api-tabs.php:591
 msgid "Add New"
 msgstr ""
 
-#: includes/class-wcp-front.php:803
-#: includes/class-wcp-front.php:1649
+#: includes/class-wcp-front.php:808
+#: includes/class-wcp-fields.php:47
 msgid "New Field"
 msgstr ""
 
-#: includes/class-wcp-front.php:804
+#: includes/class-wcp-front.php:809
 msgid "Save All"
 msgstr ""
 
-#: includes/class-wcp-front.php:823
-#: includes/class-wcp-front.php:848
-#: includes/class-wcp-front.php:871
-#: includes/class-wcp-front.php:1663
+#: includes/class-wcp-front.php:829
+#: includes/class-wcp-front.php:854
+#: includes/class-wcp-front.php:877
+#: includes/class-wcp-fields.php:62
 msgid "Toggle Field Removal"
 msgstr ""
 
-#: includes/class-wcp-front.php:828
-#: includes/class-wcp-front.php:852
-#: includes/class-wcp-front.php:875
-#: includes/class-wcp-front.php:1794
+#: includes/class-wcp-front.php:834
+#: includes/class-wcp-front.php:858
+#: includes/class-wcp-front.php:881
+#: includes/class-wcp-fields.php:203
+#: includes/class-wcp-fields.php:236
 msgid "Sort"
 msgstr ""
 
-#: includes/class-wcp-front.php:908
+#: includes/class-wcp-front.php:914
 msgid "You do not have access to this entry"
 msgstr ""
 
-#: includes/class-wcp-front.php:979
+#: includes/class-wcp-front.php:985
 msgid "Entry Details"
 msgstr ""
 
-#: includes/class-wcp-front.php:980
+#: includes/class-wcp-front.php:986
 msgid "Remove"
 msgstr ""
 
-#: includes/class-wcp-front.php:1003
 #: includes/class-wcp-front.php:1009
+#: includes/class-wcp-front.php:1015
 msgid "There are currently no files uploaded."
 msgstr ""
 
-#: includes/class-wcp-front.php:1005
-#: includes/class-wcp-front.php:1008
+#: includes/class-wcp-front.php:1011
+#: includes/class-wcp-front.php:1014
 msgid "Existing Files"
 msgstr ""
 
-#: includes/class-wcp-front.php:1020
+#: includes/class-wcp-front.php:1026
 #: includes/class-wcp-api-tabs.php:254
 msgid "Entry Image"
 msgstr ""
 
-#: includes/class-wcp-front.php:1031
+#: includes/class-wcp-front.php:1037
 msgid "Drag or click to upload a jpg, png or gif image file"
 msgstr ""
 
-#: includes/class-wcp-front.php:1032
+#: includes/class-wcp-front.php:1038
 msgid "Set Image"
 msgstr ""
 
-#: includes/class-wcp-front.php:1033
+#: includes/class-wcp-front.php:1039
 #: includes/class-wcp-ie.php:59
 msgid "Complete"
 msgstr ""
 
-#: includes/class-wcp-front.php:1070
+#: includes/class-wcp-front.php:1076
 msgid "Last Modified"
 msgstr ""
 
-#: includes/class-wcp-front.php:1096
+#: includes/class-wcp-front.php:1102
 msgid "Queued for upload"
 msgstr ""
 
-#: includes/class-wcp-front.php:1097
+#: includes/class-wcp-front.php:1103
 msgid "Add Files"
 msgstr ""
 
-#: includes/class-wcp-front.php:1111
+#: includes/class-wcp-front.php:1117
 msgid "Drag or click to upload a file or multiple files"
 msgstr ""
 
-#: includes/class-wcp-front.php:1506
+#: includes/class-wcp-front.php:1551
 msgid "Save Fields"
 msgstr ""
 
-#: includes/class-wcp-front.php:1522
+#: includes/class-wcp-front.php:1567
 msgid "Notes"
 msgstr ""
 
-#: includes/class-wcp-front.php:1554
+#: includes/class-wcp-front.php:1599
 msgid "Last Updated by"
 msgstr ""
 
-#: includes/class-wcp-front.php:1578
-#: includes/class-allleads.php:514
+#: includes/class-wcp-front.php:1623
+#: includes/class-allleads.php:527
 msgid "No Results Found"
 msgstr ""
 
-#: includes/class-wcp-front.php:1594
+#: includes/class-wcp-front.php:1639
 msgid "Add A Note"
 msgstr ""
 
-#: includes/class-wcp-front.php:1645
-msgid "Add, Edit, Define, Sort (for individual view and forms) and Remove Fields"
-msgstr ""
-
-#: includes/class-wcp-front.php:1646
-msgid "Core Fields cannot be removed, but all can be renamed."
-msgstr ""
-
-#: includes/class-wcp-front.php:1647
-#: includes/class-wcp-front.php:1842
-msgid "Save Changes"
-msgstr ""
-
-#: includes/class-wcp-front.php:1648
-msgid "Add New Field"
-msgstr ""
-
-#: includes/class-wcp-front.php:1650
-msgid "Text Field"
-msgstr ""
-
-#: includes/class-wcp-front.php:1651
-msgid "Text Area"
-msgstr ""
-
-#: includes/class-wcp-front.php:1652
-msgid "Phone Number"
-msgstr ""
-
-#: includes/class-wcp-front.php:1653
-msgid "Email Address"
-msgstr ""
-
-#: includes/class-wcp-front.php:1654
-msgid "Website Address"
-msgstr ""
-
-#: includes/class-wcp-front.php:1655
-msgid "Google Map Link"
-msgstr ""
-
-#: includes/class-wcp-front.php:1656
-msgid "Date Time"
-msgstr ""
-
-#: includes/class-wcp-front.php:1657
-msgid "Rating"
-msgstr ""
-
-#: includes/class-wcp-front.php:1658
-msgid "Checkbox"
-msgstr ""
-
-#: includes/class-wcp-front.php:1659
-msgid "Field Type"
-msgstr ""
-
-#: includes/class-wcp-front.php:1660
-msgid "Group Title"
-msgstr ""
-
-#: includes/class-wcp-front.php:1661
-msgid "Required"
-msgstr ""
-
-#: includes/class-wcp-front.php:1664
-msgid "Set For Removal"
-msgstr ""
-
-#: includes/class-wcp-front.php:1665
-msgid "Cancel"
-msgstr ""
-
-#: includes/class-wcp-front.php:1667
-msgid "If changing an existing field type to the Date Time selection all existing data for this field will be removed.  Just make sure that is what you want before saving."
-msgstr ""
-
-#: includes/class-wcp-front.php:1668
-msgid "Warning"
-msgstr ""
-
-#: includes/class-wcp-front.php:1840
+#: includes/class-wcp-front.php:1689
 msgid "Fields To Display On Main View (In Order)"
 msgstr ""
 
-#: includes/class-wcp-front.php:1841
+#: includes/class-wcp-front.php:1690
 msgid "Fields Not To Display On Main View"
 msgstr ""
 
-#: includes/class-wcp-front.php:1888
-#: includes/class-allleads.php:484
+#: includes/class-wcp-front.php:1691
+#: includes/class-wcp-fields.php:45
+msgid "Save Changes"
+msgstr ""
+
+#: includes/class-wcp-front.php:1737
+#: includes/class-allleads.php:497
 msgid "All Fields"
 msgstr ""
 
-#: includes/class-wcp-front.php:1914
+#: includes/class-wcp-front.php:1763
 msgid "Add Entry"
 msgstr ""
 
@@ -1311,18 +1239,18 @@ msgstr ""
 msgid "MailChimp API Key"
 msgstr ""
 
-#: includes/class-form-integration.php:81
-#: includes/class-form-integration.php:83
+#: includes/class-form-integration.php:82
+#: includes/class-form-integration.php:84
 msgid "CF7 Form Submittal"
 msgstr ""
 
-#: includes/class-form-integration.php:278
-#: includes/class-form-integration.php:280
+#: includes/class-form-integration.php:297
+#: includes/class-form-integration.php:299
 msgid "Ninja Form Submittal"
 msgstr ""
 
-#: includes/class-form-integration.php:436
-#: includes/class-form-integration.php:438
+#: includes/class-form-integration.php:473
+#: includes/class-form-integration.php:475
 msgid "Gravity Form Submittal"
 msgstr ""
 
@@ -1387,7 +1315,7 @@ msgid "IP Address"
 msgstr ""
 
 #: includes/class-wcp-logging.php:161
-#: includes/class-allleads.php:409
+#: includes/class-allleads.php:422
 msgid "Sort Entries"
 msgstr ""
 
@@ -1395,17 +1323,17 @@ msgstr ""
 #: includes/class-wcp-logging.php:178
 #: includes/class-wcp-logging.php:211
 #: includes/class-wcp-logging.php:222
-#: includes/class-allleads.php:422
-#: includes/class-allleads.php:436
-#: includes/class-allleads.php:546
+#: includes/class-allleads.php:435
+#: includes/class-allleads.php:449
 #: includes/class-allleads.php:559
+#: includes/class-allleads.php:572
 msgid "Sort Descending"
 msgstr ""
 
 #: includes/class-wcp-logging.php:172
 #: includes/class-wcp-logging.php:217
-#: includes/class-allleads.php:431
-#: includes/class-allleads.php:555
+#: includes/class-allleads.php:444
+#: includes/class-allleads.php:568
 msgid "Sort Ascending"
 msgstr ""
 
@@ -1425,28 +1353,152 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: includes/class-allleads.php:297
+#: includes/class-allleads.php:310
 msgid "Total Entries"
 msgstr ""
 
-#: includes/class-allleads.php:298
+#: includes/class-allleads.php:311
 msgid "Check All"
 msgstr ""
 
-#: includes/class-allleads.php:299
+#: includes/class-allleads.php:312
 msgid "Uncheck All"
 msgstr ""
 
-#: includes/class-allleads.php:300
+#: includes/class-allleads.php:313
 msgid "Delete Checked"
 msgstr ""
 
-#: includes/class-allleads.php:574
+#: includes/class-allleads.php:587
 msgid "Quick Edit"
 msgstr ""
 
-#: includes/class-allleads.php:590
+#: includes/class-allleads.php:603
 msgid "<p>Too many results to display them all, try a more specific search.</p>"
+msgstr ""
+
+#: includes/class-wcp-fields.php:32
+msgid "Manage Dropdown Options"
+msgstr ""
+
+#: includes/class-wcp-fields.php:43
+msgid "Add, Edit, Sort (for individual view and forms) and Remove Fields"
+msgstr ""
+
+#: includes/class-wcp-fields.php:44
+msgid "Core Fields cannot be removed, but all can be renamed.  Dropdown and Date Time field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed."
+msgstr ""
+
+#: includes/class-wcp-fields.php:46
+msgid "Add New Field"
+msgstr ""
+
+#: includes/class-wcp-fields.php:48
+msgid "Text Field"
+msgstr ""
+
+#: includes/class-wcp-fields.php:49
+msgid "Text Area"
+msgstr ""
+
+#: includes/class-wcp-fields.php:50
+msgid "Phone Number"
+msgstr ""
+
+#: includes/class-wcp-fields.php:51
+msgid "Email Address"
+msgstr ""
+
+#: includes/class-wcp-fields.php:52
+msgid "Website Address"
+msgstr ""
+
+#: includes/class-wcp-fields.php:53
+msgid "Google Map Link"
+msgstr ""
+
+#: includes/class-wcp-fields.php:54
+msgid "Date Time"
+msgstr ""
+
+#: includes/class-wcp-fields.php:55
+msgid "Rating"
+msgstr ""
+
+#: includes/class-wcp-fields.php:56
+msgid "Checkbox"
+msgstr ""
+
+#: includes/class-wcp-fields.php:57
+msgid "Field Type"
+msgstr ""
+
+#: includes/class-wcp-fields.php:58
+msgid "Dropdown"
+msgstr ""
+
+#: includes/class-wcp-fields.php:59
+msgid "Group Title"
+msgstr ""
+
+#: includes/class-wcp-fields.php:60
+msgid "Required"
+msgstr ""
+
+#: includes/class-wcp-fields.php:63
+msgid "Set For Removal"
+msgstr ""
+
+#: includes/class-wcp-fields.php:64
+msgid "Cancel"
+msgstr ""
+
+#: includes/class-wcp-fields.php:66
+msgid "If changing an existing field type to the Date Time selection all existing data for this field will be removed.  Just make sure that is what you want before saving."
+msgstr ""
+
+#: includes/class-wcp-fields.php:67
+msgid "Warning"
+msgstr ""
+
+#: includes/class-wcp-fields.php:230
+msgid "Create your option lists for dropdown custom field types"
+msgstr ""
+
+#: includes/class-wcp-fields.php:231
+msgid "You must have created and saved at least one dropdown field in Manage Fields first"
+msgstr ""
+
+#: includes/class-wcp-fields.php:232
+msgid "Select the List to manage"
+msgstr ""
+
+#: includes/class-wcp-fields.php:233
+msgid "Dropdown Field To Manage"
+msgstr ""
+
+#: includes/class-wcp-fields.php:234
+msgid "Select"
+msgstr ""
+
+#: includes/class-wcp-fields.php:235
+msgid "Toggle Option Removal"
+msgstr ""
+
+#: includes/class-wcp-fields.php:237
+msgid "Options"
+msgstr ""
+
+#: includes/class-wcp-fields.php:238
+msgid "Add New Option"
+msgstr ""
+
+#: includes/class-wcp-fields.php:239
+msgid "Save Dropdown Options"
+msgstr ""
+
+#: includes/class-wcp-fields.php:240
+msgid "New Option"
 msgstr ""
 
 #: includes/class-wcp-events.php:28
@@ -1465,441 +1517,441 @@ msgstr ""
 msgid "Click delete again if you are sure you want to remove this event."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:62
+#: includes/class-wcp-ajax.php:61
 msgid "Deleting Multiple Entries"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:63
+#: includes/class-wcp-ajax.php:62
 msgid "You are about to delete multiple entries, are you sure?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:64
+#: includes/class-wcp-ajax.php:63
 msgid "Confirm Delete"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:86
+#: includes/class-wcp-ajax.php:85
 msgid "Deleted Multiple Entries"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:87
+#: includes/class-wcp-ajax.php:86
 msgid "Entry IDs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:192
+#: includes/class-wcp-ajax.php:191
 msgid "Add A New Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:194
+#: includes/class-wcp-ajax.php:193
 msgid "Edit Entry Information"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:196
+#: includes/class-wcp-ajax.php:195
 msgid "Save"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:350
+#: includes/class-wcp-ajax.php:357
 msgid "Added Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:352
+#: includes/class-wcp-ajax.php:359
 msgid "Updated Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:355
+#: includes/class-wcp-ajax.php:362
 msgid "Entry ID"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:355
+#: includes/class-wcp-ajax.php:362
 msgid " Fields-> "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:366
+#: includes/class-wcp-ajax.php:373
 msgid "Confirm Removal Of The Following Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:367
+#: includes/class-wcp-ajax.php:374
 msgid "Remove Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:384
+#: includes/class-wcp-ajax.php:391
 msgid "Deleted Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:385
-#: includes/class-wcp-ajax.php:1218
-#: includes/class-wcp-ajax.php:1263
-#: includes/class-wcp-ajax.php:1306
-#: includes/class-wcp-ajax.php:1355
+#: includes/class-wcp-ajax.php:392
 #: includes/class-wcp-ajax.php:1385
-#: includes/class-wcp-ajax.php:1487
+#: includes/class-wcp-ajax.php:1430
+#: includes/class-wcp-ajax.php:1473
+#: includes/class-wcp-ajax.php:1522
+#: includes/class-wcp-ajax.php:1552
+#: includes/class-wcp-ajax.php:1654
 msgid "Entry ID "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:455
+#: includes/class-wcp-ajax.php:462
 msgid "Changed Frontend Sorting"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:456
+#: includes/class-wcp-ajax.php:463
 msgid "Modified Sort Results"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:605
+#: includes/class-wcp-ajax.php:765
 msgid "Changed Fields"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:606
+#: includes/class-wcp-ajax.php:766
 msgid "Modified Entry Fields "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:770
+#: includes/class-wcp-ajax.php:930
 msgid "Modified SST"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:771
+#: includes/class-wcp-ajax.php:931
 msgid "Modified Sources, Status, and Types"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:781
-#: includes/class-wcp-ajax.php:826
-#: includes/class-wcp-ajax.php:1225
+#: includes/class-wcp-ajax.php:941
+#: includes/class-wcp-ajax.php:986
+#: includes/class-wcp-ajax.php:1392
 msgid "Error uploading"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:814
+#: includes/class-wcp-ajax.php:974
 msgid "Uploaded Image"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:815
+#: includes/class-wcp-ajax.php:975
 msgid "New Image set for Entry ID "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:872
+#: includes/class-wcp-ajax.php:1032
 msgid "No Assignment"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:873
+#: includes/class-wcp-ajax.php:1033
 msgid "Import Now"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:874
+#: includes/class-wcp-ajax.php:1034
 msgid "Step 2, Assign your spreadsheet columns to <b>WP Contacts</b> columns"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:878
+#: includes/class-wcp-ajax.php:1038
 msgid "Total Rows to import"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:884
+#: includes/class-wcp-ajax.php:1044
 msgid "Imported Entry File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:885
+#: includes/class-wcp-ajax.php:1045
 msgid "File Name: "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:910
+#: includes/class-wcp-ajax.php:1070
 msgid "You have not assigned any of your columns, you need to set at least one."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:911
+#: includes/class-wcp-ajax.php:1071
 msgid "Error"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1084
+#: includes/class-wcp-ajax.php:1251
 msgid "Please select at least 1 field for exporting."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1085
+#: includes/class-wcp-ajax.php:1252
 msgid "Select Fields"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1086
+#: includes/class-wcp-ajax.php:1253
 msgid "OK"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1095
+#: includes/class-wcp-ajax.php:1262
 msgid "Select Your MailChimp list to import into"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1096
+#: includes/class-wcp-ajax.php:1263
 msgid "Email Address Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1097
+#: includes/class-wcp-ajax.php:1264
 msgid "First Name Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1098
+#: includes/class-wcp-ajax.php:1265
 msgid "Last Name Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1099
+#: includes/class-wcp-ajax.php:1266
 msgid "Choose A Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1100
+#: includes/class-wcp-ajax.php:1267
 msgid "Ready to send to MailChimp, click confirm to subscribe entries to your list."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1101
+#: includes/class-wcp-ajax.php:1268
 msgid "Confirm Submission"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1165
+#: includes/class-wcp-ajax.php:1332
 msgid "Your entries have been submitted to MailChimp, below are the details"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1176
+#: includes/class-wcp-ajax.php:1343
 msgid "Are you sure you wish to remove the following file?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1179
+#: includes/class-wcp-ajax.php:1346
 msgid "Confirm Remove File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1181
-#: includes/class-wcp-ajax.php:1962
+#: includes/class-wcp-ajax.php:1348
+#: includes/class-wcp-ajax.php:2120
 msgid "Confirm"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1217
+#: includes/class-wcp-ajax.php:1384
 msgid "Removed Entry File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1218
+#: includes/class-wcp-ajax.php:1385
 msgid " File:"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1262
+#: includes/class-wcp-ajax.php:1429
 msgid "Added Files"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1263
+#: includes/class-wcp-ajax.php:1430
 msgid " New File:"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1280
-#: includes/class-wcp-ajax.php:1327
+#: includes/class-wcp-ajax.php:1447
+#: includes/class-wcp-ajax.php:1494
 msgid "Save Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1305
+#: includes/class-wcp-ajax.php:1472
 msgid "Added a note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1325
+#: includes/class-wcp-ajax.php:1492
 msgid "Edit Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1354
+#: includes/class-wcp-ajax.php:1521
 msgid "Edited existing note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1366
+#: includes/class-wcp-ajax.php:1533
 msgid "Remove Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1367
+#: includes/class-wcp-ajax.php:1534
 msgid "Are you sure you wish to delete this note?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1369
+#: includes/class-wcp-ajax.php:1536
 msgid "Delete Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1384
+#: includes/class-wcp-ajax.php:1551
 msgid "Removed a note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1486
+#: includes/class-wcp-ajax.php:1653
 msgid "Modified Entry Details"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1642
+#: includes/class-wcp-ajax.php:1809
 msgid "Remove All Logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1643
+#: includes/class-wcp-ajax.php:1810
 msgid "Do you really want to remove all logging activity?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1644
+#: includes/class-wcp-ajax.php:1811
 msgid "Remove Logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1651
+#: includes/class-wcp-ajax.php:1818
 msgid "Removed all logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1652
+#: includes/class-wcp-ajax.php:1819
 msgid "Cleared all logging entries "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1687
+#: includes/class-wcp-ajax.php:1854
 msgid "New Entry - "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1695
+#: includes/class-wcp-ajax.php:1862
 msgid "New Entry Created"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1731
+#: includes/class-wcp-ajax.php:1898
 msgid "For"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1923
+#: includes/class-wcp-ajax.php:2090
 msgid "Event Deleted"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1924
+#: includes/class-wcp-ajax.php:2091
 msgid "User has deleted event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1960
+#: includes/class-wcp-ajax.php:2118
 msgid "Add/Edit An Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1963
+#: includes/class-wcp-ajax.php:2121
 msgid "Title"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1964
+#: includes/class-wcp-ajax.php:2122
 msgid "Start Time"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1965
+#: includes/class-wcp-ajax.php:2123
 msgid "End Time"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1966
+#: includes/class-wcp-ajax.php:2124
 msgid "Event Color"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1967
+#: includes/class-wcp-ajax.php:2125
 msgid "Repeat"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1968
+#: includes/class-wcp-ajax.php:2126
 msgid "Repeating Event?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1971
+#: includes/class-wcp-ajax.php:2129
 msgid "Every Day"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1972
+#: includes/class-wcp-ajax.php:2130
 msgid "Every Week"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1973
+#: includes/class-wcp-ajax.php:2131
 msgid "Every Month"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1974
+#: includes/class-wcp-ajax.php:2132
 msgid "Every Year"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1977
+#: includes/class-wcp-ajax.php:2135
 msgid "Notify"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1978
+#: includes/class-wcp-ajax.php:2136
 msgid "Enable Notification?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1979
+#: includes/class-wcp-ajax.php:2137
 msgid "Event Description"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1981
+#: includes/class-wcp-ajax.php:2139
 msgid "Minute(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1982
+#: includes/class-wcp-ajax.php:2140
 msgid "Hour(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1983
+#: includes/class-wcp-ajax.php:2141
 msgid "Day(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1984
+#: includes/class-wcp-ajax.php:2142
 msgid "Week(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1985
+#: includes/class-wcp-ajax.php:2143
 msgid "Month(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1988
+#: includes/class-wcp-ajax.php:2146
 msgid "Who receives notifications?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1991
+#: includes/class-wcp-ajax.php:2149
 msgid "Before"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1992
+#: includes/class-wcp-ajax.php:2150
 msgid "After"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2026
+#: includes/class-wcp-ajax.php:2184
 msgid "Event start time is not before end time or time is blank."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2030
+#: includes/class-wcp-ajax.php:2188
 msgid "Please add a title."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2072
+#: includes/class-wcp-ajax.php:2230
 msgid "Edited Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2073
+#: includes/class-wcp-ajax.php:2231
 msgid "User has edited the event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2099
+#: includes/class-wcp-ajax.php:2257
 msgid "New Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2100
+#: includes/class-wcp-ajax.php:2258
 msgid "User has added a new event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2157
+#: includes/class-wcp-ajax.php:2315
 msgid "Please Log In"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2158
+#: includes/class-wcp-ajax.php:2316
 msgid "Please log in to continue"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2184
+#: includes/class-wcp-ajax.php:2342
 msgid "Wrong username or password."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2186
+#: includes/class-wcp-ajax.php:2344
 msgid "Login successful, redirecting..."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2310
+#: includes/class-wcp-ajax.php:2468
 msgid "You must select a backup to restore."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2317
+#: includes/class-wcp-ajax.php:2475
 msgid "The backup selected is missing required data, please select another"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2470
+#: includes/class-wcp-ajax.php:2628
 msgid "is invalid."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2476
+#: includes/class-wcp-ajax.php:2634
 msgid "needs a date set."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2481
+#: includes/class-wcp-ajax.php:2639
 msgid "is required."
 msgstr ""
 

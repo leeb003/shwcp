@@ -35,6 +35,7 @@
 					}
 				}
             	$main_table = $wpdb->prefix . SHWCP_LEADS . $db;
+				//echo 'Main Table = ' . $main_table;
 
             	/* Get the existing columns to compare submitted to */
             	$main_columns = $wpdb->get_results(
@@ -130,6 +131,24 @@
                 	);
             	}
             	$wpdatafinal['l_type'] = $type;
+
+				/* Dropdown Check */
+				$sorting = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SORT . $db);
+				$sst = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SST . $db);
+				foreach ($wpdatafinal as $f => $v) {
+					foreach ($sorting as $k2 => $v2) { 
+						if ($v2->orig_name == $f) {
+							if ($v2->field_type == '10') {
+								$sst_type = $wpdb->get_var(
+                                            "SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db  
+											. " where sst_type_desc='$f' limit 1"
+                                        );
+								$value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $db);
+								$wpdatafinal[$f] = $value;
+							}
+						}
+					}
+				}
 
             	// Prepare insert
             	foreach ($wpdatafinal as $f => $v) {
@@ -331,6 +350,24 @@
 					//echo "Fields to insert \n\n";
 					//print_r($wpdatafinal);
 
+					/* Dropdown Check */
+                	$sorting = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SORT . $db);
+                	$sst = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SST . $db);
+                	foreach ($wpdatafinal as $f => $v) {
+                    	foreach ($sorting as $k2 => $v2) {
+                        	if ($v2->orig_name == $f) {
+                            	if ($v2->field_type == '10') {
+                                	$sst_type = $wpdb->get_var(
+                                            "SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db
+                                            . " where sst_type_desc='$f' limit 1"
+                                        );
+                                	$value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $db);
+                                	$wpdatafinal[$f] = $value;
+                            	}
+                        	}
+                    	}
+                	}
+
 					// Prepare insert
                 	foreach ($wpdatafinal as $f => $v) {
                     	if ($f == 'l_source'
@@ -489,6 +526,24 @@
                     //echo "Fields to insert \n\n";
                     //print_r($wpdatafinal);
 
+					/* Dropdown Check */
+                	$sorting = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SORT . $db);
+                	$sst = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SST . $db);
+                	foreach ($wpdatafinal as $f => $v) {
+                    	foreach ($sorting as $k2 => $v2) {
+                        	if ($v2->orig_name == $f) {
+                            	if ($v2->field_type == '10') {
+                                	$sst_type = $wpdb->get_var(
+                                            "SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db
+                                            . " where sst_type_desc='$f' limit 1"
+                                        );
+                                	$value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $db);
+                                	$wpdatafinal[$f] = $value;
+                            	}
+                        	}
+                    	}
+                	}
+
 					// Prepare insert
                     foreach ($wpdatafinal as $f => $v) {
                         if ($f == 'l_source'
@@ -526,13 +581,43 @@
             foreach ($dbs as $k => $option) {
                 $db_options = get_option($option->option_name);
                 $database_name = $db_options['database_name'];
-                $db_options = get_option($option->option_name);
                 if ($database_name == $name) {
-                    $remove_name = '/^' . $option_entry . '_/';  // Just get the database number
-                    $db_number = preg_replace($remove_name, '', $option->option_name);
+					if ($option_entry != $k) { // Only non-default dbs need remove underscore and have db number 
+                    	$remove_name = '/^' . $option_entry . '_/';  // Just get the database number
+                    	$db_number = preg_replace($remove_name, '', $option->option_name);
+					}
                 }
             }
             return $db_number;
+        }
+
+		/*
+         * Update the database if needed with new sst otherwise return existing
+         * otherwise, return the existing id
+         */
+        public function sst_update_checkdb($value, $sst, $choice, $sst_type, $db) {
+            global $wpdb;
+            $exists = false;
+            foreach ($sst as $sst_row => $sst_data) {
+                if ($value == $sst_data->sst_name) {
+                    $exists = true;
+                    return $sst_data->sst_id;
+                }
+            }
+            if (!$exists) {
+                $wpdb->insert(
+                    $wpdb->prefix . SHWCP_SST . $db,
+                    array(
+                        'sst_name' => $value,
+                        'sst_type_desc' => $choice,
+                        'sst_type' => $sst_type,
+                        'sst_default' => 0,
+                        'sst_order' => 0
+                    ),
+                    array('%s','%s','%d','%d','%d')
+                );
+                return $wpdb->insert_id;
+            }
         }
 
 	}

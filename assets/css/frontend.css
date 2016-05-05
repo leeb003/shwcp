@@ -1079,6 +1079,54 @@ i.no-remove-field {
 	height: 24px;
 }
 
+.options-div h4 {
+	margin-bottom: 20px;
+}
+.options-div h4 i {
+	float: right;
+	margin-right:40px;
+}
+.options-div h4 i:hover,
+i.remove-option,
+i.option-sort {
+	cursor: pointer;
+}
+.options-div input {
+	width: 240px;
+}
+
+.option-clone {
+	display:none;
+}
+
+.active-selops {
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.4) !important;
+    transition-delay: 0s !important;
+}
+
+
+.wcp-selops {
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    margin: 10px 0px;
+    padding: 10px;
+    background-color: #ffffff;
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.2s;
+}
+i.remove-option {
+    position: absolute;
+    top: 5px;
+    right: 40px;
+}
+
+i.option-sort {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+
 /* End Edit Fields page */
 
 /* SST Page */
@@ -1420,7 +1468,6 @@ i.no-remove-field {
 .wcp-tabs {
   	position: relative;
   	width: 90%;
-  	max-width: 960px;
   	margin: 2em auto;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
@@ -1432,6 +1479,13 @@ i.no-remove-field {
   	clear: both;
   	content: "";
   	display: table;
+}
+
+@media screen and (max-width: 767px) {
+	.wcp-tabs {
+		width: 100%;
+		margin: 1em auto;
+ 	}
 }
 
 .tab-select {
@@ -1859,6 +1913,7 @@ canvas{
   padding: 0;
   position: absolute;
   top: 30px;
+  right: 0;
   width: inherit;
   max-width: 300px;
   height: inherit;
@@ -1866,7 +1921,7 @@ canvas{
   background: #fff;
   transform: scale(0);
   -webkit-transform: scale(0);
-  transform-origin: 0% 0%;
+  transform-origin: 100% 0%;
   transition: .3s all cubic-bezier(0.19, 1, 0.22, 1); 
   padding: 16px;
   z-index: 1;

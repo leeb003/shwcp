@@ -3,7 +3,7 @@
  * Plugin Name: WP Contacts
  * Plugin URI: http://www.sh-themes.com
  * Description: Powerful and feature rich contact management: manage contacts, leads, inventory or just about anything else you need to keep track of.  Create multiple databases and assign different users to each.
- * Version: 2.0.3
+ * Version: 2.0.4
  * Author: SH-Themes
  * Author URI: http://www.sh-themes.com
  */
@@ -16,7 +16,7 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
     define('SHWCP_ROOT_FILE', __FILE__);
     define('SHWCP_ROOT_PATH', dirname(__FILE__));
     define('SHWCP_ROOT_URL', plugins_url('', __FILE__));
-    define('SHWCP_PLUGIN_VERSION', '2.0.2');
+    define('SHWCP_PLUGIN_VERSION', '2.0.4');
     define('SHWCP_PLUGIN_SLUG', basename(dirname(__FILE__)));
     define('SHWCP_PLUGIN_BASE', plugin_basename(__FILE__));
 	define('SHWCP_TEMPLATE', 'wcp-fullpage-template.php');
@@ -41,7 +41,6 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
     $wcp_front = new wcp_front;
 	$wcp_front->front_init();
 	add_action( 'init', array( $wcp_front, 'get_the_current_user' ) );
-	add_action( 'init', array( $wcp_front, 'get_all_users' ) );
 	add_action( 'after_setup_theme', array( $wcp_front, 'wcp_slug_setup') );
 
 	/* Testing view of function load order */

@@ -40,8 +40,8 @@
                 "
             );
 
-            $field_title      = __('Add, Edit, Define, Sort (for individual view and forms) and Remove Fields', 'shwcp');
-            $field_desc       = __('Core Fields cannot be removed, but all can be renamed.', 'shwcp');
+            $field_title      = __('Add, Edit, Sort (for individual view and forms) and Remove Fields', 'shwcp');
+            $field_desc       = __('Core Fields cannot be removed, but all can be renamed.  Dropdown and Date Time field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed.', 'shwcp');
             $save             = __('Save Changes', 'shwcp');
             $add_new_text     = __('Add New Field', 'shwcp');
             $new_text         = __('New Field', 'shwcp');

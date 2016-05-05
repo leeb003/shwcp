@@ -209,7 +209,7 @@
                 );
 
 				$field_vals = $_POST['field_vals'];
-				$dropdown_fields = $_POST['dropdown_fields'];
+				$dropdown_fields = isset($_POST['dropdown_fields']) ? $_POST['dropdown_fields'] : array();
 				/* Check required fields */
 				$field_checks = $this->field_checks($sorting, $field_vals);
 
@@ -466,6 +466,7 @@
 
 			// Manage Dropdowns
 			} elseif (isset($_POST['manage_dropdowns']) && $_POST['manage_dropdowns'] == 'true') {
+				$dropdowns = array();
 				$lead_columns = $wpdb->get_results (
                 	"
                     SELECT * from $this->table_sort order by sort_ind_number asc
