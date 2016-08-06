@@ -31,6 +31,10 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 2.0.5 =
+* Fix for multisite and notes not being displayed on sub sites for individual
+* contacts
+
 = 2.0.4 =
 * Fixed bug with database selection if using default db and assigning it
 * Added user id to body class for Custom CSS targetting 

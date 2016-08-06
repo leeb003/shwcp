@@ -1485,7 +1485,7 @@
 				$existing_note = $wpdb->get_results (
                 " 
                     SELECT notes.*, user.user_login
-                    from $this->table_notes notes, {$wpdb->prefix}users user
+                    from $this->table_notes notes, {$wpdb->base_prefix}users user
                     WHERE notes.id=$note_id and notes.creator=user.ID
                 "
             	);

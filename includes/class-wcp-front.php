@@ -1559,7 +1559,7 @@ EOC;
 			$existing_notes = $wpdb->get_results (
 				" 
 					SELECT notes.*, user.user_login
-					from $this->table_notes notes, {$wpdb->prefix}users user
+					from $this->table_notes notes, {$wpdb->base_prefix}users user
 					WHERE lead_id=$lead_id and notes.creator=user.ID
 					order by date_added desc
 				"
@@ -1591,7 +1591,7 @@ EOC;
 					$note_updated = true;
 					$updater = $wpdb->get_var(
 							"
-							SELECT user_login from {$wpdb->prefix}users user WHERE user.ID=$note->updater
+							SELECT user_login from {$wpdb->base_prefix}users user WHERE user.ID=$note->updater
 							"
 					);
 				}
