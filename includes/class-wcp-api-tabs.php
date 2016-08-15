@@ -910,6 +910,7 @@ class SHWCP_API_Tabs {
 			<tr><td>upload_max_filesize</td><td><?php echo ini_get('upload_max_filesize'); ?></td></tr>
 			<tr><td>max_execution_time</td><td><?php echo ini_get('max_execution_time'); ?></td></tr>
 			<tr><td>max_file_uploads</td><td><?php echo ini_get('max_file_uploads'); ?></td></tr>
+			<tr><td>max_input_vars</td><td><?php echo ini_get('max_input_vars'); ?></td></tr>
 		</table>
 	<?php }
 
