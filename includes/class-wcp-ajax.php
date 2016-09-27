@@ -2280,7 +2280,7 @@
 			global $wpdb;
 			$exists = false;
             foreach ($sst as $sst_row => $sst_data) {
-            	if ($value == $sst_data->sst_name) {
+				if ($value == $sst_data->sst_name && $sst_type == $sst_data->sst_type) {
                 	$exists = true;
 					return $sst_data->sst_id;
                 }
