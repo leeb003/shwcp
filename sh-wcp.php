@@ -16,7 +16,7 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
     define('SHWCP_ROOT_FILE', __FILE__);
     define('SHWCP_ROOT_PATH', dirname(__FILE__));
     define('SHWCP_ROOT_URL', plugins_url('', __FILE__));
-    define('SHWCP_PLUGIN_VERSION', '2.0.5');
+    define('SHWCP_PLUGIN_VERSION', '2.0.6');
     define('SHWCP_PLUGIN_SLUG', basename(dirname(__FILE__)));
     define('SHWCP_PLUGIN_BASE', plugin_basename(__FILE__));
 	define('SHWCP_TEMPLATE', 'wcp-fullpage-template.php');
