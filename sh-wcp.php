@@ -146,7 +146,10 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
 	add_action( 'wpcf7_mail_sent', array($form_integration, 'wpcontacts_add_lead'), 2, 1);
 
 	// Ninja Forms integration
+	// pre 3.0 action hook
 	add_action( 'ninja_forms_post_process', array($form_integration, 'ninja_forms_wpcontacts') );
+	// 3.0 + action hook
+	add_action( 'ninja_forms_after_submission', array($form_integration, 'ninja_forms3_wpcontacts') );
 
 	// Gravity Forms integration
 	add_action( 'gform_after_submission', array($form_integration, 'gravity_forms_wpcontacts'), 10, 2 );

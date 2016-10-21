@@ -225,7 +225,7 @@
     	}
 		/* End Contact Form 7 Methods */
 
-		/* Ninja Form Methods */
+		/* Ninja Form Methods Pre 3.0 */
 		public function ninja_forms_wpcontacts() {
 			global $ninja_forms_processing;
 			$wpcinsert = false;
@@ -390,7 +390,162 @@
 			}			
 		}
 
-		/* End Ninja Form Methods */
+		/* Ninja Form Methods 3.0 and above */
+        public function ninja_forms3_wpcontacts($form_data) {
+            $wpcinsert = false;
+
+            // get the submitted data
+			$all_fields = $form_data['fields'];
+			$field_settings = $form_data['settings'];
+            if ( is_array( $all_fields ) ) {
+                global $wpdb;
+
+                $wpdatapre = array();
+                $wpdatabasemap = '';
+                foreach ($all_fields as $k => $entry ) {
+					$entry_value = $entry['value'];
+					$admin_label = isset($entry['admin_label']) ? $entry['admin_label'] : '';
+					$admin_label_split = explode( '-', $admin_label);
+					if ($admin_label_split[0] == 'wpcontacts') {
+						$wpcinsert = true;
+						$wpdatapre[$admin_label_split[1]] = $entry_value;
+					} elseif ($admin_label == 'wpdatabasemap') { // database to use
+						$wpdatabasemap = trim($entry['value']);
+					}
+                }
+				// print_r($wpdatapre);
+				// return;
+
+                $db = '';
+                if ($wpdatabasemap) {
+                    $name = $wpdatabasemap;
+                    $db = $this->search_option_dbname($name);
+                    if ($db) {
+                        $db = '_' . $db;
+                    }
+                }
+                $main_table = $wpdb->prefix . SHWCP_LEADS . $db;
+
+                /* Get the existing columns to compare submitted to */
+                $main_columns = $wpdb->get_results(
+                    "
+                    SELECT `COLUMN_NAME`
+                    FROM `INFORMATION_SCHEMA`.`COLUMNS`
+                    WHERE `TABLE_SCHEMA`='$wpdb->dbname'
+                    AND `TABLE_NAME`='$main_table'
+                    "
+                );
+                $existing_fields = array();
+                foreach ($main_columns as $k => $v) {
+                    $existing_fields[] = $v->COLUMN_NAME;
+                }
+
+                // If we have any matches...insert
+                if ($wpcinsert) {
+                    // process and insert
+                    foreach ($wpdatapre as $k => $v) {
+                        if (in_array($k, $existing_fields)) {
+                            $wpdatafinal[$k] = $v;
+                            //echo "$k set to $v \n\n";
+                        }
+                    }
+                    $wpdatafinal['creation_date'] = current_time( 'mysql' );
+                    $wpdatafinal['created_by']    = __('Ninja Form Submittal', 'shwcp');
+                    $wpdatafinal['updated_date']  = current_time( 'mysql' );
+                    $wpdatafinal['updated_by']    = __('Ninja Form Submittal', 'shwcp');
+                    // remove any fields that shouldn't be changed
+                    unset($wpdatafinal['id']);
+
+                    // get the sst's if the name doesn't match assign to default
+
+                    /* Source */
+                    if (!isset($wpdatafinal['l_source'])) {
+                        $wpdatafinal['l_source'] = 'Not Set';
+                    }
+                    $source = $wpdb->get_var("
+                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
+                        " where sst_name='{$wpdatafinal['l_source']}' and sst_type=1
+                        ");
+                    if (!$source) {
+                        $source = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
+                        " where sst_type=1 AND sst_default=1"
+                        );
+                    }
+                    $wpdatafinal['l_source'] = $source; // Overwrite with id
+                    /* Status */
+                    if (!isset($wpdatafinal['l_status'])) {
+                        $wpdatafinal['l_status'] = 'Not Set';
+                    }
+
+                    $status = $wpdb->get_var("
+                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
+                        " where sst_name='{$wpdatafinal['l_status']}' and sst_type=2
+                        ");
+                    if (!$status) {
+                        $status = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
+                        " where sst_type=2 AND sst_default=1"
+                        );
+                    }
+                    $wpdatafinal['l_status'] = $status;
+
+                    /* Type */
+                    if (!isset($wpdatafinal['l_type'])) {
+                        $wpdatafinal['l_type'] = 'Not Set';
+                    }
+                    $type = $wpdb->get_var("
+                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
+                        " where sst_name='{$wpdatafinal['l_type']}' and sst_type=3
+                        ");
+                    if (!$type) {
+                        $type = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
+                        " where sst_type=3 AND sst_default=1"
+                        );
+                    }
+                    $wpdatafinal['l_type'] = $type;
+
+                    //echo "Fields to insert \n\n";
+                    //print_r($wpdatafinal);
+
+                    /* Dropdown Check */
+                    $sorting = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SORT . $db);
+                    $sst = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SST . $db);
+                    foreach ($wpdatafinal as $f => $v) {
+                        foreach ($sorting as $k2 => $v2) {
+                            if ($v2->orig_name == $f) {
+                                if ($v2->field_type == '10') {
+                                    $sst_type = $wpdb->get_var(
+                                            "SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db
+                                            . " where sst_type_desc='$f' limit 1"
+                                        );
+                                    $value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $db);
+                                    $wpdatafinal[$f] = $value;
+                                }
+                            }
+                        }
+                    }
+
+                    // Prepare insert
+                    foreach ($wpdatafinal as $f => $v) {
+                        if ($f == 'l_source'
+                        || $f == 'l_status'
+                        || $f == 'l_type'
+                        ) {
+                            $format[] = '%d';
+                        } else {
+                            $format[] = '%s';
+                        }
+                    }
+
+                    $wpdb->insert(
+                        $wpdb->prefix . SHWCP_LEADS . $db,
+                        $wpdatafinal,
+                        $format
+                    );
+                } // end match and insert
+            }
+        }
+
+		/* End Ninja Form Methods for pre 3.0 and post 3.0 */
 
 		/* Gravity Form Methods */
 		public function gravity_forms_wpcontacts($entry, $form) {
