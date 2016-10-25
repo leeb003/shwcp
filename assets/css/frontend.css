@@ -155,7 +155,7 @@ p.status {
 	-moz-transition: width 0.3s;
 	transition: width 0.3s;
 	-webkit-backface-visibility: hidden;
-	line-height: 64px;
+	line-height: 60px;
 }
 
 /* Search section */
@@ -206,7 +206,7 @@ p.status {
 	font-family: 'Material Design Iconic Font';
 	content: "\f05f";
 	position: absolute;
-	top: -8px;
+	top: -6px;
 	right: 15px;
    	display: inline-block;
 	color: #fff;
@@ -256,6 +256,7 @@ p.status {
 	background: rgba(0,0,0,0.15);
   	padding: 10px 15px;
 	height: 46px;
+	line-height: 30px;
   	-moz-transition: all 0.2s ease-in;
   	-o-transition: all 0.2s ease-in;
   	-webkit-transition: all 0.2s ease-in;

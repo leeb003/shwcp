@@ -47,8 +47,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    height: 4px;
-    width: 35px;
+    height: 2px;
+    width: 30px;
     cursor: pointer;
     background: #fefefe;
     display: block;
@@ -60,11 +60,11 @@
     -webkit-perspective: 1000;
   }
   .pure-toggle-label .pure-toggle-icon:before {
-    transform: translate3d(-50%, -14px, 0);
-    -webkit-transform: translate3d(-50%, -14px, 0); }
+    transform: translate3d(-50%, -12px, 0);
+    -webkit-transform: translate3d(-50%, -12px, 0); }
   .pure-toggle-label .pure-toggle-icon:after {
-    transform: translate3d(-50%, 9px, 0);
-    -webkit-transform: translate3d(-50%, 9px, 0); }
+    transform: translate3d(-50%, 10px, 0);
+    -webkit-transform: translate3d(-50%, 10px, 0); }
 
 .pure-toggle-label[data-toggle-label='left'] {
   left: 15px;

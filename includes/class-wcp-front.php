@@ -75,10 +75,6 @@
 				wp_enqueue_style('dashicons');
 				wp_enqueue_style('admin-bar');
 
-				// removed for now, tinymce isn't playing nice with custom styles on front end
-				//wp_enqueue_style('tiny_mce', SHWCP_ROOT_URL . '/assets/css/tinymce-light/light/skin.min.css', '');
-				//wp_enqueue_style('tiny_mce_content', SHWCP_ROOT_URL . '/assets/css/tinymce-light/light/content.min.css', '');
-
 				// material design fonts
 				wp_register_style( 'md-iconic-font', SHWCP_ROOT_URL 
 					. '/assets/css/material-design-iconic-font/css/material-design-iconic-font.min.css', '1.1.1' );
@@ -499,27 +495,28 @@ EOC;
 
 			if ($this->can_access ) {  // general access to the leads
         		if ('frontsort' == $this->curr_page) {  // Front fields sorting
-					$this->main_section = $this->get_front_sorting();
-
+					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-front-sort.php');
+					$wcp_front_sort = new wcp_front_sort;
+					$this->main_section = apply_filters('wcp_front_sort_filter', $wcp_front_sort->get_front_sorting());
         		} elseif ('fields' == $this->curr_page) { // Field setup
-					//$this->main_section = $this->get_edit_fields();
 					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-fields.php');
 					$wcp_fields = new wcp_fields();
-					$this->main_section = $wcp_fields->get_edit_fields();
+					$this->main_section = apply_filters('wcp_edit_fields_filter', $wcp_fields->get_edit_fields());
 				} elseif ('sst' == $this->curr_page) { // Sources Status & Types
-					$this->main_section = $this->get_sst_fields();
+					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-sst-fields.php');
+					$sst_fields = new wcp_sst_fields();
+					$this->main_section = apply_filters('wcp_sst_fields_filter', $sst_fields->get_sst_fields());
 				} elseif ('entry' == $this->curr_page) { // Individual Lead page
-					$this->main_section = $this->get_individual($db);
+					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-individual.php');
+					$wcp_individual = new wcp_individual();
+					$this->main_section = apply_filters('wcp_individual_filter', $wcp_individual->get_individual($db));
 					$lead_id = intval($_GET['lead']);
-					//$bar_tools = '<div class="bar-tools"></div>';
 					$bar_tools = $this->top_search($search_select);
-						
 				} elseif ('ie' == $this->curr_page) { // Import Export page
 					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-ie.php');
 					$wcp_ie = new wcp_ie();
-					$this->main_section = $wcp_ie->import_export();
+					$this->main_section = apply_filters('wcp_ie_filter', $wcp_ie->import_export());
 				} elseif ('stats' == $this->curr_page) { // Statistics
-					$this->main_section = $this->get_stats();
 					if ($this->current_access == 'ownleads') {  // get the ownleads stats file
 						require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-stats-ownleads.php');
 						$wcp_stats = new wcp_stats_ownleads();
@@ -527,11 +524,11 @@ EOC;
 						require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-stats.php');
 						$wcp_stats = new wcp_stats();
 					}
-					$this->main_section = $wcp_stats->load_statistics();
+					$this->main_section = apply_filters('wcp_stats_filter', $wcp_stats->load_statistics());
 				} elseif ('logging' == $this->curr_page) { // Logging
 					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-logging.php');
 					$wcp_logging = new wcp_logging();
-					$this->main_section = $wcp_logging->log_entries();
+					$this->main_section = apply_filters('wcp_logging_filter', $wcp_logging->log_entries());
 					$bar_tools = '<div class="bar-tools">'
 						. '<i class="remove-all-logs wcp-white wcp-md md-remove-circle-outline" title="'
 						. __('Remove all log entries', 'shlcm') . '"> </i>'
@@ -541,7 +538,7 @@ EOC;
 				} elseif ('events' == $this->curr_page) { // Events
 					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-events.php');
 					$wcp_events = new wcp_events();
-					$this->main_section = $wcp_events->show_events();
+					$this->main_section = apply_filters('wcp_events_filter', $wcp_events->show_events());
 					if ($this->can_edit) {
 						$bar_tools = '<div class="bar-tools">'
 								. '<i class="add-edit-event wcp-white wcp-md md-add" title="' . __('Add New Event', 'shwcp')
@@ -551,7 +548,7 @@ EOC;
 					$bar_tools = $this->top_search($search_select);
 					require_once(SHWCP_ROOT_PATH . '/includes/class-allleads.php');
                 	$all_leads = new allleads();
-					$this->main_section = $all_leads->get_all_leads();
+					$this->main_section = apply_filters('wcp_all_leads_filter', $all_leads->get_all_leads());
 				}
 
 			} else {
@@ -603,6 +600,7 @@ EOC;
 			}
 			// Head section and drawer	
 			// test for demo site and preload demo login values
+			$wcp_links = '';
 			$url = $_SERVER['HTTP_HOST'];
 			$demo_creds = '';
 			if ($url == 'demo.sh-themes.com') {
@@ -647,7 +645,7 @@ EOC;
 EOC;
 
 			if ($this->current_access == 'full') {
-				$this->head_section .= <<<EOC
+				$wcp_links .= <<<EOC
 						<li><a href="$page_front_arg">$page_front <i class="wcp-md md-subject"></i></a></li>
 						<li><a href="$page_fields_arg">$page_fields <i class="wcp-md md-select-all"></i></a></li>
 						<li><a href="$page_sst_arg">$page_sst <i class="wcp-md md-toc"></i></a></li>
@@ -655,18 +653,18 @@ EOC;
 			}
 			if ($this->current_access == 'full'
 				|| $this->current_access == 'ownleads') {
-				$this->head_section .= <<<EOC
+				$wcp_links .= <<<EOC
 						<li class="statslink"><a href="$page_stats_arg">$page_stats <i class="wcp-md md-trending-up"></i></a></li>
 EOC;
 			}
 			if ($this->current_access == 'full') {
-                $this->head_section .= <<<EOC
+                $wcp_links .= <<<EOC
 						<li class="logginglink"><a href="$page_logging_arg">$page_logging <i class="wcp-md md-verified-user"></i></a></li>
 EOC;
 			}
 
 			if ($this->can_edit) {
-				$this->head_section .= <<<EOC
+				$wcp_links .= <<<EOC
                         <li class="ielink"><a href="$page_export_arg">$page_export <i class="wcp-md md-cloud-download"></i></a></li>
 
 EOC;
@@ -674,7 +672,7 @@ EOC;
 			if (isset($this->first_tab['calendar_events'])
 				&& $this->first_tab['calendar_events'] == 'true'
 			) {	
-				$this->head_section .= <<<EOC
+				$wcp_links .= <<<EOC
 						<li class="eventslink"><a href="$page_events_arg">$page_events <i class="wcp-md md-event-available"></i></a></li>
 
 EOC;
@@ -693,13 +691,16 @@ EOC;
 						$target='target="_blank"';
 					}
 					if ($v['link'] && $v['url']) {  // Check that the url and link are set to show
-						$this->head_section .= <<<EOC
+						$wcp_links .= <<<EOC
 						<li><a href="{$v['url']}" $target >{$v['link']}</a></li>
 EOC;
 					}
 				}
 			}
 
+			$wcp_links = apply_filters('wcp_menu_links_filter', $wcp_links); // Add filter for just the links
+
+			$this->head_section .= $wcp_links;
 			$this->head_section .= <<<EOC
 					</ul>
             	</nav>   
@@ -716,6 +717,8 @@ EOC;
     					</div>			
 						<div class="wcp-container">
 EOC;
+	
+	$this->head_section = apply_filters('wcp_head_section_filter', $this->head_section);  // filter for head
 
 	$page_footer = isset($this->first_tab['page_footer']) ? $this->first_tab['page_footer'] : '';
 	$this->bottom_section = <<<EOC
@@ -743,986 +746,11 @@ EOC;
 	</div>
 </div>
 EOC;
+	$this->bottom_section = apply_filters('wcp_bottom_section_filter', $this->bottom_section); // filter for bottom
 
 			$content = $this->head_section . $this->main_section . $this->bottom_section;
    			return $content;
 		} // end  content filter function
-
-		/*
-		 * Source Status & Types
-		 */
-		private function get_sst_fields() {
-			global $wpdb;
-
-			// no access to this page for non-admins
-            if ($this->current_access != 'full') {
-                $content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
-                return $content;
-            }
-
-			$sst_source = $wpdb->get_results (
-				"
-					SELECT * from $this->table_sst where sst_type_desc='l_source' order by sst_order asc
-				"
-			);
-			$sst_status = $wpdb->get_results (
-                "
-                    SELECT * from $this->table_sst where sst_type_desc='l_status' order by sst_order asc
-                "
-            );
-			$sst_type = $wpdb->get_results (
-                "
-                    SELECT * from $this->table_sst where sst_type_desc='l_type' order by sst_order asc
-                "
-            );
-
-			$sort_names = $wpdb->get_results (
-				"
-					SELECT * from $this->table_sort
-				"
-			);
-			$source_name = 'l_source';   // default source name
-			foreach($sort_names as $k => $v) {
-				if ($v->orig_name == 'l_source') {
-					$source_name = stripslashes($v->translated_name);
-				}
-			}
-			
-			$status_name = 'l_status';   // default status name
-            foreach($sort_names as $k => $v) {
-                if ($v->orig_name == 'l_status') {
-                    $status_name = stripslashes($v->translated_name);
-                }
-            }
-			
-			$type_name = 'l_type';   // default type name
-            foreach($sort_names as $k => $v) {
-                if ($v->orig_name == 'l_type') {
-                    $type_name = stripslashes($v->translated_name);
-                }
-            }
-			
-			$sst_title = __('Sources, Status & Types', 'shwcp');
-			$sst_desc = __('These can be renamed under Manage Fields', 'shwcp');
-			$add_text = __('Add New', 'shwcp');
-			$new_field_text = __('New Field', 'shwcp');
-			$save_text = __('Save All', 'shwcp');
-
-			$sst_fields = <<<EOC
-			<div class="sst-top">
-				<div class="wcp-title">$sst_title</div>
-				<p>$sst_desc</p>
-				<div class="field-actions">
-					<div class="wcp-button save-sst">$save_text</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="wcp-sst wcp-sources col-md-4 col-sm-6"><h4>$source_name <i class="add-sst wcp-md md-add-circle" 
-					title="$add_text $source_name"> </i></h4>
-					<div class="wcp-sst-holder">
-EOC;
-
-			foreach($sst_source as $k => $v) {
-				$remove = '';
-				if ($v->sst_default != 1) {
-					$remove = '<i class="remove-sst wcp-red wcp-md md-remove-circle-outline" title="' 
-						    . __('Toggle Field Removal', 'shwcp') . '"> </i>';
-				}
-				$clean_name  = stripslashes($v->sst_name);
-				$sst_fields .= '<div class="l_source">'
-					 	    . '<input class="source-' . $v->sst_id . '" type="text" value="' . $clean_name . '" />'
-							. $remove . ' <i class="wcp-md md-sort" title="' . __('Sort', 'shwcp') . '"> </i></div>';			
-			}
-
-			$sst_fields .= <<<EOC
-				</div>
-				<div class="sst-clone l_source">
-					<input class="source-new" type="text" value="$new_field_text" />
-					<i class="remove-sst wcp-red wcp-md md-remove-circle-outline"> </i>
-					<i class="wcp-md md-sort"> </i>
-				</div>
-			</div>
-			<div class="wcp-sst wcp-status col-md-4 col-sm-6"><h4>$status_name <i class="add-sst wcp-md md-add-circle" 
-				title="$add_text $status_name"> </i></h4>
-				<div class="wcp-sst-holder">
-EOC;
-			
-			foreach($sst_status as $k => $v) {
-				$remove = '';
-                if ($v->sst_default != 1) {
-                    $remove = '<i class="remove-sst wcp-red wcp-md md-remove-circle-outline" title="' 
-						    . __('Toggle Field Removal', 'shwcp') . '"> </i>';
-                }
-                $sst_fields .= '<div class="l_status">'
-							. '<input class="status-' . $v->sst_id . '" type="text" value="' . $v->sst_name . '"/>'
-							. $remove . ' <i class="wcp-md md-sort" title="' . __('Sort', 'shwcp') . '"> </i></div>';     
-            }
-
-			$sst_fields .= <<<EOC
-				</div>
-				<div class="sst-clone l_status">
-					<input class="status-new" type="text" value="$new_field_text" />
-					<i class="remove-sst wcp-red wcp-md md-remove-circle-outline"> </i>
-					<i class="wcp-md md-sort"> </i>
-				</div>
-			</div>
-			<div class="wcp-sst wcp-types col-md-4 col-sm-6"><h4>$type_name <i class="add-sst wcp-md md-add-circle" 
-				title="$add_text $type_name"> </i></h4>
-				<div class="wcp-sst-holder">
-EOC;
-			foreach($sst_type as $k => $v) {
-				$remove = '';
-                if ($v->sst_default != 1) {
-                    $remove = '<i class="remove-sst wcp-red wcp-md md-remove-circle-outline" title="' 
-							. __('Toggle Field Removal', 'shwcp') . '"> </i>';
-                }
-                $sst_fields .= '<div class="l_type">'
-							. '<input class="type-' . $v->sst_id . '" type="text" value="' . stripslashes($v->sst_name) . '" />'
-							. $remove . ' <i class="wcp-md md-sort" title="' . __('Sort', 'shwcp') . '"> </i></div>';     
-            }
-
-			$sst_fields .= <<<EOC
-				</div>
-				<div class="sst-clone l_type">
-					<input class="type-new" type="text" value="$new_field_text" />
-					<i class="remove-sst wcp-red wcp-md md-remove-circle-outline"> </i>
-					<i class="wcp-md md-sort"> </i>
-				</div>
-			</div>
-		</div><!-- End Row -->
-EOC;
-
-			return $sst_fields;
-		}
-
-		/*
-		 * Individual Lead page
-		 */
-		private function get_individual($db) {
-			global $wpdb;
-			$lead_id = intval($_GET['lead']);
-			$lead_vals_pre = $wpdb->get_row (
-				"
-					SELECT l.*
-                    FROM $this->table_main l
-                    WHERE l.id = $lead_id;
-				"
-			);
-
-			// no access to other leads for users that manage their own
-            if ($this->current_access == 'ownleads' && $lead_vals_pre->owned_by != $this->current_user->user_login) {
-				$content = '<span class="no-access">' . __('You do not have access to this entry', 'shwcp') . '</span>';
-				return $content;
-            }
-
-			$sorting = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_ind_number asc");
-
-			// organize by sorting and add others at the end
-			foreach ($sorting as $k => $v) {
-				foreach ($lead_vals_pre as $k2 => $v2) {
-					if ($v->orig_name == $k2) {
-						$lead_vals[$k2] = $v2;
-					}
-				}
-			}
-			// and add on the other fields that aren't listed in sorting
-			$lead_vals['small_image'] = $lead_vals_pre->small_image;
-			$lead_vals['lead_files'] = $lead_vals_pre->lead_files;
-
-			//print_r($lead_vals);
-
-
-            $sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
-			// filter editable fields
-            $editable = array();
-			$non_editable = array();
-            foreach ($lead_vals as $k => $v) {
-                if (in_array($k, $this->field_noedit)  //non editables or no edit access
-					|| !$this->can_edit 
-				) {
-					$non_editable[$k] = $v;
-                } else {
-                    $editable[$k] = $v;
-                }
-            }
-
-            // get the translated field names
-            $translated = array();
-            foreach ($editable as $k => $v) {
-				$v = stripslashes($v);
-				if ($k == 'user3') {
-					continue;
-				}
-                $match = false;
-                foreach ($sorting as $k2 => $v2) {
-					if ($v2->orig_name == $k) {
-                      	$translated[$k]['value'] = $v;
-                       	$translated[$k]['trans'] = $v2->translated_name;
-                        $match = true;
-                    }
-                }
-                if (!$match) {  // this should not happen
-                    $translated[$k]['value'] = $v;
-                    $translated[$k]['trans'] = $k;
-                }
-            }
-
-			// get the translated field names for non edits
-			$non_edit_trans = array();
-			foreach ($non_editable as $k => $v) {
-				$v = stripslashes($v);
-				$match = false;
-				foreach ($sorting as $k2 => $v2) {
-					if ($v2->orig_name == $k) {
-						$non_edit_trans[$k]['value'] = $v;
-						$non_edit_trans[$k]['trans'] = $v2->translated_name;
-						$non_edit_trans[$k]['orig_name'] =  $v2->orig_name;
-						$non_edit_trans[$k]['field_type'] = $v2->field_type;
-					}
-				}
-            }
-
-			$lead_detail_text = __('Entry Details', 'shwcp');
-			$remove_image_text = __('Remove', 'shwcp');
-			if ($lead_vals['small_image'] == '') {
-				// If Default Entry has been set in settings, load it
-				if (isset($this->first_tab['contact_image_url']) && $this->first_tab['contact_image_url'] != '') {
-					$small_image = $this->first_tab['contact_image_url'];
-				// Initial Site default image 
-				} else {
-                	$small_image = SHWCP_ROOT_URL . '/assets/img/default_lead.png';
-				}
-            } else {
-                $small_image = $this->shwcp_upload_url . $db . '/' . $lead_vals['small_image'];
-            }
-			// Upload Small Image
-			$lead_content = <<<EOC
-
-							<div class="detail-top"><h4>$lead_detail_text</h4></div>
-							<div class="row single-container">
-EOC;
-
-
-			 // Upload Files
-            $lead_files = unserialize($lead_vals['lead_files']);
-            if (empty($lead_files)) {
-                $files_message = __('There are currently no files uploaded.', 'shwcp');
-            } else {
-                $files_message = __('Existing Files', 'shwcp');
-            }
-            // for hidden div storage
-            $files_msg = __('Existing Files', 'shwcp');
-            $no_files_msg = __('There are currently no files uploaded.', 'shwcp');
-
-            $lead_content .= <<<EOC
-                                <div class="col-md-4 single-right"><!--right side content -->
-
-EOC;
-
-
-
-			// Upload Small Image
-			if ($this->first_tab['contact_image'] == 'true') {  // if contact images are set to display
-				$lead_image_text = __('Entry Image', 'shwcp');
-				$lead_content .= <<<EOC
-					
-								<div class="lead-image-container col-md-12 leadID-$lead_id">
-						  			<div class="image-holder">
-										<img class="current-image img-responsive" src="$small_image" alt="$lead_image_text" />
-									</div>
-
-EOC;
-
-				if ($this->can_edit) {
-					$button_text = __('Drag or click to upload a jpg, png or gif image file', 'shwcp');
-					$set_image_text = __('Set Image', 'shwcp');
-					$complete_text = __('Complete', 'shwcp');
-					$lead_content .= <<<EOC
-
-									<div id="browse_file">
-						  				$button_text
-									</div>
-						  			<a href="#" class="submit-lead-image wcp-button" style="display:none;">$set_image_text</a>
-						  			<div class="lead-image-file"></div>
-						  				<!-- Progress -->
-						  				<div class="progress"><div class="progress-container"> &nbsp;</div>
-                     	  				<span class="progress-percent"></span>
-									</div>
-									<div class="remove-image-text" style="display:none;">$remove_image_text</div>
-                     	  			<span class="complete-text">$complete_text</span>
-EOC;
-				}
-
-					$lead_content .= <<<EOC
-
-								</div>
-								<div class="clear-both"></div>
-
-EOC;
-			}
-
-
-			if ($this->first_tab['contact_upload'] == 'true') {  // Lead file uploads enabled
-                $lead_content .= <<<EOC
-                                    <div class="lead-files-container leadID-$lead_id">
-                                        <div class="existing-files"><h6 class="files-message">$files_message</h6>
-
-EOC;
-
-                if (!empty($lead_files)) {
-                    foreach ($lead_files as $file => $v) {
-                        $lead_file_url = $this->shwcp_upload_url . $db . '/' . $lead_id . '-files/' . $v['name'];
-                        $file_link = '<a class="leadfile-link" target="_blank" href="' . $lead_file_url . '">' . $v['name'] . '</a>';
-                        $last_modified_text = __('Last Modified', 'shwcp');
-                        $lead_content .= <<<EOC
-                                            <div class="lead-info">
-                                                <span class="leadfile-name" title="{$v['name']} $last_modified_text {$v['date']}">
-                                                    $file_link
-                                                </span>
-                                                <span class="leadfile-size">{$v['size']}
-
-EOC;
-
-                        if ($this->can_edit) {
-                            $lead_content .= <<<EOC
-                                                    <i class="wcp-red wcp-md md-remove-circle-outline remove-existing-file"> </i>
-
-EOC;
-                        }
-
-                        $lead_content .= <<<EOC
-
-                                                </span>
-                                            </div>
-
-EOC;
-                    }
-                }
-
-                $queued_text = __('Queued for upload', 'shwcp');
-                $add_files_text = __('Add Files', 'shwcp');
-                $lead_content .= <<<EOC
-
-                                        </div>
-                                        <div class="files-queued">
-                                            <h6>$queued_text</h6>
-                                        </div>
-                                        <div class="wcp-button submit-lead-files">$add_files_text</div>
-
-EOC;
-
-
-                if ($this->can_edit) {
-                    // Progress
-                    $button_text = __('Drag or click to upload a file or multiple files', 'shwcp');
-                    $lead_content .= <<<EOC
-                                        <div class="progress">
-                                            <div class="progress-container2"> &nbsp;</div>
-                                            <span class="progress-percent2"></span>
-                                        </div>
-                                        <div id="upload_files">$button_text</div>
-
-EOC;
-                }
-
-				$lead_content .= <<<EOC
-									</div>
-EOC;
-                // file messages
-                $lead_content .= <<<EOC
-
-                                    <div class="files-msg">$files_msg</div>
-                                    <div class="no-files-msg">$no_files_msg</div>
-									<div class="clear-both"></div>
-
-EOC;
-
-            } // end Lead file uploads enabled
-
-			// begin Entry Info
-
-			$lead_content .= <<<EOC
-
-                                    <div class="wcp-no-edit row">
-
-EOC;
-            $i = 0;
-            $last = count($non_edit_trans);
-
-			if ($this->current_access != 'readonly') {
-            	// non edits display in access view (full, ownleads)
-            	foreach ( $non_edit_trans as $k => $v) {
-                	if ('l_source' == $k
-                    	|| 'l_status' == $k
-                    	|| 'l_type' == $k
-                	) {
-                    	foreach($sst as $k2 => $v2) {
-                        	if ($k == $v2->sst_type_desc) {   // matching sst's
-                            	if ($v['value'] == $v2->sst_id) { // selected
-                                	$lead_content .= <<<EOC
-
-                                        <div class="col-md-6">
-                                            <span class="non-edit-label">{$v['trans']}</span>
-                                            <span class="non-edit-value $k">$v2->sst_name</span>
-                                        </div>
-
-EOC;
-                            	}
-                        	}
-                    	}
-                	} else {
-						if ($v['field_type'] == '7'
-                        	|| $v['orig_name'] == 'updated_date'
-                            || $v['orig_name'] == 'creation_date'
-                         ) { // Date time format
-							 $display_date = '';
-                             if ($v['value'] != '0000-00-00 00:00:00') {
-                                 $display_date = date("$this->date_format $this->time_format", strtotime($v['value']));
-                             }
-							$value = $display_date;
-						} else {
-							$value = $v['value'];
-						}
-	
-                    	$lead_content .= <<<EOC
-                                        <div class="col-md-6">
-                                            <span class="non-edit-label">{$v['trans']}</span>
-                                            <span class="non-edit-value $k">$value</span>
-                                        </div>
-
-EOC;
-                	}
-
-            	}
-			} // end non-edits non-readonly view
-
-			$lead_content .= <<<EOC
-                                    </div><!-- End No-Edit Div -->
-
-EOC;
-
-			// end Entry Info
-			
-			$lead_content .= <<<EOC
-								</div><!-- End single-right -->
-EOC;
-
-
-			$lead_content .= <<<EOC
-				
-						   			<div class="col-md-8 single-lead-fields">
-
-EOC;
-
-			// Read only, non edit display
-			if ($this->current_access == 'readonly') {
-				$lead_content .= <<<EOC
-                                    <div class="wcp-edit-lead leadID-$lead_id row">
-
-EOC;
-                foreach ( $non_edit_trans as $k => $v) {
-                    if ('l_source' == $k
-                        || 'l_status' == $k
-                        || 'l_type' == $k
-                    ) {
-                        foreach($sst as $k2 => $v2) {
-                            if ($k == $v2->sst_type_desc) {   // matching sst's
-                                if ($v['value'] == $v2->sst_id) { // selected
-                                    $lead_content .= <<<EOC
-
-                                        <div class="col-md-6">
-                                            <span class="non-edit-label">{$v['trans']}</span>
-                                            <span class="non-edit-value $k">$v2->sst_name</span>
-                                        </div>
-
-EOC;
-                                }
-                            }
-                        }
-
-					
-                    } else {
-						$clean_trans = stripslashes($v['trans']);
-						$field_type = '';
-                        foreach ($sorting as $sk => $sv) {
-							if ($v['trans'] == $sv->translated_name) {  // match up sorting for each field for field type display
-								if ($sv->field_type == '7'
-									|| $sv->orig_name == 'updated_date'
-									|| $sv->orig_name == 'creation_date'
-								) { // Date time format
-									$display_date = '';
-                             		if ($v['value'] != '0000-00-00 00:00:00') {
-                                 		$display_date = date("$this->date_format $this->time_format", strtotime($v['value']));
-                             		}
-									$lead_content .= <<<EOC
-                                        <div class="col-md-6">
-                                            <div class="non-edit-holder">
-                                                <span class="non-edit-label">$clean_trans</span>
-                                                <span class="non-edit-value $k">$display_date</span>
-                                            </div>
-                                        </div>
-
-EOC;
-								} elseif ($sv->field_type == '8') { // Star Rating
-									$rating = floatval($v['value']);
-									$lead_content .= <<<EOC
-										<div class="col-md-6">
-											<div class="non-edit-holder">
-												<span class="non-edit-label">$clean_trans</span><br />
-												<div class="rateit bigstars" data-rateit-ispreset="true" data-rateit-value="$rating"
-                                               	data-rateit-starwidth="32" data-rateit-starheight="32" data-rateit-readonly="true">
-												</div>
-											</div>
-										</div>
-EOC;
-								} elseif ($sv->field_type == '9') { // Checkbox
-									$checked = '';
-									$disabled = 'disabled="disabled"';
-									if ($v['value'] == '1') {
-										$checked = 'checked="checked"';
-									}
-									$lead_content .= <<<EOC
-										<div class="col-md-6">
-                                        	<div class="input-field">
-                                            	<label for="$k">$clean_trans</label>
-                                                <input class="checkbox $k" id="$k" type="checkbox" $checked $disabled />
-                                                <label for="$k"> </label>
-                                            </div>
-                                        </div>
-
-EOC;
-								} elseif ($sv->field_type == '10') { // Dropdown
-									$entry = '';
-									foreach($sst as $k2 => $v2) {
-                            			if ($k == $v2->sst_type_desc) {   // matching sst's
-                                			if ($v['value'] == $v2->sst_id) { // selected
-												$entry = $v2->sst_name;
-											}
-										}
-									}
-									$lead_content .= <<<EOC
-									 <div class="col-md-6">
-                                        <span class="non-edit-label">$sv->translated_name</span>
-                                        <span class="non-edit-value $sv->orig_name">$entry</span>
-                                     </div>
-EOC;
-								} elseif ($sv->field_type == '99') { // Group Title
-									$lead_content .= <<<EOC
-													<div class="col-md-12">
-                                            			<div class="input-field fields-grouptitle">
-                                                			<h3 for="$k">$clean_trans</h3>
-                                                			<input class="lead_field $k" value="" type="hidden" />
-														</div>
-                                        			</div>
-EOC;
-
-								} else {  // All the others
-                        			$lead_content .= <<<EOC
-                                        <div class="col-md-6">
-											<div class="non-edit-holder">
-                                            	<span class="non-edit-label">$clean_trans</span>
-                                            	<span class="non-edit-value $k">{$v['value']}</span>
-											</div>
-                                        </div>
-
-EOC;
-								}
-                    		}
-						}
-					}
-
-                }
-				$lead_content .= <<<EOC
-                                    </div>
-EOC;
-
-			
-			// End read only display
-
-			} else if ($this->can_edit) {
-				$lead_content .= <<<EOC
-										<div class="wcp-edit-lead leadID-$lead_id row">
-
-EOC;
-				$i = 0;
-				$last = count($translated);
-				foreach ( $translated as $k => $v) {
-					if ('l_source' == $k
-                    	|| 'l_status' == $k
-                    	|| 'l_type' == $k
-                	) {
-						$lead_content .= <<<EOC
-
-										<div class="col-md-6">
-											<div class="input-field">
-												<label for="$k">{$v['trans']}</label>
-                              	      			<select id="$k" class="lead_select $k input-select">
-
-EOC;
-
-                    	foreach($sst as $k2 => $v2) {
-							$v2->sst_name = stripslashes($v2->sst_name);
-                        	$selected = '';
-                        	if ($k == $v2->sst_type_desc) {   // matching sst's
-                            	if ($v['value'] == $v2->sst_id) { // selected
-                                	$selected = 'selected="selected"';
-                            	}					
-								$lead_content .= <<<EOC
-
-													<option value="$v2->sst_id" $selected>$v2->sst_name</option>
-
-EOC;
-							}
-						}
-						$lead_content .= <<<EOC
-												</select>
-											</div>
-										</div>
-
-EOC;
-
-					} elseif ('owned_by' == $k) {
-						$disabled = '';
-						// Manage Own can or can't change ownership
-                		$can_change_ownership = isset($this->second_tab['own_leads_change_owner'])
-                    		? $this->second_tab['own_leads_change_owner'] : 'no';
-
-
-						if ($this->current_access == 'ownleads'
-                        	&& $can_change_ownership == 'no'
-                    	){
-                        	$disabled = 1;
-                    	} else {
-
-							$lead_content .= <<<EOC
-							
-										<div class="col-md-6">
-								   	  		<div class="input-field"><label for="$k">{$v['trans']}</label>
-								      			<select class="lead_select $k input-select">
-
-EOC;
-							$wcp_users = $this->get_all_wcp_users();
-							foreach($wcp_users as $k2 => $v2) {
-								$selected = '';
-								if ($v2->data->user_login == $v['value']) {
-									$selected = 'selected="selected"';
-								}
-								$data_user_login = $v2->data->user_login;
-								$lead_content .= <<<EOC
-													<option value="$data_user_login" $selected>$v2->user_login</option>
-
-EOC;
-							}
-					
-							$lead_content .= <<<EOC
-												</select>
-											</div>
-										</div>
-
-EOC;
-						}
-
-					} else {  // The rest of the fields
-						$clean_trans = stripslashes($v['trans']);
-						$field_type = '';
-						foreach ($sorting as $sk => $sv) {
-                            if ($v['trans'] == $sv->translated_name) {  // match up sorting for each field for field type display
-                                if ($sv->field_type == '2'
-									|| $sv->field_type == '6' 
-								) {  // Textarea, or Map Address
-
-									$field_type = <<<EOC
-													<div class="col-md-6">
-                                            			<div class="input-field">
-                                                			<label for="$k">$clean_trans</label>
-                                                			<textarea class="lead_field $k materialize-textarea">{$v['value']}</textarea>
-                                            			</div>
-                                        			</div>
-EOC;
-								} elseif($sv->field_type == '7') { // Date Picker fields
-									$display_date = '';
-                             		if ($v['value'] != '0000-00-00 00:00:00') {
-                                 		$display_date = date("$this->date_format $this->time_format", strtotime($v['value']));
-                             		}
-									$field_type = <<<EOC
-													<div class="col-md-6">
-														<div class="input-field">
-															<label for="$k">$clean_trans</label>
-															<input class="lead_field $k date-choice" value="$display_date" 
-															    type="text" />
-														</div>
-													</div>
-EOC;
-								} elseif($sv->field_type == '8') { // Star Rating field
-									$rateval = floatval($v['value']);
-									$field_type = <<<EOC
-													<div class="col-md-6">
-                    									<div class="input-field">
-                        									<label for="$k">$clean_trans</label>
-                        									<div class="shwcp-rating rateit bigstars" data-rateit-starwidth="32" 
-																data-rateit-starheight="32" backingfld="shwcp-rate-field"
-																data-rateit-backingfld=".$k"
-																data-rateit-ispreset="true" data-rateit-value="$rateval">
-															</div>
-															<input class="lead_field $k" value="$rateval" type="text" />
-                    									</div>
-                									</div>
-EOC;
-	                            } elseif ($sv->field_type == '9') { // Checkbox
-                                    $checked = '';
-                                    if ($v['value'] == '1') {
-                                        $checked = 'checked="checked"';
-                                    }
-                                    $field_type = <<<EOC
-                                        			<div class="col-md-6">
-                                            			<div class="input-field">
-															<label for="$k">$clean_trans</label>
-															<input class="checkbox $k" id="$k" type="checkbox" $checked />
-                                                			<label for="$k"> </label>
-                                            			</div>
-                                        			</div>
-
-EOC;
-								} elseif ($sv->field_type == '10') { // Dropdown
-									$field_type = <<<EOC
-													<div class="col-md-6">
-														<div class="input-field">
-															<label for="$k">$clean_trans</label>
-															<select id="$k" class="lead_select $k input-select">
-EOC;
-									foreach($sst as $k2 => $v2) {
-                            			$v2->sst_name = stripslashes($v2->sst_name);
-                            			$selected = '';
-                            			if ($k == $v2->sst_type_desc) {   // matching sst's
-                                			if ($v['value'] == $v2->sst_id) { // selected
-                                    			$selected = 'selected="selected"';
-                                			}
-                                			$field_type .= <<<EOC
-                                                    			<option value="$v2->sst_id" $selected>$v2->sst_name</option>
-EOC;
-                            			}
-									}
-									$field_type .= <<<EOC
-                                                			</select>
-                                        				</div>
-													</div>
-EOC;
-
-
-								} elseif ($sv->field_type == '99') { // Group Title
-									$field_type = <<<EOC
-													<div class="col-md-12">
-                                            			<div class="input-field fields-grouptitle">
-                                                			<h3 for="$k">$clean_trans</h3>
-                                                			<input class="lead_field $k" value="" type="hidden" />
-														</div>
-                                        			</div>
-EOC;
-								}
-
-							}
-						}
-
-						if (!$field_type) {  // default
-							$field_type = <<<EOC
-											<div class="col-md-6">
-                                           		<div class="input-field">
-                                               		<label for="$k">$clean_trans</label>
-                                               		<input class="lead_field $k" value="{$v['value']}" type="text" />
-                                           		</div>
-                                       		</div>
-EOC;
-						}
-								
-                   		$lead_content .= $field_type;
-                	}
-
-                	$i++;
-				}
-
-				$lead_content .= <<<EOC
-					
-									</div>
-EOC;
-			} // end can edit display edit field div
-
-
-			if ($this->can_edit) {
-				$save_field_text = __('Save Fields', 'shwcp');
-		   		$lead_content .= <<<EOC
-									<div class="save-lead-fields leadID-$lead_id wcp-button left-check">$save_field_text</div>
-
-EOC;
-			}
-			
-			// Notes
-			$existing_notes = $wpdb->get_results (
-				" 
-					SELECT notes.*, user.user_login
-					from $this->table_notes notes, {$wpdb->base_prefix}users user
-					WHERE lead_id=$lead_id and notes.creator=user.ID
-					order by date_added desc
-				"
-			);
-			$notes_text = __('Notes', 'shwcp');
-			$lead_content .= <<<EOC
-									<div class="note-title"><h4>$notes_text</h4></div>
-									<div class="lead-notes-container leadID-$lead_id">
-
-EOC;
-
-			foreach ($existing_notes as $k => $note) {
-				$lead_content .= <<<EOC
-										<div class="lead-note leadID-$lead_id noteID-$note->id">
-
-EOC;
-
-				if ($this->can_edit) {
-					$lead_content .= <<<EOC
-											<i class="wcp-red wcp-md md-remove-circle-outline remove-note"> </i>
-											<i class="wcp-md md-create edit-note"> </i>
-
-EOC;
-				}
-
-				$note_updated = false;
-				$updated_entry = '';
-				if ($note->updater != 0) { // get updater name
-					$note_updated = true;
-					$updater = $wpdb->get_var(
-							"
-							SELECT user_login from {$wpdb->base_prefix}users user WHERE user.ID=$note->updater
-							"
-					);
-				}
-				if (isset($updater) && $updater) {
-					$updated_text = '&nbsp;&nbsp; | &nbsp;&nbsp;' . __('Last Updated by', 'shwcp');
-					$updated_entry = <<<EOC
-											$updated_text $updater
-EOC;
-				}
-
-				$note_content = stripslashes($note->note_content);
-				$date_formatted = date("$this->date_format $this->time_format", strtotime($note->date_added));
-				$user_note_info = '👤 ' . $note->user_login;
-                $lead_content .= <<<EOC
-											<span class="timeline-header"> 🕓 $date_formatted $user_note_info
-											$updated_entry</span>
-                                           <span class="timeline-body">$note_content</span>
-
-EOC;
-				
-				$lead_content .= <<<EOC
-
-										</div>
-
-EOC;
-			}
-
-			if (empty($existing_notes)) {
-				$no_results = __('No Results Found', 'shwcp');
-				$lead_content .= <<<EOC
-
-										<div class="lead-note no-note">
-										$no_results
-										</div>
-EOC;
-			}	
-						   
-		 	$lead_content .= <<<EOC
-
-									</div><!-- End lead-notes-container -->
-
-EOC;
-
-			if ($this->can_edit) {
-                $add_note_text = __('Add A Note', 'shwcp');
-                $lead_content .= <<<EOC
-
-                                        <div class="add-note wcp-button">$add_note_text</div>
-
-EOC;
-            }
-
-            $lead_content .= <<<EOC
-
-                                </div><!--End Edits & No Edits-->
-EOC;
-            //print_r($non_edit_trans);
-            //print_r($non_editable);
-
-			$lead_content .= <<<EOC
-
-						   	</div><!-- End lead-container -->
-
-EOC;
-
-
-			return $lead_content;
-		}
-
-		/*
-		 * Statistics
-		 */
-		private function get_stats() {
-			return 'statistics';
-		}
-
-		/*
-		 * Front table sorting fields
-		 */
-		private function get_front_sorting() {
-			global $wpdb;
-
-			// no access to this page for non-admins
-            $this->get_the_current_user();
-            if ($this->current_access != 'full') {
-                $content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
-                return $content;
-            }
-
-			$lead_columns = $wpdb->get_results(
-				"
-					SELECT * from $this->table_sort order by sort_number
-				"
-			);
-			$items1_title = __('Fields To Display On Main View (In Order)', 'shwcp');
-			$items2_title = __('Fields Not To Display On Main View', 'shwcp');
-			$save = __('Save Changes', 'shwcp');
-
-			$wcp_sorting = <<<EOC
-			<div class="wcp-title">$items1_title</div>
-			<ul class="keepers front-sorting">
-EOC;
-			foreach ($lead_columns as $k => $v) {
-				if (1 == $v->sort_active) {
-					$wcp_sorting .= '<li class="keeper ' . $v->orig_name . '">' . stripslashes($v->translated_name) . '</li>';
-				}
-			}
-			
-			$wcp_sorting .= <<<EOC
-			</ul>
-			<div class="wcp-title">$items2_title</div>
-			<ul class="nonkeepers front-sorting">
-EOC;
-			// Fields that don't display on the front end
-			foreach ($lead_columns as $k => $v) {
-                if (1 != $v->sort_active) {
-                    $wcp_sorting .= '<li class="keeper ' . $v->orig_name . '">' . stripslashes($v->translated_name) . '</li>';
-                }
-            }
-			
-			$wcp_sorting .= <<<EOC
-			</ul>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="wcp-button save-sorting">$save</div>
-				</div>
-			</div>
-EOC;
-			return $wcp_sorting;
-			
-		}
 
 		/*
 		 * Top search functionality

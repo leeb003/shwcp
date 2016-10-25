@@ -31,6 +31,11 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 2.0.7 = 
+* Added custom filter hooks to adjust output for all frontend pages and
+* sections
+* Some minor styling fixes added
+
 = 2.0.6 =
 * Fixed a bug that affected multiple select field types with the same
 * selections on import

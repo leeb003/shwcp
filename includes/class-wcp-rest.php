@@ -50,7 +50,7 @@
 		/**
 		 * Route Callbacks all Contacts
 		 */
-		public function shwcp_get_contacts() {
+		public function shwcp_get_contacts($data) {
 			$return = array(
 				'testing' => 'yes',
 				'list contacts' => 'yes'
@@ -64,7 +64,7 @@
 		/**
          * Route Callbacks Single Contact
          */
-        public function shwcp_get_contact() {
+        public function shwcp_get_contact($data) {
             $return = array(
                 'testing' => 'yes',
                 'list single contact' => 'yes'
