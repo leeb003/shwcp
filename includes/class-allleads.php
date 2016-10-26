@@ -596,6 +596,7 @@ EOC;
 EOC;
 			
 			$i = 1;
+			$leads_sorted = apply_filters('wcp_leads_filter', $leads_sorted); // Add filter for just the lead data
             foreach ($leads_sorted as $r => $lead) {
                 $i++;
 
