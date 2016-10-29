@@ -1878,6 +1878,7 @@
 							$date_cols[] = $v->Field;
 						}
 					}
+					$color = 1;
 					foreach ($date_cols as $v) {
 						$trans_name = $wpdb->get_var("SELECT translated_name FROM $this->table_sort where orig_name='$v'");
 						$entries = $wpdb->get_results (
@@ -1885,7 +1886,6 @@
 							SELECT * from $this->table_main WHERE `" . $v . "` between '$start' and '$end' $owner_only
 							"
 						);
-						$color = 1;
 						foreach ($entries as $k => $entry) {
                     		$matches[$inc]['title'] = stripslashes($trans_name . ' - ' 
 								. $entry->first_name . ' ' . $entry->last_name);
@@ -1898,9 +1898,9 @@
 							$matches[$inc]['description'] = stripslashes($trans_name) . ' ' . __('For', 'shwcp') . ' ' 
 								. stripslashes($entry->first_name . ' ' . $entry->last_name);
 							$matches[$inc]['edit_event'] = 'na';
+							$inc++;
                 		}
 						$color++;
-						$inc++;
 					}
 				}  // end Datetime columns
 
