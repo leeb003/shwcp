@@ -269,7 +269,7 @@
             $paginate = $this->first_tab['page_page']; // pagination set?
             $rpp = $this->first_tab['page_page_count']; // pagination count - results per page
 
-          	if ('true' == $paginate && !$searchset) { // we are paginating, not for searches
+          	if ('true' == $paginate) { // we are paginating
 				if (isset($_GET["pages"])) {
                 	$pages = intval($_GET["pages"]);
             	} else {
@@ -281,7 +281,8 @@
 
 
                	$order_by .= ' LIMIT ' . $start_limit . ', ' . $rpp; // add limit
-				$reload = get_permalink();
+				//$reload = get_permalink();
+				$reload = remove_query_arg( array('pages'));
                 require_once(SHWCP_ROOT_PATH . '/includes/class-paginate.php');
                 $wcp_paging = new paginate($reload, $pages, $tpages, $adjacents);
                 $paging_div = $wcp_paging->getDiv();
@@ -599,7 +600,7 @@ EOC;
 			$leads_sorted = apply_filters('wcp_leads_filter', $leads_sorted); // Add filter for just the lead data
             foreach ($leads_sorted as $r => $lead) {
                 $i++;
-
+/*
 				if ($i > 200) { // Cut large results (like for all searches) to protect the browser from crashing
 					$cut_message = __('<p>Too many results to display them all, try a more specific search.</p>', 'shwcp');
 					$wcp_main .= <<<EOC
@@ -608,6 +609,7 @@ EOC;
 EOC;
 					break;
 				}
+*/
 
                 $alt = $i&1;
                 $wcp_main .= <<<EOC

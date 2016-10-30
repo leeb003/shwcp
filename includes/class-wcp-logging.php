@@ -59,70 +59,84 @@
 
 			// Searching query
 			$searchset = false;
-            if (isset($_GET['wcp_search']) 
+            if (isset($_GET['wcp_search']) // This is a search
 				&& $_GET['wcp_search'] == 'true'
 				&& isset($_GET['q'])
 				&& trim($_GET['q']) != ''
 			) {
-                //if (isset($_GET['q']) && trim($_GET['q'] != '') {
-					$searchset = true;
-                	$q = esc_sql($_GET['q']);
-				//}
-			} else {
+				$searchset = true;
+               	$q = esc_sql($_GET['q']);
+			} 
 
+
+			if ($searchset) { // search count
+				$this->log_count = $wpdb->get_var( 
+					"
+					SELECT COUNT(*) FROM $this->table_log
+					WHERE log_id LIKE '%$q%'
+                    OR user_id LIKE '%$q%'
+                    OR user_login LIKE '%$q%'
+                    OR event LIKE '%$q%'
+                    OR detail LIKE '%$q%'
+                    OR event_time LIKE '%$q%'
+                    OR ip_addr LIKE '%$q%'
+					"
+				);
+			} else { // standard count
 				$this->log_count = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_log" );
-				$order_by = 'order by log_id desc'; // default sort
-				$direction = 'desc';
-				$searchset = false;
+			}
 
-            	if (isset($_GET["pages"])) {
-                	$pages = intval($_GET["pages"]);
-            	} else {
-                	$pages = 1;
-            	}
-            	$tpages = ($this->log_count) ? ceil($this->log_count/$rpp) : 1;
-            	$adjacents = '2';
-            	$start_limit = ($pages -1) * $rpp;
+			$order_by = 'order by log_id desc'; // default sort
+			$direction = 'desc';
 
-				if ( isset($_GET['sort']) && isset($_GET['field']) ) {
-					foreach ($log_fields as $v) {
-						if ($_GET['field'] == $v) {
-							$field = $v;
-						}
-						if ('asc' == $_GET['sort']) {
-							$order_by = 'order by ' . $field . ' asc';
-							$direction = 'asc';
-						} else {
-							$order_by = 'order by ' . $field . ' desc';
-						}
+           	if (isset($_GET["pages"])) {
+               	$pages = intval($_GET["pages"]);
+           	} else {
+               	$pages = 1;
+           	}
+           	$tpages = ($this->log_count) ? ceil($this->log_count/$rpp) : 1;
+           	$adjacents = '2';
+           	$start_limit = ($pages -1) * $rpp;
+
+			if ( isset($_GET['sort']) && isset($_GET['field']) ) {
+				foreach ($log_fields as $v) {
+					if ($_GET['field'] == $v) {
+						$field = $v;
+					}
+					if ('asc' == $_GET['sort']) {
+						$order_by = 'order by ' . $field . ' asc';
+						$direction = 'asc';
+					} else {
+						$order_by = 'order by ' . $field . ' desc';
 					}
 				}
 			}
 
-			if ('true' == $paginate && !$searchset) { // we are paginating, not for searches
+			if ('true' == $paginate) { // we are paginating
                 $order_by .= ' LIMIT ' . $start_limit . ', ' . $rpp; // add limit
-                $reload = add_query_arg( array('wcp' => 'logging'), get_permalink() );
+				$reload = remove_query_arg( array('pages') );
                 require_once(SHWCP_ROOT_PATH . '/includes/class-paginate.php');
                 $wcp_paging = new paginate($reload, $pages, $tpages, $adjacents);
                 $paging_div = $wcp_paging->getDiv();
+			}
 
-				// the query
-            	$log_entries = $wpdb->get_results("SELECT * from $this->table_log $order_by");
-
-			} else if ($searchset) {
+			// the query
+			if ($searchset) { // search query
 				$log_entries = $wpdb->get_results(
-						"
-						SELECT * from $this->table_log 
-						WHERE log_id LIKE '%$q%'
-						OR user_id LIKE '%$q%'
-						OR user_login LIKE '%$q%'
-						OR event LIKE '%$q%'
-						OR detail LIKE '%$q%'
-						OR event_time LIKE '%$q%'
-						OR ip_addr LIKE '%$q%'
-						ORDER BY log_id DESC
-						"
-					);
+                	"
+                	SELECT * from $this->table_log 
+                    WHERE log_id LIKE '%$q%'
+                    OR user_id LIKE '%$q%'
+                    OR user_login LIKE '%$q%'
+                    OR event LIKE '%$q%'
+                    OR detail LIKE '%$q%'
+                    OR event_time LIKE '%$q%'
+                    OR ip_addr LIKE '%$q%'
+                    $order_by
+                    "
+                );
+			} else { // standard query
+           		$log_entries = $wpdb->get_results("SELECT * from $this->table_log $order_by");
 			}
 
 
@@ -164,20 +178,18 @@
 			foreach ($headers as $k => $v) {
                 // default arrow down
                 $arrow = '<i class="wcp-sm desc md-arrow-drop-down" title="' . __("Sort Descending", "shwcp") . '"> </i>';
-                $sort_link = add_query_arg( array('wcp' => 'logging', 'sort' => 'desc', 'field' => $k), get_permalink() );
+                $sort_link = add_query_arg( array('sort' => 'desc', 'field' => $k) );
 
                 if ( $k == $field) {
                     if ($direction == 'asc') {
                         $arrow = '<i class="wcp-sm wcp-primary md-arrow-drop-up" title="'
                                . __("Sort Ascending", "shwcp") . '"> </i>';
-                        $sort_link = add_query_arg( array('wcp' => 'logging',
-                                    'sort' => 'desc', 'field' => $k), get_permalink() );
+                        $sort_link = add_query_arg( array('sort' => 'desc', 'field' => $k));
 						$sort_activated='wcp-primary';
                     } else {
                         $arrow = '<i class="wcp-sm wcp-primary md-arrow-drop-down" title="'
                                . __("Sort Descending", "shwcp") . '"> </i>';
-                        $sort_link = add_query_arg( array('wcp' => 'logging',
-                                    'sort' => 'asc', 'field' => $k), get_permalink() );
+                        $sort_link = add_query_arg( array('sort' => 'asc', 'field' => $k));
 						$sort_activated='wcp-primary';
                     }
                 }
@@ -209,19 +221,17 @@ EOT;
 			foreach ($headers as $k => $v) {
 				// default arrow down
 				$arrow = '<i class="wcp-sm desc md-arrow-drop-down" title="' . __("Sort Descending", "shwcp") . '"> </i>';
-				$sort_link = add_query_arg( array('wcp' => 'logging', 'sort' => 'desc', 'field' => $k), get_permalink() );
+				$sort_link = add_query_arg( array('sort' => 'desc', 'field' => $k) );
 
 				if ( $k == $field) {
 					if ($direction == 'asc') {
 						$arrow = '<i class="wcp-sm wcp-primary md-arrow-drop-up" title="' 
 							   . __("Sort Ascending", "shwcp") . '"> </i>';
-						$sort_link = add_query_arg( array('wcp' => 'logging', 
-									'sort' => 'desc', 'field' => $k), get_permalink() );
+						$sort_link = add_query_arg( array('sort' => 'desc', 'field' => $k) );
 					} else {
 						$arrow = '<i class="wcp-sm wcp-primary md-arrow-drop-down" title="' 
 							   . __("Sort Descending", "shwcp") . '"> </i>';
-						$sort_link = add_query_arg( array('wcp' => 'logging', 
-									'sort' => 'asc', 'field' => $k), get_permalink() );
+						$sort_link = add_query_arg( array('sort' => 'asc', 'field' => $k) );
 					}
 				} 
 

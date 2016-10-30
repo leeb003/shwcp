@@ -3,7 +3,7 @@ Contributors: sh-themes
 Tags: wordpress, plugin, leads, contacts
 Requires at least: 4.0
 Tested up to: 4.6.1
-Stable tag: 4.5.1
+Stable tag: 4.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Leads and Contacts manager used as a WordPress plugin
@@ -31,6 +31,11 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 2.0.9 =
+* Bug Fix - Multiple custom events not showing up on same day
+* Changed search feature to paginated results instead of displaying all at
+* once for main results and logs
+
 = 2.0.8 = 
 * Added custom filter hooks to adjust output for all frontend pages and
 * sections

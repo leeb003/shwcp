@@ -432,11 +432,12 @@
 			// Menu translation
 			$home_menu = __('Home', 'shwcp'); // used in drawer menu
 			$home = __('Home', 'shwcp');
-			if ( !isset($_GET['wcp'])) {  // only for main view
+			if ( !isset($_GET['wcp']) || $_GET['wcp'] == 'logging') {  // only for main view and logs
 				if( isset($_GET['wcp_search']) 
 					|| isset($_GET['st']) 
 					|| isset($_GET['ty']) 
 					|| isset($_GET['so'])
+					|| isset($_GET['wcp_search'])
 				) {	
 					$home = __('Clear Filters', 'shwcp');
 				}
@@ -570,27 +571,33 @@ EOC;
 
 			$breadcrumbs = '<a href="' . $permalink . '">' . $home . '</a>';
 			if (isset($this->curr_page) && $this->curr_page != '') {
-				if ($this->curr_page == 'fields') {
-					$bread_single = $page_fields;
-				} elseif ($this->curr_page == 'sst') {
-					$bread_single = $page_sst;
-				} elseif ($this->curr_page == 'frontsort') {
-					$bread_single = $page_front;
-				} elseif ($this->curr_page == 'entry') {
-					$bread_single = $page_entry;
-				} elseif ($this->curr_page == 'ie') {
-					$bread_single = $page_export;
-				} elseif ($this->curr_page == 'stats') {
-					$bread_single = $page_stats;
-				} elseif ($this->curr_page == 'logging') {
-					$bread_single = $page_logging;
-				} elseif ($this->curr_page == 'events') {
-					$bread_single = $page_events;
+				if ($this->curr_page == 'logging'  
+					&& isset($_GET['wcp_search'])  // Logging page reset link for searches
+				) {
+					$reset_link = remove_query_arg( array('pages', 'wcp_search', 'q'));
+					$breadcrumbs = '<a href="' . $reset_link . '">' . $home . '</a>';
 				} else {
-					$bread_single = __('Unknown', 'shwcp');
+					if ($this->curr_page == 'fields') {
+						$bread_single = $page_fields;
+					} elseif ($this->curr_page == 'sst') {
+						$bread_single = $page_sst;
+					} elseif ($this->curr_page == 'frontsort') {
+						$bread_single = $page_front;
+					} elseif ($this->curr_page == 'entry') {
+						$bread_single = $page_entry;
+					} elseif ($this->curr_page == 'ie') {
+						$bread_single = $page_export;
+					} elseif ($this->curr_page == 'stats') {
+						$bread_single = $page_stats;
+					} elseif ($this->curr_page == 'logging') {
+						$bread_single = $page_logging;
+					} elseif ($this->curr_page == 'events') {
+						$bread_single = $page_events;
+					} else {
+						$bread_single = __('Unknown', 'shwcp');
+					}
+					$breadcrumbs = $breadcrumbs . ' > ' . ucfirst($bread_single);
 				}
-
-				$breadcrumbs = $breadcrumbs . ' > ' . ucfirst($bread_single);
 			}
 			if (isset($wcp_settings['logo_attachment_url']) && $wcp_settings['logo_attachment_url'] != '') {
 				$logo_text = __('Logo', 'shwcp');
