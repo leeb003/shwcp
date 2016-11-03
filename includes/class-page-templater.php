@@ -1,5 +1,5 @@
 <?php
-class PageTemplater {
+class SHWCPPageTemplater {
 
 		/**
          * A Unique Identifier
@@ -23,7 +23,7 @@ class PageTemplater {
         public static function get_instance() {
 
                 if( null == self::$instance ) {
-                        self::$instance = new PageTemplater();
+                        self::$instance = new SHWCPPageTemplater();
                 } 
 
                 return self::$instance;
@@ -134,4 +134,4 @@ class PageTemplater {
 
 } 
 
-add_action( 'plugins_loaded', array( 'PageTemplater', 'get_instance' ) );
+add_action( 'plugins_loaded', array( 'SHWCPPageTemplater', 'get_instance' ) );
