@@ -4,7 +4,7 @@ jQuery(function ($) {  // use $ for jQuery
 	/* Search submit */
 	$('.wcp-search-input').keypress(function (e) {
 		if (e.which == 13) {
-			var search = $(this).val();
+			var search = encodeURIComponent($(this).val());
 			var searchFieldText = $(this).closest('div').find('.wcp-select-styled').text();
 			var searchFieldVal = 'nomatch';
 			$('.wcp-select-options li').each( function() {
@@ -18,7 +18,7 @@ jQuery(function ($) {  // use $ for jQuery
 
 	$('.log-search-input').keypress(function (e) {
         if (e.which == 13) {
-            var search = $(this).val();
+            var search = encodeURIComponent($(this).val());
             var searchFieldText = $('.wcp-select-styled').text();
             var searchFieldVal = 'nomatch';
             $('.wcp-select-options li').each( function() {
@@ -32,7 +32,7 @@ jQuery(function ($) {  // use $ for jQuery
 
 	// click on search when filled go ahead and submit
 	$('.wcp-search-input').on('click', function() {
-		var search = $(this).val();
+		var search = encodeURIComponent($(this).val());
 		if (search != '') {
 			var searchFieldText = $(this).closest('div').find('.wcp-select-styled').text();
             var searchFieldVal = 'nomatch';

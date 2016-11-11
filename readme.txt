@@ -31,6 +31,10 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 2.1.0
+* Changed a template generating class name that was conflicting with an automotive theme
+* Added uri encoding to search for special character search support
+
 = 2.0.9 =
 * Bug Fix - Multiple custom events not showing up on same day
 * Changed search feature to paginated results instead of displaying all at
