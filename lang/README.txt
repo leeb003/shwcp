@@ -5,6 +5,7 @@ translating the plugin:
 - edit the po file with poedit http://www.poedit.net/
 - create the mo file and save both files in the lang directory of the plugin
 - edit wp-config.php file in your installation and set WPLANG so it matches your languages: define('WPLANG', 'de_DE');
+  or if WordPress version 4+ just select your language in Admin under Settings -> General -> Site Language.
 
 Plugin should now display all messages in your language.
 

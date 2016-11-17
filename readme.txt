@@ -31,7 +31,12 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
-= 2.1.0
+
+= 2.1.1 =
+* Updates for WordPress version 4.7 - fixes template selection for page in
+* this version.
+
+= 2.1.0 =
 * Changed a template generating class name that was conflicting with an automotive theme
 * Added uri encoding to search for special character search support
 
