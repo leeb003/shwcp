@@ -32,6 +32,10 @@ management.
 
 == Changelog ==
 
+= 2.1.2 =
+* Fix for individual lead display for Publicly accessible set up and
+* non-logged-in users
+
 = 2.1.1 =
 * Updates for WordPress version 4.7 - fixes template selection for page in
 * this version.

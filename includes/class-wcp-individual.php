@@ -262,7 +262,7 @@ EOC;
 EOC;
 		$i = 0;
 		$last = count($non_edit_trans);
-		if ($this->current_access != 'readonly') {
+		if ($this->current_access != 'readonly' && is_user_logged_in()) {
 			// non edits display in access view (full, ownleads)
 			foreach ( $non_edit_trans as $k => $v) {
 				if ('l_source' == $k
@@ -320,7 +320,7 @@ EOC;
 
 EOC;
 		// Read only, non edit display
-		if ($this->current_access == 'readonly') {
+		if ( $this->current_access == 'readonly' || ( $this->can_access == 'true' && !is_user_logged_in() ) ) {
 			$lead_content .= <<<EOC
 									<div class="wcp-edit-lead leadID-$lead_id row">
 
