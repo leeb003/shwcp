@@ -762,7 +762,8 @@
 			
 			
             /* Source */
-            if (!isset($wpdatafinal['l_source']) || empty(trim($wpdatafinal['l_source'])) ) {
+			$trimmed_source = trim($wpdatafinal['l_source']);
+            if (!isset($wpdatafinal['l_source']) || empty($trimmed_source) ) {
                 $wpdatafinal['l_source'] = $default_source;
             } else {
                 $value = $this->sst_update_checkdb($wpdatafinal['l_source'], $sst, 'l_source', 1, $this->table_sst);
@@ -770,7 +771,8 @@
             }
 
             /* Status */
-            if (!isset($wpdatafinal['l_status']) || empty(trim($wpdatafinal['l_status'])) ) {
+			$trimmed_status = trim($wpdatafinal['l_status']);
+            if (!isset($wpdatafinal['l_status']) || empty($trimmed_status) ) {
                 $wpdatafinal['l_status'] = $default_status;
             } else {
                 $value = $this->sst_update_checkdb($wpdatafinal['l_status'], $sst, 'l_status', 2, $this->table_sst);
@@ -778,7 +780,8 @@
             }
 
             /* Type */
-            if (!isset($wpdatafinal['l_type']) || empty(trim($wpdatafinal['l_type'])) ) {
+			$trimmed_type = trim($wpdatafinal['l_type']);
+            if (!isset($wpdatafinal['l_type']) || empty($trimmed_type) ) {
                 $wpdatafinal['l_type'] = $default_type;
             } else {
                 $value = $this->sst_update_checkdb($wpdatafinal['l_type'], $sst, 'l_type', 3, $this->table_sst);
