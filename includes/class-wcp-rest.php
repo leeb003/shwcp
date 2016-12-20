@@ -165,6 +165,20 @@
 					'shwcp_get_contact'
 				)
 			) );
+
+			// /wp-json/shwcp/v1/get-contact-fields/
+			register_rest_route( $namespace, '/get-contact-fields/', array(
+				'methods' => 'GET',
+				'permission_callback' => array(
+					$this,
+					'shwcp_permission_callback',
+				),
+				'callback' => array(
+					$this,
+					'shwcp_get_contact_fields'
+				)
+			) );
+
 			// /wp-json/shwcp/v1/delete-contact/
 			register_rest_route( $namespace, '/delete-contact/', array(
 				'methods' => 'POST',
@@ -177,6 +191,7 @@
 					'shwcp_delete_contact'
 				)
 			) );
+
 			// /wp-json/shwcp/v1/create-contact/
 			register_rest_route( $namespace, '/create-contact/', array(
 				'methods' => 'POST',
@@ -189,6 +204,7 @@
 					'shwcp_create_contact'
 				)
 			) );
+
 			// /wp-json/shwcp/v1/update-contact/
 			register_rest_route( $namespace, '/update-contact/', array(
 				'methods' => 'POST',
@@ -350,6 +366,48 @@
             $response = new WP_REST_Response( $return, 200 );
             return $response;
         }
+
+		/**
+		 * Route Callback Return Contact Field names
+		 */
+		public function shwcp_get_contact_fields($request) {
+			global $wpdb;
+			$params    = $request->get_params();
+			$db	       = isset($params['db']) ? $params['db'] : '';
+			$db_number = $this->get_tables($db);
+
+			/* Get the existing columns to compare submitted to */
+            $main_columns = $wpdb->get_results(
+                "
+                SELECT `COLUMN_NAME`
+                FROM `INFORMATION_SCHEMA`.`COLUMNS`
+                WHERE `TABLE_SCHEMA`='$wpdb->dbname'
+                AND `TABLE_NAME`='$this->table_main'
+                "
+            );
+			$sorting = $wpdb->get_results("SELECT * FROM " . $this->table_sort);
+
+            // print_r($existing_fields);
+            foreach ($sorting as $k => $v) {
+				foreach ($main_columns as $k2 => $v2) {
+                	if ($v->orig_name == $v2->COLUMN_NAME) {
+                    	$wpdatafinal[$v->orig_name] = $v->translated_name;
+                	}
+				}
+            }
+			// create non-translated fields for later use
+			$wpdatafinal['small_image'] = 'Small Image';
+			$wpdatafinal['lead_files'] = 'Entry Files';
+
+			$return = array(
+				'fields' => $wpdatafinal,
+				//'main_columns' => $main_columns,
+				//'sorting' => $sorting
+			);
+
+			$response = new WP_REST_Response( $return, 200 );
+			return $response;			
+		}
 
 		/** 
 		 * Route Callback Delete Contact by id
