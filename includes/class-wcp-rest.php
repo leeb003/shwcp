@@ -114,6 +114,19 @@
 			$namespace = 'shwcp/v1';
 			$this->current_user = wp_get_current_user();
 
+			// /wp-json/shwcp/v1/ping/
+			register_rest_route( $namespace, '/ping/', array(
+				'methods' => 'GET',
+				'permission_callback' => array(
+					$this,
+					'shwcp_permission_callback',
+				),
+				'callback' => array(
+					$this,
+					'shwcp_get_ping',
+				)
+			) );
+
 			// /wp-json/shwcp/v1/get-contact-count/
 			register_rest_route( $namespace, '/get-contact-count/', array(
 				'methods' => 'GET',
@@ -215,6 +228,17 @@
 		 */
 		public function shwcp_permission_callback() {
 			return current_user_can('install_plugins'); 
+		}
+
+		/**
+		 * Route Callback Verify auth (me endpoint)
+		 */
+		public function shwcp_get_ping($request) {
+			$return = array(
+				'auth'   => true
+			);
+			$reponse = new WP_REST_Response( $return, 200 );
+			return $reponse;
 		}
 
 
