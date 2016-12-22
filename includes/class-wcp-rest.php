@@ -39,8 +39,13 @@
 
 		/**
          * Dynamic DB tables settings based on Database chosen
+		 *
+		 * @param string $db_name single db lookup
+		 * @param boolean $all array of all dbs
+		 *
+		 * return string or array depending on choice
          */
-        public function get_tables($db_name) {
+        public function get_tables($db_name, $all=false) {
             global $wpdb;
 			$db_set = false;
             if ($db_name) {
@@ -50,7 +55,8 @@
 				// look up all main_settings database_name fields and build an array to search names
             	$options_table = $wpdb->prefix . 'options';
             	$option_entry = 'shwcp_main_settings';
-            	$dbs = $wpdb->get_results("SELECT * FROM $options_table WHERE `option_name` LIKE '%$option_entry%'");
+            	$dbs = $wpdb->get_results("SELECT * FROM $options_table WHERE `option_name` LIKE '%$option_entry%'"
+						. " ORDER BY option_name ASC");
             	$databases = array();
             	foreach ($dbs as $k => $option) {
                 	if ($option->option_name == $option_entry) {
@@ -69,6 +75,10 @@
                     	$databases[$db_number] = $database_name;
                 	}
             	}
+
+				if ($all) { // return array of all databases
+					return $databases;
+				}
 			
 				foreach ($databases as $k => $v) {
 					if ($db_name == $v) {
@@ -127,8 +137,8 @@
 				)
 			) );
 
-			// /wp-json/shwcp/v1/get-contact-count/
-			register_rest_route( $namespace, '/get-contact-count/', array(
+			// /wp-json/shwcp/v1/get-entry-count/
+			register_rest_route( $namespace, '/get-entry-count/', array(
 				'methods' => 'GET',
 				'permission_callback' => array(
 					$this,
@@ -136,25 +146,12 @@
 				),
 				'callback' => array(
 					$this,
-					'shwcp_get_contact_count',
+					'shwcp_get_entry_count',
 				)
 			) );
 
-			// /wp-json/shwcp/v1/get-contacts/
-			register_rest_route( $namespace, '/get-contacts/', array(
-				'methods' => 'GET',
-				'permission_callback' => array(
-                    $this,
-                    'shwcp_permission_callback',
-                ),
-				'callback' => array(
-					$this,
-					'shwcp_get_contacts',
-				)
-			) );
-
-			// /wp-json/shwcp/v1/get-contact/
-			register_rest_route( $namespace, '/get-contact/', array(
+			// /wp-json/shwcp/v1/get-entries/
+			register_rest_route( $namespace, '/get-entries/', array(
 				'methods' => 'GET',
 				'permission_callback' => array(
                     $this,
@@ -162,12 +159,25 @@
                 ),
 				'callback' => array(
 					$this,
-					'shwcp_get_contact'
+					'shwcp_get_entries',
 				)
 			) );
 
-			// /wp-json/shwcp/v1/get-contact-fields/
-			register_rest_route( $namespace, '/get-contact-fields/', array(
+			// /wp-json/shwcp/v1/get-entry/
+			register_rest_route( $namespace, '/get-entry/', array(
+				'methods' => 'GET',
+				'permission_callback' => array(
+                    $this,
+                    'shwcp_permission_callback',
+                ),
+				'callback' => array(
+					$this,
+					'shwcp_get_entry'
+				)
+			) );
+
+			// /wp-json/shwcp/v1/get-entry-fields/
+			register_rest_route( $namespace, '/get-entry-fields/', array(
 				'methods' => 'GET',
 				'permission_callback' => array(
 					$this,
@@ -175,12 +185,25 @@
 				),
 				'callback' => array(
 					$this,
-					'shwcp_get_contact_fields'
+					'shwcp_get_entry_fields'
 				)
 			) );
 
-			// /wp-json/shwcp/v1/delete-contact/
-			register_rest_route( $namespace, '/delete-contact/', array(
+			// /wp-json/shwcp/v1/list-dbs/
+			register_rest_route( $namespace, '/list-dbs/', array(
+				'methods' => 'GET',
+				'permission_callback' => array(
+					$this,
+					'shwcp_permission_callback',
+				),
+				'callback' => array(
+					$this,
+					'shwcp_list_dbs'
+				)
+			) );
+
+			// /wp-json/shwcp/v1/delete-entry/
+			register_rest_route( $namespace, '/delete-entry/', array(
 				'methods' => 'POST',
 				'permission_callback' => array(
 					$this,
@@ -188,12 +211,12 @@
 				),
 				'callback' => array(
 					$this,
-					'shwcp_delete_contact'
+					'shwcp_delete_entry'
 				)
 			) );
 
-			// /wp-json/shwcp/v1/create-contact/
-			register_rest_route( $namespace, '/create-contact/', array(
+			// /wp-json/shwcp/v1/create-entry/
+			register_rest_route( $namespace, '/create-entry/', array(
 				'methods' => 'POST',
 				'permission_callback' => array(
 					$this,
@@ -201,12 +224,12 @@
 				),
 				'callback' => array(
 					$this,
-					'shwcp_create_contact'
+					'shwcp_create_entry'
 				)
 			) );
 
-			// /wp-json/shwcp/v1/update-contact/
-			register_rest_route( $namespace, '/update-contact/', array(
+			// /wp-json/shwcp/v1/update-entry/
+			register_rest_route( $namespace, '/update-entry/', array(
 				'methods' => 'POST',
 				'permission_callback' => array(
 					$this,
@@ -214,7 +237,7 @@
 				),
 				'callback' => array(
 					$this,
-					'shwcp_update_contact'
+					'shwcp_update_entry'
 				)
 			) );
 
@@ -259,9 +282,9 @@
 
 
 		/**
-		 * Route Callback Total Contact Count
+		 * Route Callback Total Entry Count
 		 */
-		public function shwcp_get_contact_count($request) {
+		public function shwcp_get_entry_count($request) {
 			global $wpdb;
 			$params = $request->get_params();
 			$db = isset($params['db']) ? $request['db'] : '';
@@ -279,10 +302,10 @@
 		}
 
 		/**
-		 * Route Callbacks all Contacts
+		 * Route Callbacks all Entries
 		 */
 
-		public function shwcp_get_contacts($request) {
+		public function shwcp_get_entries($request) {
 			global $wpdb;
 			$params = $request->get_params();
 			$db     = isset($params['db']) ? $params['db'] : '';
@@ -291,7 +314,7 @@
 			// $sortby = isset($params['sortby']) ? $params['sortby'] : '';
 			$dir    = isset($params['dir']) ? $params['dir'] : 'asc';
 			$db_number= $this->get_tables($db);
-			$vars = array();
+			$vars = '';
 
 			$order_by = "order by id $dir"; // default
 			/*
@@ -303,9 +326,13 @@
 				 $order_by .= ' LIMIT %d, %d'; // add limit
 				 $vars[] = $first;
 				 $vars[] = $limit;
+			} else { //default max 5000
+				$order_by .= ' LIMIT %d, %d'; // add default
+                 $vars[] = 1;
+                 $vars[] = 5000;
 			}
 
-			$contacts = $wpdb->get_results( $wpdb->prepare (
+			$entries = $wpdb->get_results( $wpdb->prepare (
                 "
                     SELECT l.*, sst1.sst_name as source, sst2.sst_name as status, sst3.sst_name as type
                     FROM $this->table_main l, $this->table_sst sst1, $this->table_sst sst2, $this->table_sst sst3
@@ -320,13 +347,13 @@
             $sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
 
 			$translated = array();
-			foreach ($contacts as $k => $contact) {
-				$id = $contact->id;
-				$translated[] = $this->shwcp_return_contact($contact, $id, $sorting, $sst, $db_number);
+			foreach ($entries as $k => $entry) {
+				$id = $entry->id;
+				$translated[] = $this->shwcp_return_entry($entry, $id, $sorting, $sst, $db_number);
 			}
 							
 			$return = array(
-				'contacts'        => $translated,
+				'entries'         => $translated,
 				'database'        => $db,
 				'database_number' => $db_number,
 				'request'         => $params,
@@ -336,9 +363,9 @@
 		}
 
 		/**
-         * Route Callbacks Single Contact by id
+         * Route Callbacks Single Entry by id
          */
-        public function shwcp_get_contact($request) {
+        public function shwcp_get_entry($request) {
 			global $wpdb;
             $params = $request->get_params();
             $db     = isset($params['db']) ? $params['db'] : '';
@@ -356,10 +383,10 @@
 			$sorting = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_ind_number asc");
 			$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
 
-			$translated = $this->shwcp_return_contact($lead_vals_pre, $id, $sorting, $sst, $db_number); // process contact
+			$translated = $this->shwcp_return_entry($lead_vals_pre, $id, $sorting, $sst, $db_number); // process entry 
 
             $return = array(
-                'contact' => $translated,
+                'entry' => $translated,
                 'database' => $db
             );
         
@@ -368,9 +395,9 @@
         }
 
 		/**
-		 * Route Callback Return Contact Field names
+		 * Route Callback Return Entry Field names
 		 */
-		public function shwcp_get_contact_fields($request) {
+		public function shwcp_get_entry_fields($request) {
 			global $wpdb;
 			$params    = $request->get_params();
 			$db	       = isset($params['db']) ? $params['db'] : '';
@@ -409,18 +436,31 @@
 			return $response;			
 		}
 
-		/** 
-		 * Route Callback Delete Contact by id
+		/**
+		 * Route Callback list databases
 		 */
-		public function shwcp_delete_contact($request) {
+		public function shwcp_list_dbs($request) {
+			$all_dbs = $this->get_tables('notapplicable', true);
+			$return = array(
+				'databases' => $all_dbs
+			);
+
+			$response = new WP_REST_Response( $return, 200 );
+			return $response;
+		}
+
+		/** 
+		 * Route Callback Delete Entry by id
+		 */
+		public function shwcp_delete_entry($request) {
 			global $wpdb;
 			$params    = $request->get_params();
 			$db		   = isset($params['db']) ? $params['db'] : '';
 			$id 	   = isset($params['id']) && is_numeric($params['id']) ? $params['id'] : 'not set';
 			$db_number = $this->get_tables($db);
 
-			// Get contact details beforehand to remove files
-			$contact = $wpdb->get_row( $wpdb->prepare(
+			// Get entry details beforehand to remove files
+			$entry = $wpdb->get_row( $wpdb->prepare(
                 "
                     SELECT l.*
                     FROM $this->table_main l
@@ -429,7 +469,7 @@
                 $id
             ));
 
-			if (empty($contact)) {
+			if (empty($entry)) {
 				$return = array(
 					'error' => __('No match or no id given', 'shwcp')
 				);
@@ -437,7 +477,7 @@
 				return $response;
 			}
 
-			// Delete contact - status is 0 no deletion, 1 success
+			// Delete entry - status is 0 no deletion, 1 success
 			$deleted = $wpdb->delete(
                 $this->table_main,
                 array(
@@ -447,7 +487,7 @@
                     '%d'
                 )
             );
-			// Delete contact notes
+			// Delete entry notes
 			$delete_notes = $wpdb->delete(
 				$this->table_notes,
 				array(
@@ -457,18 +497,20 @@
 					'%d'
 				)
 			);
-			// Delete contact files and log
+			// Delete entry files and log
 			if ($deleted) {
-				$files = unserialize($contact->lead_files);
-				foreach ($files as $k => $file) {
-                	$lead_dir = $this->shwcp_upload . $db_number . '/' . $id . '-files';
-                	if (file_exists($lead_dir . '/' . $file['name'])) {
-                    	unlink($lead_dir . '/' . $file['name']);
+				$files = unserialize($entry->lead_files);
+				if (!empty($files)) {
+					foreach ($files as $k => $file) {
+                		$lead_dir = $this->shwcp_upload . $db_number . '/' . $id . '-files';
+                		if (file_exists($lead_dir . '/' . $file['name'])) {
+                    		unlink($lead_dir . '/' . $file['name']);
+						}
 					}
 				}
-				if ($contact->small_image) {
-					$image = $this->shwcp_upload . $db_number . '/' . $contact->small_image;				
-					$parts = explode(".", $contact->small_image);
+				if (!empty($entry->small_image)) {
+					$image = $this->shwcp_upload . $db_number . '/' . $entry->small_image;				
+					$parts = explode(".", $entry->small_image);
                 	$ext = array_pop($parts);
                 	$thumb = $this->shwcp_upload . $db_number . '/' . $parts[0] . '_th.' . $ext;
 					if (file_exists($image)) {
@@ -497,16 +539,16 @@
 		}
 
 		/**
-		 * Route Callback Insert Contact
+		 * Route Callback Insert Entry 
 		 */
-		public function shwcp_create_contact($request) {
+		public function shwcp_create_entry($request) {
 			global $wpdb;
             $params    = $request->get_params();
             $db        = isset($params['db']) ? $params['db'] : '';
             $db_number = $this->get_tables($db);
 			$fields    = isset($params['fields']) ? $params['fields'] : array();
 			
-			$results = $this->add_update_contact('add', $db_number, $fields);
+			$results = $this->add_update_entry('add', $db_number, $fields);
 
 			$response = new WP_REST_Response( $results['return'], $results['status'] );
             return $response;
@@ -514,9 +556,9 @@
 		}
 
 		/**
-		 * Route Callback Update Contact
+		 * Route Callback Update Entry 
 		 */
-		public function shwcp_update_contact($request) {
+		public function shwcp_update_entry($request) {
             global $wpdb;
             $params    = $request->get_params();
             $db        = isset($params['db']) ? $params['db'] : '';
@@ -532,7 +574,7 @@
 				return $response;
 			}
 
-			$results = $this->add_update_contact('update', $db_number, $fields, $id);
+			$results = $this->add_update_entry('update', $db_number, $fields, $id);
 	
             $response = new WP_REST_Response( $results['return'], $results['status'] );
             return $response;
@@ -612,19 +654,19 @@
 		}
 
 		/**
-         * Organize contact data for REST return data
-		 * @param array $contact The Contact entry
-		 * @param int $id Contact ID
+         * Organize entry data for REST return data
+		 * @param array $entry The Entry
+		 * @param int $id Entry ID
 		 * @param array $sorting The Sorting array
 		 * @param array $sst Source, Status, Type
 		 *
 		 * @return array
          */
-        public function shwcp_return_contact($contact, $id, $sorting, $sst, $db) {
+        public function shwcp_return_entry($entry, $id, $sorting, $sst, $db) {
 			global $wpdb;
 			// organize by sorting and add others at the end
             foreach ($sorting as $k => $v) {
-                foreach ($contact as $k2 => $v2) {
+                foreach ($entry as $k2 => $v2) {
                     if ($v->orig_name == $k2) {
                         $lead_vals[$k2] = $v2;
                     }
@@ -632,11 +674,11 @@
             }
             // and add on the other fields that aren't listed in sorting
 
-            $lead_vals['small_image'] = $contact->small_image;
+            $lead_vals['small_image'] = $entry->small_image;
             if ($lead_vals['small_image']) { // set url
                 $lead_vals['small_image'] = $this->shwcp_upload_url . $db . '/' . $lead_vals['small_image'];
             }
-            $lead_vals['lead_files'] = unserialize($contact->lead_files);
+            $lead_vals['lead_files'] = unserialize($entry->lead_files);
 			if (!empty($lead_vals['lead_files'])) {
             	foreach ($lead_vals['lead_files'] as $k => $v) { // set url
                 	$lead_vals['lead_files'][$k]['url'] = $this->shwcp_upload_url . $db . '/' . $id . '-files/' . $v['name'];
@@ -777,7 +819,7 @@
         }
 
 		/**
-		 * Add or update a contact
+		 * Add or update a entry 
 		 * 
 		 * @param string $method add or update
 		 * @param string $db_number the database
@@ -785,7 +827,7 @@
 		 * @param int id the id of the entry to update
 		 *
 		 */
-		public function add_update_contact($method, $db_number, $fields, $id='') {
+		public function add_update_entry($method, $db_number, $fields, $id='') {
 			global $wpdb;
 			if (!isset($fields) || empty($fields)) {
                 $return = array(
