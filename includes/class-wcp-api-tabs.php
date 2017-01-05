@@ -1095,7 +1095,7 @@ class SHWCP_API_Tabs {
 	function add_admin_menus() {
 		$plugin_options = add_menu_page( __('WP Contacts', 'shwcp'), __('WP Contacts', 'shwcp'), 'manage_options', 
 				$this->plugin_options_key, array($this, 'plugin_options_page'), 
-				SHWCP_ROOT_URL . '/assets/img/user_16.png', '27.337');
+				SHWCP_ROOT_URL . '/assets/img/wcp-16.png', '27.337');
 
 		// loaded only in our Contacts menu
 		add_action( 'load-' . $plugin_options, array($this, 'load_admin_scripts') );

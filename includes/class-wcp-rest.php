@@ -448,11 +448,15 @@
 			$wpdatafinal['small_image'] = 'Small Image';
 			$wpdatafinal['lead_files'] = 'Entry Files';
 
-			$return = array(
-				'fields' => $wpdatafinal,
-				//'main_columns' => $main_columns,
-				//'sorting' => $sorting
-			);
+			/*
+            $return = array(
+                $wpdatafinal,
+                //'fields' => $wpdatafinal,
+                //'main_columns' => $main_columns,
+                //'sorting' => $sorting
+            );
+            */
+            $return = $wpdatafinal;
 
 			$response = new WP_REST_Response( $return, 200 );
 			return $response;			
@@ -530,6 +534,7 @@
 						}
 					}
 				}
+				$image = '';
 				if (!empty($entry->small_image)) {
 					$image = $this->shwcp_upload . $db_number . '/' . $entry->small_image;				
 					$parts = explode(".", $entry->small_image);

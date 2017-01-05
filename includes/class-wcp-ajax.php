@@ -65,10 +65,35 @@
 
 			// delete leads confirm
 			} elseif (isset($_POST['delete_all_confirm']) && $_POST['delete_all_confirm'] == 'true') {
+				// Get the sorting info for returning fields to frontend and updating the table and for checking required
+                $sorting = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_number asc");
+				$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
+
 				$remove_entries = $_POST['remove_entries'];
 				$remove = array();
 				$i = 1;
+
+				$environment = array(
+                    'user_login' => $this->current_user->user_login,
+                    'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                    'db_name'    => $this->first_tab['database_name'],
+                    'settings'   => $this->first_tab,
+                );
+
 				foreach( $remove_entries as $k => $v) {
+					// get entry info before deletion
+					$output_fields = $wpdb->get_row( $wpdb->prepare(
+                    	"
+                    	SELECT l.*
+                    	FROM $this->table_main l
+                    	WHERE l.id = %d;
+                    	",
+                    $v
+                	));
+					$translated_fields = $this->shwcp_return_entry($output_fields, $v, $sorting, $sst);
+					// action hook delete entry
+                	do_action('wcp_del_entry_action', $translated_fields,$environment);
+									
 					$removed[$i] = $v;
 					$wpdb->delete(
                     	$this->table_main,
@@ -353,10 +378,23 @@
 						}
 					}
 		
+					$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");	
+					$environment = array(
+                        'user_login' => $this->current_user->user_login,
+						'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+						'db_name'    => $this->first_tab['database_name'],
+                        'settings'   => $this->first_tab,
+                    );
 					if ($new) {
 						$event = __('Added Entry', 'shwcp');
+						// new entry translate fields and action hook
+						$translated_fields = $this->shwcp_return_entry($output_fields, $lead_id, $sorting, $sst);
+						do_action('wcp_add_entry_action', $translated_fields, $environment);
 					} else {
 						$event = __('Updated Entry', 'shwcp');
+						// updated entry action hook
+						$translated_fields = $this->shwcp_return_entry($output_fields, $lead_id, $sorting, $sst);
+                        do_action('wcp_update_entry_action', $translated_fields,$environment); 
 					}
 					$output_string = implode(', ', $output_fields);
 					$detail = __('Entry ID', 'shwcp') . ' ' . $lead_id . __(' Fields-> ', 'shwcp') . $output_string;
@@ -379,6 +417,16 @@
 			} elseif (isset($_POST['confirm_delete_lead']) && $_POST['confirm_delete_lead'] == 'true') {
 				$lead_id = intval($_POST['lead_id']);
 				$response['lead_id'] = $lead_id;
+				// Get entry info before deletion
+                $output_fields = $wpdb->get_row( $wpdb->prepare(
+                    "
+                    SELECT l.*
+                    FROM $this->table_main l
+                    WHERE l.id = %d;
+                    ",
+                    $lead_id
+                ));
+
 				$wpdb->delete(
 					$this->table_main,
 					array(
@@ -391,6 +439,19 @@
 				$event = __('Deleted Entry', 'shwcp');
 				$detail = __('Entry ID ', 'shwcp') . $lead_id;
 				$wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+
+				// Delete entry action hook
+				$sorting = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_number asc");
+				$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
+				$environment = array(
+                    'user_login' => $this->current_user->user_login,
+                    'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                    'db_name'    => $this->first_tab['database_name'],
+                    'settings'   => $this->first_tab,
+                );
+                $translated_fields = $this->shwcp_return_entry($output_fields, $lead_id, $sorting, $sst);
+                do_action('wcp_del_entry_action', $translated_fields,$environment);
+
 				$response['lead_id'] = $lead_id;
 
 			// Frontend Sorting
@@ -974,6 +1035,14 @@
 					$event = __('Uploaded Image', 'shwcp');
                 	$detail = __('New Image set for Entry ID ', 'shwcp') . $lead_id;
                 	$wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+					// new photo fields and action hook
+					$environment = array(
+                        'user_login' => $this->current_user->user_login,
+                        'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                        'db_name'    => $this->first_tab['database_name'],
+                        'settings'   => $this->first_tab,
+                    );
+                    do_action('wcp_photo_entry_action', $lead_id, $new_file_url, $environment);
 					$response['new_file_url'] = $new_file_url;
 					$response['post'] = $_POST;
 					$response['file'] = $file_name;
@@ -1384,6 +1453,18 @@
 				$event = __('Removed Entry File', 'shwcp');
                 $detail = __('Entry ID ', 'shwcp') . $lead_id . __(' File:', 'shwcp') . $lead_file;
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+				// entry delete files action hook
+                $environment = array(
+                    'user_login' => $this->current_user->user_login,
+                    'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                    'db_name'    => $this->first_tab['database_name'],
+                    'settings'   => $this->first_tab,
+                );
+                $file_data = array(
+                    'file_name' => $lead_file,
+                    'file_url'  => $shwcp_upload_url . '/' . $lead_id . '-files' . '/' . $lead_file,
+                );
+                do_action('wcp_delfiles_entry_action', $lead_id, $file_data, $environment);
 
 
 			// handle lead file uploads
@@ -1429,6 +1510,19 @@
 					$event = __('Added Files', 'shwcp');
                		$detail = __('Entry ID ', 'shwcp') . $lead_id . __(' New File:', 'shwcp') . $file_name;
                 	$wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+					// entry files action hook
+                    $environment = array(
+                        'user_login' => $this->current_user->user_login,
+                        'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                        'db_name'    => $this->first_tab['database_name'],
+                        'settings'   => $this->first_tab,
+                    );
+					$file_data = array(
+						'file_name' => $file_name,
+						'file_url'  => $shwcp_upload_url . '/' . $lead_id . '-files' . '/' . $file_name,
+						'file_size' => $file['size']
+					);
+                    do_action('wcp_addfiles_entry_action', $lead_id, $file_data, $environment);
 					//$response['files'] = $files_info;
 					$response['lead_id'] = $lead_id;
 					$response['file_name'] = $file_name;
@@ -1472,6 +1566,15 @@
 				$event = __('Added a note', 'shwcp');
                 $detail = __('Entry ID ', 'shwcp') . $lead_id;
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+				// entry add note action hook
+                $environment = array(
+                    'user_login' => $this->current_user->user_login,
+                    'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                    'db_name'    => $this->first_tab['database_name'],
+                    'settings'   => $this->first_tab,
+                );
+                do_action('wcp_addnote_entry_action', $lead_id, $note, $note_id, $environment);
+
 				$response['lead_id'] = $lead_id;
 				$response['note_id'] = $note_id;
 				$response['note'] = stripslashes($note);
@@ -1521,6 +1624,14 @@
                 $event = __('Edited existing note', 'shwcp');
                 $detail = __('Entry ID ', 'shwcp') . $lead_id;
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+				// entry update note action hook
+                $environment = array(
+                    'user_login' => $this->current_user->user_login,
+                    'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                    'db_name'    => $this->first_tab['database_name'],
+                    'settings'   => $this->first_tab,
+                );
+                do_action('wcp_updatenote_entry_action', $lead_id, $note, $note_id, $environment);
 				
 				$response['note_id'] = $note_id;
 				$response['note'] = stripslashes($note);
@@ -1539,6 +1650,9 @@
 			} elseif (isset($_POST['remove_this_note']) && $_POST['remove_this_note'] == 'true') {
 				$note_id = intval($_POST['note_id']);
 				$lead_id = intval($_POST['lead_id']);
+				// get note content first
+				$note = $wpdb->get_var("SELECT note_content FROM $this->table_notes WHERE id=$note_id");
+
 				$wpdb->delete(
                     $this->table_notes,
                     array(
@@ -1551,6 +1665,15 @@
 				$event = __('Removed a note', 'shwcp');
                 $detail = __('Entry ID ', 'shwcp') . $lead_id;
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+				// entry deleted note action hook
+                $environment = array(
+                    'user_login' => $this->current_user->user_login,
+                    'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                    'db_name'    => $this->first_tab['database_name'],
+                    'settings'   => $this->first_tab,
+                );
+                do_action('wcp_delnote_entry_action', $lead_id, $note, $note_id, $environment);
+
 				$response['note_id'] = $note_id;
 
 			// Save Individual Lead Fields
@@ -1653,6 +1776,17 @@
 					$event = __('Modified Entry Details', 'shwcp');
                 	$detail = __('Entry ID ', 'shwcp') . $lead_id;
                 	$wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+					$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
+					$environment = array(
+                        'user_login' => $this->current_user->user_login,
+                        'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                        'db_name'    => $this->first_tab['database_name'],
+                        'settings'   => $this->first_tab,
+                    );
+                    // update entry translate fields and action hook
+                    $translated_fields = $this->shwcp_return_entry($output_fields, $lead_id, $sorting, $sst);
+                    do_action('wcp_update_entry_action', $translated_fields, $environment);
+
 					$response['lead_id'] = $lead_id;
 					$response['field_vals'] = array_merge($output_fields, $field_vals);
 				} // end continue
@@ -2644,5 +2778,123 @@
             }
 			return $field_checks;
 		}
+
+        /**
+         * Organize entry data for REST return data - a little different from the same function in REST class
+         * since we have some things available due to this class extending the main
+         * @param array $entry The Entry
+         * @param int $id Entry ID
+         * @param array $sorting The Sorting array
+         * @param array $sst Source, Status, Type
+         *
+         * @return array
+         */
+        public function shwcp_return_entry($entry, $id, $sorting, $sst) {
+            global $wpdb;
+            // organize by sorting and add others at the end
+            foreach ($sorting as $k => $v) {
+                foreach ($entry as $k2 => $v2) {
+                    if ($v->orig_name == $k2) {
+                        $lead_vals[$k2] = $v2;
+                    }
+                }
+            }
+            // and add on the other fields that aren't listed in sorting
+			// $postID and $current_db are necessary for many of the actions below
+            $postID = isset($_POST['postID']) ? intval($_POST['postID']) : '';
+            $current_db = '';
+            $saved_db = get_post_meta($postID, 'wcp_db_select', true);
+            if ($saved_db
+                && $saved_db != 'default'
+            ) {
+                $current_db = '_' . $saved_db;
+            }
+
+            $shwcp_upload     = $this->shwcp_upload     . $current_db;
+            $shwcp_upload_url = $this->shwcp_upload_url . $current_db;
+
+            $lead_vals['small_image'] = isset($entry->small_image) ? $entry->small_image : '';
+            if ($lead_vals['small_image']) { // set url
+                $lead_vals['small_image'] = $shwcp_upload_url . '/' . $lead_vals['small_image'];
+            }
+            $lead_vals['lead_files'] = isset($entry->lead_files) ? unserialize($entry->lead_files) : '';
+            if (!empty($lead_vals['lead_files'])) {
+                foreach ($lead_vals['lead_files'] as $k => $v) { // set url
+                    $lead_vals['lead_files'][$k]['url'] = $shwcp_upload_url . '/' . $id . '-files/' . $v['name'];
+                }
+            }
+
+            // get the translated field names
+            $translated = array();
+            foreach ($lead_vals as $k => $v) {
+                $v = (!is_array($v)) ? stripslashes($v) : $v;
+                $match = false;
+                foreach ($sorting as $k2 => $v2) {
+                    if ($v2->orig_name == $k) {
+                        $translated[$k]['value'] = $v;
+                        $translated[$k]['trans'] = $v2->translated_name;
+                        $match = true;
+                    }
+                }
+                if (!$match) {  // this should not happen
+                    $translated[$k]['value'] = $v;
+                    $translated[$k]['trans'] = $k;
+                }
+            }
+
+            foreach ($translated as $k => $v) {
+                if ('l_source' == $k          // set sst to names
+                    || 'l_status' == $k
+                    || 'l_type' == $k
+                ) {
+                    foreach($sst as $k2 => $v2) {
+                        $v2->sst_name = stripslashes($v2->sst_name);
+                        $selected = '';
+                        if ($k == $v2->sst_type_desc) {   // matching sst's
+                            if ($v['value'] == $v2->sst_id) { // selected
+                                $translated[$k]['value'] = $v2->sst_name;
+                            }
+                        }
+                    }
+                } elseif ( 'id' == $k ) { // insert the notes on id match
+                    $notes = $wpdb->get_results (
+                        " 
+                        SELECT notes.*, user.user_login
+                        from $this->table_notes notes, {$wpdb->base_prefix}users user
+                        WHERE `lead_id`={$v['value']}
+                        order by date_added asc
+                        "
+                    );
+                    $note_entries = array();
+                    foreach ($notes as $k => $note) {
+                        $note_entries[] = array(
+                            'id' => $note->id,
+                            'note_content' => $note->note_content,
+                            'date_added'   => $note->date_added,
+                            'creator'      => $note->user_login,
+                            'date_updated' => $note->date_updated
+                        );
+                    }
+                    $translated['notes'] = $note_entries;
+                } else { // look for dropdown fields to translate selection (like sst's)
+                    $clean_trans = stripslashes($v['trans']);
+                    foreach ($sorting as $sk => $sv) {
+                        if ($v['trans'] == $sv->translated_name) {  // match up sorting for each field
+                            if ($sv->field_type == '10') { // Dropdown
+                                $entry = '';
+                                foreach($sst as $k2 => $v2) {
+                                    if ($k == $v2->sst_type_desc) {   // matching sst's
+                                        if ($v['value'] == $v2->sst_id) { // selected
+                                            $translated[$k]['value'] = $v2->sst_name;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ($translated);
+        }
 
 	} // end class
