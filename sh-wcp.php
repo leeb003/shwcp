@@ -155,7 +155,6 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
 	add_action( 'gform_after_submission', array($form_integration, 'gravity_forms_wpcontacts'), 10, 2 );
 
 	/* Rest API Endpoints */
-	/* In the works and not implemented at this time */
 	require_once SHWCP_ROOT_PATH . '/includes/class-wcp-rest.php';
 	$wcp_rest = new wcp_rest;
 

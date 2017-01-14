@@ -156,7 +156,7 @@ class SHWCP_API_Tabs {
 			'page_color' => '#607d8b',
 			'logo_attachment_url' => SHWCP_ROOT_URL . '/assets/img/wpcontacts.png',
 			'logo_attachment_id' => '',
-			'page_footer' => 'WP Contacts &copy;2016 SH-Themes',
+			'page_footer' => 'WP Contacts &copy;2017 SH-Themes',
 			'page_greeting' => 'Welcome To <span class="wcp-primary">WP</span> Contacts',
 			'contact_image' => 'true', 
 			'contact_image_url' => '',
@@ -905,6 +905,7 @@ class SHWCP_API_Tabs {
 				<th<?php __('Variable', 'shwcp'); ?></th>
 				<th><?php __('Value', 'shwcp'); ?></th>
 			</tr>
+			<tr><td><?php echo __('PHP version running', 'shwcp');?></td><td><?php echo phpversion(); ?></td></tr>
 			<tr><td>post_max_size</td><td><?php echo ini_get('post_max_size'); ?></td></tr>
 		 	<tr><td>memory_limit</td><td><?php echo ini_get('memory_limit'); ?></td> </tr>
 			<tr><td>upload_max_filesize</td><td><?php echo ini_get('upload_max_filesize'); ?></td></tr>
