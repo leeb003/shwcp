@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Contacts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-13 16:06-0700\n"
+"POT-Creation-Date: 2017-01-21 10:03-0700\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lee Beck <info@scripthat.com>\n"
 "Language-Team: SH-Themes <info@sh-themes.com>\n"
@@ -1479,22 +1479,24 @@ msgid "Save"
 msgstr ""
 
 #: includes/class-wcp-ajax.php:389
-#: includes/class-wcp-rest.php:987
+#: includes/class-wcp-rest.php:600
+#: includes/class-wcp-rest.php:1136
 msgid "Added Entry"
 msgstr ""
 
 #: includes/class-wcp-ajax.php:394
-#: includes/class-wcp-rest.php:977
+#: includes/class-wcp-rest.php:631
+#: includes/class-wcp-rest.php:1126
 msgid "Updated Entry"
 msgstr ""
 
 #: includes/class-wcp-ajax.php:400
-#: includes/class-wcp-rest.php:999
+#: includes/class-wcp-rest.php:1148
 msgid "Entry ID"
 msgstr ""
 
 #: includes/class-wcp-ajax.php:400
-#: includes/class-wcp-rest.php:999
+#: includes/class-wcp-rest.php:1148
 msgid " Fields-> "
 msgstr ""
 
@@ -1507,7 +1509,7 @@ msgid "Remove Entry"
 msgstr ""
 
 #: includes/class-wcp-ajax.php:439
-#: includes/class-wcp-rest.php:552
+#: includes/class-wcp-rest.php:573
 msgid "Deleted Entry"
 msgstr ""
 
@@ -1518,7 +1520,10 @@ msgstr ""
 #: includes/class-wcp-ajax.php:1625
 #: includes/class-wcp-ajax.php:1666
 #: includes/class-wcp-ajax.php:1777
-#: includes/class-wcp-rest.php:553
+#: includes/class-wcp-rest.php:574
+#: includes/class-wcp-rest.php:601
+#: includes/class-wcp-rest.php:632
+#: includes/class-wcp-rest.php:687
 msgid "Entry ID "
 msgstr ""
 
@@ -1553,10 +1558,12 @@ msgid "Error uploading"
 msgstr ""
 
 #: includes/class-wcp-ajax.php:1035
+#: includes/class-wcp-rest.php:744
 msgid "Uploaded Image"
 msgstr ""
 
 #: includes/class-wcp-ajax.php:1036
+#: includes/class-wcp-rest.php:745
 msgid "New Image set for Entry ID "
 msgstr ""
 
@@ -1664,6 +1671,7 @@ msgid " File:"
 msgstr ""
 
 #: includes/class-wcp-ajax.php:1510
+#: includes/class-wcp-rest.php:686
 msgid "Added Files"
 msgstr ""
 
@@ -1975,27 +1983,75 @@ msgstr ""
 msgid "Last Updated by"
 msgstr ""
 
-#: includes/class-wcp-rest.php:500
+#: includes/class-wcp-rest.php:521
 msgid "No match or no id given"
 msgstr ""
 
-#: includes/class-wcp-rest.php:598
+#: includes/class-wcp-rest.php:624
+#: includes/class-wcp-rest.php:653
+#: includes/class-wcp-rest.php:712
 msgid "You must give an existing id"
 msgstr ""
 
-#: includes/class-wcp-rest.php:628
+#: includes/class-wcp-rest.php:665
+#: includes/class-wcp-rest.php:724
+msgid "Entry ID does not exist, files cannot be uploaded without an existing entry."
+msgstr ""
+
+#: includes/class-wcp-rest.php:687
+msgid "New File:"
+msgstr ""
+
+#: includes/class-wcp-rest.php:691
+msgid "File Uploaded"
+msgstr ""
+
+#: includes/class-wcp-rest.php:749
+msgid "Image uploaded"
+msgstr ""
+
+#: includes/class-wcp-rest.php:777
 msgid "Incorrect access level"
 msgstr ""
 
-#: includes/class-wcp-rest.php:645
+#: includes/class-wcp-rest.php:794
 msgid "WordPress user does not exist"
 msgstr ""
 
-#: includes/class-wcp-rest.php:674
+#: includes/class-wcp-rest.php:823
 msgid "Permission Set"
 msgstr ""
 
-#: includes/class-wcp-rest.php:861
+#: includes/class-wcp-rest.php:1010
 msgid "No fields set to insert"
+msgstr ""
+
+#: includes/class-wcp-rest.php:1182
+msgid "No data supplied."
+msgstr ""
+
+#: includes/class-wcp-rest.php:1186
+msgid "No Content-Type supplied."
+msgstr ""
+
+#: includes/class-wcp-rest.php:1190
+msgid "No Content-Disposition supplied."
+msgstr ""
+
+#: includes/class-wcp-rest.php:1196
+msgid "Invalid Content-Disposition supplied. Content-Disposition needs to be formatted as `attachment; filename=\"image.png\"` or similar."
+msgstr ""
+
+#: includes/class-wcp-rest.php:1205
+msgid "Content hash did not match expected."
+msgstr ""
+
+#: includes/class-wcp-rest.php:1219
+msgid "Image file type must be of type gif, jpeg, bmp or png."
+msgstr ""
+
+#: includes/class-wcp-rest.php:1228
+#: includes/class-wcp-rest.php:1267
+msgid "Could not open file handle."
 msgstr ""
 

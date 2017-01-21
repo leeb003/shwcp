@@ -241,6 +241,32 @@
 				)
 			) );
 
+			// /wp-json/shwcp/v1/create-entry-file/
+			register_rest_route( $namespace, '/create-entry-file/', array(
+				'methods' => 'POST',
+				'permission_callback' => array(
+					$this,
+					'shwcp_permission_callback',
+				),
+				'callback' => array(
+					$this,
+					'shwcp_create_entry_file'
+				)
+			) );
+
+			// /wp-json/shwcp/v1/update-entry-image/
+			register_rest_route( $namespace, '/update-entry-image/', array(
+				'methods' => 'POST',
+				'permission_callback' => array(
+					$this,
+					'shwcp_permission_callback',
+				),
+				'callback' => array(
+					$this,
+					'shwcp_update_entry_image'
+				)
+			) );
+
 			// /wp-json/shwcp/v1/user-perms/
 			register_rest_route( $namespace, '/user-perms/', array(
 				'methods' => 'POST',
@@ -253,11 +279,6 @@
 					'shwcp_user_perms'
 				)
 			) );
-
-			/* Considered future routes */
-			// /wp-json/shwcp/v1/add-note/
-			// /wp-json/shwcp/v1/delete-note/
-			// /wp-json/shwcp/v1/update-note/
 
 		}
 
@@ -574,6 +595,11 @@
 			$db		   = isset($params['db']) ? $params['db'] : '';
 			$db_number = $this->get_tables($db);
 			$fields    = isset($params['fields']) ? $params['fields'] : array();
+
+			// log
+            $event = __('Added Entry', 'shwcp');
+            $detail = __('Entry ID ', 'shwcp') . $id;
+            $this->rest_log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $this->table_log);
 			
 			$results = $this->add_update_entry('add', $db_number, $fields);
 
@@ -601,11 +627,134 @@
 				return $response;
 			}
 
+			// log
+            $event = __('Updated Entry', 'shwcp');
+            $detail = __('Entry ID ', 'shwcp') . $id;
+            $this->rest_log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $this->table_log);
+
 			$results = $this->add_update_entry('update', $db_number, $fields, $id);
 	
 			$response = new WP_REST_Response( $results['return'], $results['status'] );
 			return $response;
 		}
+
+		/**
+		 * Route Callback Create Entry File
+		 * --testing--
+		 */
+		public function shwcp_create_entry_file($request) {
+			global $wpdb;
+			$params = $request->get_params();
+			$db        = isset($params['db']) ? $params['db'] : '';
+            $db_number = $this->get_tables($db);
+			$id        = isset($params['id']) ? intval($params['id']) : '';
+			if (trim($id) == '') {
+                $return = array(
+                    'error' => __('You must give an existing id', 'shwcp')
+                );
+                $response = new WP_REST_Response( $return, 400 );
+                return $response;
+            }
+			// check for existing entry first
+			$existing = $wpdb->get_var(
+				"SELECT id FROM " . $this->table_main
+			  . " where id='$id' limit 1"
+			);
+			if (!$existing) {
+				$return = array(
+					'error' => __('Entry ID does not exist, files cannot be uploaded without an existing entry.', 'shwcp')
+				);
+				$response = new WP_REST_Response( $return, 400 );
+                return $response;
+            }
+
+			// Get the file via $_FILES or raw data.
+        	$files = $request->get_file_params();
+        	$headers = $request->get_headers();
+
+           	$file = $this->wpc_upload_from_data( $request->get_body(), $headers, $id, $db, 'entry_file');
+
+        	if ( is_wp_error( $file ) ) {
+            	return $file;
+        	}
+
+        	$url     = $file['url'];
+        	$type    = $file['type'];
+        	$name    = $file['name'];
+
+			// log
+            $event = __('Added Files', 'shwcp');
+            $detail = __('Entry ID ', 'shwcp') . $id . ' ' . __('New File:', 'shwcp') . $name;
+            $this->rest_log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $this->table_log);
+
+			$return = array(
+                'status' => __('File Uploaded', 'shwcp'),
+				'name' => $name,
+				'url'  => $url,
+				'type' => $type
+            );
+            $response = new WP_REST_Response( $return, 200 );
+            return $response;
+
+		}	
+		/**
+		 * Route Callback update entry image
+		 * similar to above create_entry_file method and uses the same functions
+		 */
+		public function shwcp_update_entry_image($request) {
+			global $wpdb;
+            $params = $request->get_params();
+            $db        = isset($params['db']) ? $params['db'] : '';
+            $db_number = $this->get_tables($db);
+            $id        = isset($params['id']) ? intval($params['id']) : '';
+            if (trim($id) == '') {
+                $return = array(
+                    'error' => __('You must give an existing id', 'shwcp')
+                );
+                $response = new WP_REST_Response( $return, 400 );
+                return $response;
+            }
+            // check for existing entry first
+            $existing = $wpdb->get_var(
+                "SELECT id FROM " . $this->table_main
+              . " where id='$id' limit 1"
+            );
+            if (!$existing) {
+                $return = array(
+                    'error' => __('Entry ID does not exist, files cannot be uploaded without an existing entry.', 'shwcp')
+                );
+                $response = new WP_REST_Response( $return, 400 );
+                return $response;
+            }
+
+            // Get the file via $_FILES or raw data.
+            $files = $request->get_file_params();
+            $headers = $request->get_headers();
+
+            $file = $this->wpc_upload_from_data( $request->get_body(), $headers, $id, $db, 'entry_image');
+
+            if ( is_wp_error( $file ) ) {
+                return $file;
+            }
+
+            $type    = $file['type'];
+            $name    = $file['name'];
+
+			// log
+            $event = __('Uploaded Image', 'shwcp');
+            $detail = __('New Image set for Entry ID ', 'shwcp') . $id;
+            $this->rest_log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $this->table_log);
+
+            $return = array(
+                'status' => __('Image uploaded', 'shwcp'),
+                'name' => $name,
+                'type' => $type
+            );
+            $response = new WP_REST_Response( $return, 200 );
+            return $response;
+
+        }
+			
 
 		/**
 		 * Route Callback User Permissions
@@ -1013,4 +1162,228 @@
 			return $results;
 
 		}
+
+		/* @since 4.7.0
+     	 * @access protected
+     	 *
+     	 * @param array $data    Supplied file data.
+     	 * @param array $headers HTTP headers from the request.
+      	 * @return array|WP_Error Data from wp_handle_sideload().
+	 	 *
+	 	 * Method copied from wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php since it's a protected method
+	 	 * and changed name from upload_from_data.  Modified to include our entry file location and database settings
+     	 */
+    	protected function wpc_upload_from_data( $data, $headers, $id, $db, $request_type ) {
+			// request_type is either entry_image or entry_file
+			global $wpdb;
+			$db_number = $this->get_tables($db);
+
+        	if ( empty( $data ) ) {
+            	return new WP_Error( 'rest_upload_no_data', __( 'No data supplied.', 'shwcp' ), array( 'status' => 400 ) );
+        	}
+
+        	if ( empty( $headers['content_type'] ) ) {
+            	return new WP_Error( 'rest_upload_no_content_type', __( 'No Content-Type supplied.', 'shwcp' ), array( 'status' => 400 ) );
+        	}
+
+        	if ( empty( $headers['content_disposition'] ) ) {
+            	return new WP_Error( 'rest_upload_no_content_disposition', __( 'No Content-Disposition supplied.', 'shwcp' ), array( 'status' => 400 ) );
+        	}
+
+        	$filename = $this->wcp_get_filename_from_disposition( $headers['content_disposition'] );
+
+        	if ( empty( $filename ) ) {
+            	return new WP_Error( 'rest_upload_invalid_disposition', __( 'Invalid Content-Disposition supplied. Content-Disposition needs to be formatted as `attachment; filename="image.png"` or similar.', 'shwcp' ), array( 'status' => 400 ) );
+        	}	
+
+        	if ( ! empty( $headers['content_md5'] ) ) {
+            	$content_md5 = array_shift( $headers['content_md5'] );
+            	$expected    = trim( $content_md5 );
+            	$actual      = md5( $data );
+
+            	if ( $expected !== $actual ) {
+                	return new WP_Error( 'rest_upload_hash_mismatch', __( 'Content hash did not match expected.', 'shwcp' ), array( 'status' => 412 ) );
+            	}
+        	}
+
+        	// Get the content-type.
+        	$type = array_shift( $headers['content_type'] );
+
+        	/** Include admin functions to get access to wp_tempnam() and wp_handle_sideload() */
+        	require_once ABSPATH . 'wp-admin/includes/admin.php';
+
+			if ($request_type == 'entry_image') { // handle the entry image
+				$filetype = wp_check_filetype($filename);
+				$allowed_types = array('gif', 'GIF', 'jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'bmp', 'BMP');
+				if (!in_array($filetype['ext'], $allowed_types)) {
+					return new WP_Error( 'rest_upload_invalid_file_type', __('Image file type must be of type gif, jpeg, bmp or png.', 'shwcp'), array( 'status' => 400 ) );
+				}
+				$file_name = $id . '-' . 'small_image' . '.' . $filetype['ext'];
+
+                $new_file = $this->shwcp_upload . $db_number . '/' . $file_name;
+                $new_file_url = $this->shwcp_upload_url . $db_number . '/' . $file_name;
+				$fp = fopen( $new_file, 'w+' );
+
+                if ( ! $fp ) {
+                    return new WP_Error( 'rest_upload_file_error', __( 'Could not open file handle.', 'shwcp' ), array( 'status' =>
+500 ) );
+                }
+
+                fwrite( $fp, $data );
+                fclose( $fp );
+
+                $thumb = wp_get_image_editor( $new_file );
+                if ( !is_wp_error($thumb) ) {
+                    $thumb->resize(25, 25, true);
+                    $thumb->save( $this->shwcp_upload . $db_number . '/' . $id . '-' . 'small_image_th' . '.' . $filetype['ext']);
+                }
+                $wpdb->update(
+                    $this->table_main,
+                    array( 'small_image' => $file_name ),
+                    array( 'id' => $id ),
+                    array( '%s' ),
+                    array( '%d' )
+                );
+				$return = array(
+                    'error'    => null,
+                    'entry_id' => $id,
+                    'name'     => $new_file,
+                    'type'     => $type,
+                );
+                return $return;
+				
+				
+
+			} elseif ($request_type == 'entry_file') { // handle the files
+            	//Make the lead directory if needed
+            	$lead_dir = $this->shwcp_upload . $db_number . '/' . $id . '-files';
+            	if ( !file_exists($lead_dir) ) {
+                	 wp_mkdir_p($lead_dir);
+            	}
+
+            	$fp = fopen( $lead_dir . '/' . $filename, 'w+' );
+
+            	if ( ! $fp ) {
+                	return new WP_Error( 'rest_upload_file_error', __( 'Could not open file handle.', 'shwcp' ), array( 'status' => 500 ) );
+            	}
+
+            	fwrite( $fp, $data );
+            	fclose( $fp );
+
+            	// get file info in directory and update db (ignore dot files and dir)
+            	$files = preg_grep('/^([^.])/', scandir($lead_dir));
+            	// get sizes and dates
+            	$files_info = array();
+            	$i = 0;
+            	$files_added = '';
+            	foreach ($files as $k => $v) {
+                	if ($v == $filename) { // we need to send this info back too
+                    	$files_info[$i]['name'] = $v;
+                    	$file['size'] =  $files_info[$i]['size'] = size_format(filesize($lead_dir . '/' . $v));
+                    	$file['date'] = $files_info[$i]['date'] = date("m-d-Y H:i:s", filemtime($lead_dir . '/' . $v));
+                	} else {
+                    	$files_info[$i]['name'] = $v;
+                    	$files_info[$i]['size'] = size_format(filesize($lead_dir . '/' . $v));
+                    	$files_info[$i]['date'] = date("m-d-Y H:i:s", filemtime($lead_dir . '/' . $v));
+                	}
+                	$i++;
+             	}
+
+             	$files_info_ser = serialize($files_info);
+             	$wpdb->update(
+                	 $this->table_main,
+                 	array( 'lead_files' => $files_info_ser ),
+                 	array( 'id' => $id ),
+                 	array( '%s' ),
+                 	array( '%d' )
+             	);
+
+				$file_url = $this->shwcp_upload_url . $db_number . '/' . $id . '-files' . '/' . $filename;
+        		$return = array(
+           			'error'    => null,
+					'entry_id' => $id,
+            		'url'      => $file_url,
+            		'name'     => $filename,
+            		'type'     => $type,
+          		);
+		 		return $return;
+			} // end handle files
+    	}
+
+		
+    	/**
+     	 * Parses filename from a Content-Disposition header value.
+     	 *
+     	 * As per RFC6266:
+     	 *
+     	 *     content-disposition = "Content-Disposition" ":"
+     	 *                            disposition-type *( ";" disposition-parm )
+     	 *
+     	 *     disposition-type    = "inline" | "attachment" | disp-ext-type
+     	 *                         ; case-insensitive
+     	 *     disp-ext-type       = token
+     	 *
+     	 *     disposition-parm    = filename-parm | disp-ext-parm
+     	 *
+     	 *     filename-parm       = "filename" "=" value
+     	 *                         | "filename*" "=" ext-value
+     	 *
+     	 *     disp-ext-parm       = token "=" value
+     	 *                         | ext-token "=" ext-value
+     	 *     ext-token           = <the characters in token, followed by "*">
+     	 *
+     	 * @since 4.7.0
+     	 * @access public
+     	 *
+     	 * @link http://tools.ietf.org/html/rfc2388
+     	 * @link http://tools.ietf.org/html/rfc6266
+    	 *
+     	 * @param string[] $disposition_header List of Content-Disposition header values.
+     	 * @return string|null Filename if available, or null if not found.
+		 *
+		 * Copied from wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php and renamed
+     	 */
+    	public function wcp_get_filename_from_disposition( $disposition_header ) {
+        	// Get the filename.
+        	$filename = null;
+
+        	foreach ( $disposition_header as $value ) {
+            	$value = trim( $value );
+
+            	if ( strpos( $value, ';' ) === false ) {
+                	continue;
+            	}
+
+            	list( $type, $attr_parts ) = explode( ';', $value, 2 );
+
+            	$attr_parts = explode( ';', $attr_parts );
+            	$attributes = array();
+
+            	foreach ( $attr_parts as $part ) {
+                	if ( strpos( $part, '=' ) === false ) {
+                    	continue;
+                	}
+
+                	list( $key, $value ) = explode( '=', $part, 2 );
+
+                	$attributes[ trim( $key ) ] = trim( $value );
+            	}
+
+            	if ( empty( $attributes['filename'] ) ) {
+                	continue;
+            	}
+
+            	$filename = trim( $attributes['filename'] );
+
+            	// Unquote quoted filename, but after trimming.
+            	if ( substr( $filename, 0, 1 ) === '"' && substr( $filename, -1, 1 ) === '"' ) {
+                	$filename = substr( $filename, 1, -1 );
+            	}
+        	}
+
+        	return $filename;
+    	}
+
+
+
 	}
