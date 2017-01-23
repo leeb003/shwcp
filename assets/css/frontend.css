@@ -55,6 +55,10 @@ input, select, textarea {
 	color: rgba(0,0,0,0.87);
 }
 
+.ui-datepicker .ui-datepicker-title select {
+    color: #fff;
+}
+
 .wcp-page h1, .wcp-page h2, .wcp-page h3, .wcp-page h4, .wcp-page h5, .wcp-page h6 {
 	font-size: 1.5em;
 	color: rgba(0,0,0,0.54);

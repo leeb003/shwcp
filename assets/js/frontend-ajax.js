@@ -267,8 +267,22 @@ jQuery(function ($) {  // use $ for jQuery
 
 			$('.date-choice').datetimepicker({
             	dateFormat : WCP_Ajax.dateFormat,
-				timeFormat : WCP_Ajax.timeFormat
+				timeFormat : WCP_Ajax.timeFormat,
+				changeYear: true,
+			    yearRange: '-150:+50'
         	});
+			// Since date-choice is essentially a nested modal it's enforceFocus method
+			// must be no-op'd or the following error results 
+			// "Uncaught RangeError: Maximum call stack size exceeded"
+			// But then when the nested modal is hidden we reset modal.enforceFocus
+			var enforceModalFocusFn = $.fn.modal.Constructor.prototype.enforceFocus;
+			$.fn.modal.Constructor.prototype.enforceFocus = function() {};
+			$('.date-choice').on('hidden', function() {
+    			$.fn.modal.Constructor.prototype.enforceFocus = enforceModalFocusFn;
+			});
+			$('.date-choice').modal({ backdrop : false });
+
+
 			$('.shwcp-rating').rateit();
     };
 
@@ -1975,7 +1989,9 @@ jQuery(function ($) {  // use $ for jQuery
 	$(document).ready(function() {
 		$('.date-choice').datetimepicker({
 			dateFormat : WCP_Ajax.dateFormat,
-			timeFormat : WCP_Ajax.timeFormat
+			timeFormat : WCP_Ajax.timeFormat,
+			changeYear: true,
+			yearRange: '-150:+50'
 		});
 	});
 

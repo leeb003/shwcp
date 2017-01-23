@@ -36,7 +36,13 @@ if ( ! function_exists( '_wp_render_title_tag' ) ) {
 <?php wp_footer(); ?>
 
 <?php /* User generated js */ 
-$first_tab = get_option('shwcp_main_settings');
+
+$db = '';
+$database = get_post_meta(get_the_ID(), 'wcp_db_select', true);
+if ($database && $database != 'default') {
+	$db = '_' . $database;
+}
+$first_tab = get_option('shwcp_main_settings' . $db);
 ?>
 <?php if (isset($first_tab['custom_js']) && trim($first_tab['custom_js']) != '') { ?>
     <script>
