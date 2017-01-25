@@ -32,6 +32,19 @@ management.
 
 == Changelog ==
 
+= 3.0.4 =
+* API Action hooks small fix to send all fields and not just front page ones
+* on insert and update
+
+= 3.0.3 =
+* Fix for CF7 deprectated notice
+* Fix for php version 7 and break command on excel export
+* Fix for custom javascript applying to correct database
+* Year dropdown selector for datetime field types added.
+
+= 3.0.1 =
+* WP Contacts RESTful API Integration!
+
 = 2.1.2 =
 * Fix for individual lead display for Publicly accessible set up and
 * non-logged-in users

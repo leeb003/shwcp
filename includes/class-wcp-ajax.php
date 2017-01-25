@@ -385,15 +385,24 @@
 						'db_name'    => $this->first_tab['database_name'],
                         'settings'   => $this->first_tab,
                     );
+					// get all entry fields for sending ($output_fields above is filtered)
+                    $all_fields = $wpdb->get_row( $wpdb->prepare(
+                        "
+                        SELECT l.*
+                        FROM $this->table_main l
+                        WHERE l.id = %d;
+                        ",
+                        $lead_id
+                    ));
 					if ($new) {
 						$event = __('Added Entry', 'shwcp');
 						// new entry translate fields and action hook
-						$translated_fields = $this->shwcp_return_entry($output_fields, $lead_id, $sorting, $sst);
+						$translated_fields = $this->shwcp_return_entry($all_fields, $lead_id, $sorting, $sst);
 						do_action('wcp_add_entry_action', $translated_fields, $environment);
 					} else {
 						$event = __('Updated Entry', 'shwcp');
 						// updated entry action hook
-						$translated_fields = $this->shwcp_return_entry($output_fields, $lead_id, $sorting, $sst);
+						$translated_fields = $this->shwcp_return_entry($all_fields, $lead_id, $sorting, $sst);
                         do_action('wcp_update_entry_action', $translated_fields,$environment); 
 					}
 					$output_string = implode(', ', $output_fields);
