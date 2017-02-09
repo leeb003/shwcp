@@ -898,7 +898,7 @@
 						" 
 						SELECT notes.*, user.user_login
 						from $this->table_notes notes, {$wpdb->base_prefix}users user
-						WHERE `lead_id`={$v['value']}
+						WHERE `lead_id`={$v['value']} AND user.ID=notes.creator
 						order by date_added asc
 						"
 					);

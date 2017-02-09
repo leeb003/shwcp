@@ -2023,15 +2023,54 @@ jQuery(function ($) {  // use $ for jQuery
 	$(document).ready(function() {
 		$('.allrows').attr('checked', true);
 		$('.rowrange').attr('checked', false);
+		$('.rowfilter').attr('checked', false);
 		$('.range-select').hide();
+		$('.filter-select').hide();
+		$('.add-filter-row').hide();
 	});
 	$(document).on('click', '.rowrange', function() {
 		$('.range-select').slideDown();
+		$('.filter-select').slideUp();
+		$('.add-filter-row').slideUp();
 		$('.allrows').attr('checked', false);
+		$('.rowfilter').attr('checked', false);
 	});
 	$(document).on('click', '.allrows', function() {
 		$('.rowrange').attr('checked', false);
+		$('.rowfilter').attr('checked', false);
+		$('.filter-select').slideUp();
 		$('.range-select').slideUp();
+		$('.add-filter-row').slideUp();
+	});
+	$(document).on('click', '.rowfilter', function() {
+		$('.rowrange').attr('checked', false);
+		$('.allrows').attr('checked', false);
+		$('.filter-select').slideDown();
+		$('.add-filter-row').slideDown();
+		$('.range-select').slideUp();
+	});
+
+	// Add export filter
+	$(document).on('click', '.add-filter', function() {
+		var filterVal = $(this).closest('.export-form').find('.filter-val:first').closest('.input-field').html();
+		var filterSel = $(this).closest('.export-form').find('.filter-sel').html();
+		var filterSelLabel = $(this).closest('.export-form').find("label[for='filter-sel']:first").text();
+		var removeText = $(document).find('.remove-filter-text').text();
+		var randomClass = 'select' + (new Date().getTime());
+		var html = '<div class="row filter-select filter-entry"><div class="col-md-4"><div class="input-field">' 
+				+ '<label for="filter-sel">' + filterSelLabel 
+				+ '</label><select class="filter-sel input-select ' + randomClass + '" name="filter-sel[]">' 
+				+ filterSel + '</select>'
+				+ '</div></div><div class="col-md-4"><div class="input-field">' + filterVal + '</div></div>'
+				+ '<div class="col-md-4"><a href="#" class="remove-filter">' + removeText + '</a></div></div>';
+		$(html).insertAfter('.filter-entry:last').hide().slideDown();
+		selectFieldGenerate(randomClass);
+	});
+
+	// Remove export filter
+	$(document).on('click', '.remove-filter', function() {
+		$(this).closest('.row').slideUp("normal", function() { $(this).remove(); });
+		return false;
 	});
 
 	// Export Check All

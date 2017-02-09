@@ -164,8 +164,9 @@ jQuery(function ($) {  // use $ for jQuery
 
 
 
-	window.selectFieldGenerate = function() {
-		$('.input-select').each(function(){
+	window.selectFieldGenerate = function(theClass) {
+		theClass = theClass || 'input-select'; // this is so we can override for single select items
+		$('.' + theClass).each(function(){
         	var $this = $(this), numberOfOptions = $(this).children('option').length;
 			var disabled = $(this).prop('disabled');
 			var disabledClass = '';

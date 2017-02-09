@@ -30,6 +30,7 @@
 
 			// Row Range export
 			$range = '';
+			$filter = '';
 			if (isset($_POST['rowrange'])) {
 				$fromrow = abs(intval($_POST['fromrow']));
 				$torow = abs(intval($_POST['torow']));
@@ -37,8 +38,57 @@
 					$torow = $fromrow;
 				}
 				$range = "AND l.id BETWEEN $fromrow AND $torow";
+			} elseif (isset($_POST['rowfilter'])) { // Filtering
+				$filter_sel = $_POST['filter-sel'];
+				$filter_val = $_POST['filter-val'];
+				$sorting = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_ind_number asc");
+				//$sst     = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
+				$i = 0;
+				$field_array = array();
+				foreach ($filter_sel as $k => $v) {
+					// build arrays to check for type 10 (dropdowns) as they need to be treated like ssts
+					foreach ($sorting as $k2 => $v2) {
+						if ($v == $v2->orig_name) {
+							$field_array[] = array(
+								'translated_name' => $v2->translated_name,
+								'orig_name'       => $v2->orig_name,
+								'field_type'      => $v2->field_type,
+								'query_val'       => $filter_val[$i]
+							);
+							$i++;
+						}
+					}
+				}
+				foreach ($field_array as $k => $v) {
+					if ('l_source'    == $v['orig_name']          // ssts & dropdowns
+                    	|| 'l_status' == $v['orig_name']
+                    	|| 'l_type'   == $v['orig_name']
+						|| 10         == $v['field_type']
+                	) {
+						$matches = $wpdb->get_results("SELECT * from $this->table_sst where sst_name like '%" 
+								 . $v['query_val'] . "%'");
+						// build query
+						$len = count($matches);
+						$i = 0;
+						$filter .= 'AND l.' . $v['orig_name'] . ' IN (';
+						foreach($matches as $mk => $mv) {
+							$filter .= "'" . $mv->sst_id . "'";
+							if ($i != $len -1 ) {  // not the last one add a comma
+								$filter .= ', ';
+							}
+							$i++;
+						}
+						$filter .= ')';
+					} else { // other fields
+						$filter .= "AND l." . $v['orig_name'] . " like '%" . $v['query_val'] . "%'";
+					}
+					$filter .= "\n";
+				}
+				//print_r($filter);
+				//echo "\n";
+				//print_r($field_array);
+				//die();
 			}
-
 
 			// nonce check
 			$nonce = isset($_POST['export-nonce']) ? $_POST['export-nonce'] : '';
@@ -79,6 +129,7 @@
                     FROM $this->table_main l, $this->table_sst sst1, $this->table_sst sst2, $this->table_sst sst3
                     WHERE l.l_source = sst1.sst_id
 					$range
+					$filter
                     AND l.l_status = sst2.sst_id
                     AND l.l_type = sst3.sst_id
 					$ownleads

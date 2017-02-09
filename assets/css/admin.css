@@ -129,3 +129,9 @@ form #submit {
 	color: #777;
 	display:inline-block;
 }
+.wcp_users {
+	width: 100%;
+}
+.wcp_users th, .wcp_users td {
+	padding: 10px 10px;
+}

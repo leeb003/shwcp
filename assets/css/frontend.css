@@ -1405,6 +1405,10 @@ i.option-sort {
 	padding: 10px;
 }
 
+i.add-filter {
+	cursor: pointer;
+}
+
 /* End Import & Export */
 
 /* Statistics */

@@ -865,6 +865,12 @@ class SHWCP_API_Tabs {
 	 */
 	 function field_user_permission() {
 			$users = get_users();
+			$access_levels = array(
+				'none'     => __('No Access', 'shwcp'),
+				'readonly' => __('Read Only', 'shwcp'),
+				'ownleads' => __('Manage Own Leads', 'shwcp'),
+				'full'     => __('Full Access', 'shwcp')
+			);
 			//print_r($users);
 			?>
 			<table class="wcp_users">
@@ -879,15 +885,14 @@ class SHWCP_API_Tabs {
 				?>
 				<tr class="row<?php echo $i&1;?>">
 					<td><?php echo $user->user_login; ?> </td>
-					<td> 
-						<input type="radio" name="<?php echo $this->permission_settings_key_db;?>[permission_settings][<?php echo $user->ID; ?>]" value="none" <?php checked( $user_perm, 'none');?> >
-                        <?php echo __('No Access', 'shwcp');?><br />
-						<input type="radio" name="<?php echo $this->permission_settings_key_db;?>[permission_settings][<?php echo $user->ID; ?>]" value="readonly" <?php checked( $user_perm, 'readonly');?> >
-						<?php echo __('Read Only', 'shwcp');?><br />
-						<input type="radio" name="<?php echo $this->permission_settings_key_db;?>[permission_settings][<?php echo $user->ID; ?>]" value="ownleads" <?php checked( $user_perm, 'ownleads');?>>
-						<?php echo __('Manage Own Leads', 'shwcp');?><br />
-						<input type="radio" name="<?php echo $this->permission_settings_key_db;?>[permission_settings][<?php echo $user->ID; ?>]" value="full" <?php checked( $user_perm, 'full');?>>
-						<?php echo __('Full Access', 'shwcp');?><br />
+					<td><select class="permission-level permission-level-<?php echo $user->ID;?>" 
+		name="<?php echo $this->permission_settings_key_db;?>[permission_settings][<?php echo $user->ID; ?>]">
+				<?php 
+				foreach ($access_levels as $av => $an) {
+				?>
+							<option value="<?php echo $av;?>" <?php selected ($user_perm, $av);?>><?php echo $an;?></option>
+				<?php } ?>
+						</select>
 					</td>
 				</tr>
 			<?php } ?>

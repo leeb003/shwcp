@@ -66,23 +66,45 @@
 
 
 			// Export
+			$filter_fields = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_ind_number asc"); 
 			$content .= '<div class="export-container" id="export-container">'
 					  . '<h3>' . __('Export Entries', 'shwcp') . '</h3>'
-					  . '<p>' . __('Export All Rows or ID Range', 'shwcp') . '</p>'
+					  . '<p>' . __('Export All Rows, ID Range, or Filter Export', 'shwcp') . '</p>'
 					  . '<form action="' . admin_url() . 'admin-post.php" class="export-form" method="post">'
 					  . '<p><input type="checkbox" id="allrows" class="allrows" name="allrows" /><label for="allrows">' 
 					  . __('All Rows', 'shwcp') . '</label> &nbsp;&nbsp;&nbsp; <input type="checkbox" id="rowrange"'
-					  . ' class="rowrange" name="rowrange" /><label for="rowrange">' . __('ID Range', 'shwcp') . '</label></p>'
-
-					  . '<div class="row range-select"><div class="col-md-6">'
+					  . ' class="rowrange" name="rowrange" /><label for="rowrange">' . __('ID Range', 'shwcp') . '</label>'
+					  . ' &nbsp;&nbsp;&nbsp; <input type="checkbox" id="rowfilter" class="rowfilter" name="rowfilter" />'
+					  . ' <label for="rowfilter">' . __('Filter Export', 'shwcp') 
+					  . '</label></p>'
+					  . '<div class="row range-select"><div class="col-md-4">'
 					  . '<div class="input-field"><label for="fromrow">' . __('From ID', 'shwcp') . '</label>'
 					  . '<input class="fromrow" id="fromrow" name="fromrow" value="1" type="text" />'
 					  . '</div></div>'
 						
-					  . '<div class="col-md-6">'
+					  . '<div class="col-md-4">'
                       . '<div class="input-field"><label for="torow">' . __('To ID', 'shwcp') . '</label>'
                       . '<input class="torow" id="torow" name="torow" value="1" type="text" />'
                       . '</div></div></div>'
+
+					  . '<div class="row add-filter-row">'
+					  . '<div class="col-md-12"><i class="add-filter wcp-md md-add" title="' 
+                      . __('Add Filter', 'shwcp') . '"></i></div>'
+					  . '</div>'
+					   . '<div class="row filter-select filter-entry"><div class="col-md-4">'
+					  . '<div class="input-field"><label for="filter-sel">' . __('Select Field', 'shwcp') . '</label>'
+					  . '&nbsp;&nbsp;&nbsp;<select class="filter-sel input-select" name="filter-sel[]">';
+			foreach ($filter_fields as $k => $v) {
+				$content .= '<option value="' . $v->orig_name . '">' . $v->translated_name . '</option>';
+			}
+			$content .= '</select>'
+					  . '</div></div>'
+					  . '<div class="col-md-4">'
+					  . '<div class="input-field"><label for="filter-val">' . __('Filter', 'shwcp') . '</label>'
+					  . '<input class="filter-val" name="filter-val[]" type="text" />'
+					  . '</div></div>'
+					  .'</div><!-- End Row -->'
+					  . '<div class="remove-filter-text" style="display:none;">' . __('Remove', 'shwcp') . '</div>'
 
 					  . '<hr>'
 					  . '<p>' . __('Select the Columns to export', 'shwcp') . '</p>'
