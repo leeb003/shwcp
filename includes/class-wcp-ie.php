@@ -119,7 +119,9 @@
 			$cut = ceil($fields_total / 3);
 			$i = 1;
 			foreach ($export_fields as $k => $v) {
-				if ($v->field_type != 99) {
+				if ($v->field_type != 99 
+					&& $v->orig_name != 'lead_files'
+				) {
 					$content .= '<p><input type="checkbox" id="' . $v->orig_name 
 						 . '" class="export-field" name="fields[' . $v->orig_name . ']" />' 
 						 . '<label for="' . $v->orig_name . '">' . stripslashes($v->translated_name) . '</label></p>';
