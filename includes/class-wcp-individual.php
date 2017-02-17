@@ -92,7 +92,10 @@ class wcp_individual extends main_wcp {
 			$v = stripslashes($v);
 			$match = false;
 			foreach ($sorting as $k2 => $v2) {
-				if ($v2->orig_name == $k) {
+				if ($v2->orig_name == 'lead_files') {
+					// skip since we already have them on individual
+
+				} elseif ($v2->orig_name == $k) {
 					$non_edit_trans[$k]['value'] = $v;
 					$non_edit_trans[$k]['trans'] = $v2->translated_name;
 					$non_edit_trans[$k]['orig_name'] =  $v2->orig_name;
@@ -274,7 +277,7 @@ EOC;
 							if ($v['value'] == $v2->sst_id) { // selected
 								$lead_content .= <<<EOC
 
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<span class="non-edit-label">{$v['trans']}</span>
 											<span class="non-edit-value $k">$v2->sst_name</span>
 										</div>
@@ -297,7 +300,7 @@ EOC;
 						$value = $v['value'];
 					}
 					$lead_content .= <<<EOC
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<span class="non-edit-label">{$v['trans']}</span>
 											<span class="non-edit-value $k">$value</span>
 										</div>
@@ -335,7 +338,7 @@ EOC;
 							if ($v['value'] == $v2->sst_id) { // selected
 								$lead_content .= <<<EOC
 
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<span class="non-edit-label">{$v['trans']}</span>
 											<span class="non-edit-value $k">$v2->sst_name</span>
 										</div>
@@ -359,7 +362,7 @@ EOC;
 									$display_date = date("$this->date_format $this->time_format", strtotime($v['value']));
 								}
 								$lead_content .= <<<EOC
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<div class="non-edit-holder">
 												<span class="non-edit-label">$clean_trans</span>
 												<span class="non-edit-value $k">$display_date</span>
@@ -370,7 +373,7 @@ EOC;
 							} elseif ($sv->field_type == '8') { // Star Rating
 								$rating = floatval($v['value']);
 								$lead_content .= <<<EOC
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<div class="non-edit-holder">
 												<span class="non-edit-label">$clean_trans</span><br />
 												<div class="rateit bigstars" data-rateit-ispreset="true" data-rateit-value="$rating"
@@ -386,7 +389,7 @@ EOC;
 									$checked = 'checked="checked"';
 								}
 								$lead_content .= <<<EOC
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<div class="input-field">
 												<label for="$k">$clean_trans</label>
 												<input class="checkbox $k" id="$k" type="checkbox" $checked $disabled />
@@ -405,7 +408,7 @@ EOC;
 									}
 								}
 								$lead_content .= <<<EOC
-									<div class="col-md-6">
+									<div class="col-md-6 $k-col">
 										<span class="non-edit-label">$sv->translated_name</span>
 										<span class="non-edit-value $sv->orig_name">$entry</span>
 									</div>
@@ -422,7 +425,7 @@ EOC;
 
 							} else {  // All the others
 								$lead_content .= <<<EOC
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<div class="non-edit-holder">
 												<span class="non-edit-label">$clean_trans</span>
 												<span class="non-edit-value $k">{$v['value']}</span>
@@ -455,7 +458,7 @@ EOC;
 				) {
 					$lead_content .= <<<EOC
 
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<div class="input-field">
 												<label for="$k">{$v['trans']}</label>
 												<select id="$k" class="lead_select $k input-select">
@@ -497,7 +500,7 @@ EOC;
 					} else {
 						$lead_content .= <<<EOC
 
-										<div class="col-md-6">
+										<div class="col-md-6 $k-col">
 											<div class="input-field"><label for="$k">{$v['trans']}</label>
 												<select class="lead_select $k input-select">
 
@@ -531,7 +534,7 @@ EOC;
 								|| $sv->field_type == '6'
 							) {  // Textarea, or Map Address
 								$field_type = <<<EOC
-													<div class="col-md-6">
+													<div class="col-md-6 $k-col">
 														<div class="input-field">
 															<label for="$k">$clean_trans</label>
 															<textarea class="lead_field $k materialize-textarea">{$v['value']}</textarea>
@@ -544,7 +547,7 @@ EOC;
 									$display_date = date("$this->date_format $this->time_format", strtotime($v['value']));
 								}
 								$field_type = <<<EOC
-													<div class="col-md-6">
+													<div class="col-md-6 $k-col">
 														<div class="input-field">
 															<label for="$k">$clean_trans</label>
 															<input class="lead_field $k date-choice" value="$display_date"
@@ -555,7 +558,7 @@ EOC;
 							} elseif($sv->field_type == '8') { // Star Rating field
 								$rateval = floatval($v['value']);
 								$field_type = <<<EOC
-													<div class="col-md-6">
+													<div class="col-md-6 $k-col">
 														<div class="input-field">
 															<label for="$k">$clean_trans</label>
 															<div class="shwcp-rating rateit bigstars" data-rateit-starwidth="32"
@@ -573,7 +576,7 @@ EOC;
 									$checked = 'checked="checked"';
 								}
 								$field_type = <<<EOC
-													<div class="col-md-6">
+													<div class="col-md-6 $k-col">
 														<div class="input-field">
 															<label for="$k">$clean_trans</label>
 															<input class="checkbox $k" id="$k" type="checkbox" $checked />
@@ -584,7 +587,7 @@ EOC;
 EOC;
 							} elseif ($sv->field_type == '10') { // Dropdown
 								$field_type = <<<EOC
-													<div class="col-md-6">
+													<div class="col-md-6 $k-col">
 														<div class="input-field">
 															<label for="$k">$clean_trans</label>
 															<select id="$k" class="lead_select $k input-select">
@@ -609,7 +612,7 @@ EOC;
 
 							} elseif ($sv->field_type == '99') { // Group Title
 								$field_type = <<<EOC
-													<div class="col-md-12">
+													<div class="col-md-12 $k-col">
 														<div class="input-field fields-grouptitle">
 															<h3 for="$k">$clean_trans</h3>
 															<input class="lead_field $k" value="" type="hidden" />
@@ -622,7 +625,7 @@ EOC;
 
 					if (!$field_type) {  // default
 						$field_type = <<<EOC
-											<div class="col-md-6">
+											<div class="col-md-6 $k-col">
 												<div class="input-field">
 													<label for="$k">$clean_trans</label>
 													<input class="lead_field $k" value="{$v['value']}" type="text" />

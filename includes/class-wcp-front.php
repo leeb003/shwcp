@@ -118,7 +118,16 @@
 					wp_register_style('fullcalendar', SHWCP_ROOT_URL . '/assets/css/fullcalendar.css');
 					wp_enqueue_style('fullcalendar');
 				}
-
+				// introjs for demo site
+				/*
+				$url = $_SERVER['HTTP_HOST'];
+				if ($url == 'demo.sh-themes.com' || $url == 'php56host.com') {
+					wp_register_style('introjs', SHWCP_ROOT_URL . '/assets/css/introjs/introjs.css');
+					wp_enqueue_style( 'introjs');
+					wp_register_style('introjs-theme', SHWCP_ROOT_URL . '/assets/css/introjs/introjs-nassim.css');
+					wp_enqueue_style( 'introjs-theme');
+				}
+				*/
 				// dynamic css
 				global $post; // send post id for database style selection
 				wp_register_style('dynamic-css', 
@@ -404,6 +413,17 @@
 				// mprogress
 				wp_register_script( 'shwcp-mprogress', SHWCP_ROOT_URL . '/assets/js/mprogress.js', array( 'jquery' ), '1', $load_footer);
 				wp_enqueue_script( 'shwcp-mprogress' );
+
+				// introjs for guided tour
+				/*
+				$url = $_SERVER['HTTP_HOST'];
+				if ($url == 'demo.sh-themes.com' || $url == 'php56host.com') {
+					wp_register_script( 'introjs', SHWCP_ROOT_URL . '/assets/js/introjs/intro.js', array('shwcp-mprogress' ), '2.4.0', $load_footer);
+					wp_enqueue_script( 'introjs' );
+					wp_register_script( 'introjs-config', SHWCP_ROOT_URL . '/assets/js/introjs/intro-config.js', array('introjs' ), '2.4.0', $load_footer);
+                    wp_enqueue_script( 'introjs-config' );
+				}
+				*/
             }
         } // End enqueue_scripts 
 
@@ -432,18 +452,27 @@
 			// Menu translation
 			$home_menu = __('Home', 'shwcp'); // used in drawer menu
 			$home = __('Home', 'shwcp');
+
+			$dd_filter = false; // check for Dropdown filters as well
+			foreach($_GET as $key=>$value){
+  				if("extra_column_" == substr($key,0,13)){
+					$dd_filter = true;
+  				}
+			}
+
 			if ( !isset($_GET['wcp']) || $_GET['wcp'] == 'logging') {  // only for main view and logs
 				if( isset($_GET['wcp_search']) 
 					|| isset($_GET['st']) 
 					|| isset($_GET['ty']) 
 					|| isset($_GET['so'])
 					|| isset($_GET['wcp_search'])
+					|| $dd_filter
 				) {	
 					$home = __('Clear Filters', 'shwcp');
 				}
 			}
 			$main_page = __('All Entries', 'shwcp');
-			$page_front = __('Front Page Sorting', 'shwcp');
+			$page_front = __('Manage Front Page', 'shwcp');
 			$page_front_arg = add_query_arg( array('wcp' => 'frontsort'), get_permalink() );
 			$page_fields = __('Manage Fields', 'shwcp');
 			$page_fields_arg = add_query_arg( array('wcp' => 'fields'), get_permalink() );
@@ -469,6 +498,8 @@
             $lost_password_text = __('Lost Your Password?', 'shwcp');
             $logout_url = wp_logout_url( get_permalink());
             $logout_url_text = __('Logout', 'shwcp');
+			$current_user_login = wp_get_current_user();
+			$current_user_login = $current_user_login->user_login;
             $login_text = __('Login', 'shwcp');
             $default_text = isset($this->first_tab['page_greeting']) ? $this->first_tab['page_greeting'] : '';
 
@@ -482,12 +513,14 @@
 			if (is_user_logged_in()) {
                 $login_link .= <<<EOC
 	<div class="login-link">
-       	<a class="login_button" href="$logout_url">$logout_url_text</a>
+		<i class="login-icon md-person-outline wcp-white"></i>
+       	<p class="logged-in-as">$current_user_login</p><a class="login_button" href="$logout_url">$logout_url_text</a>
 	</div>
 EOC;
             } else {
                 $login_link .= <<<EOC
 	<div class="login-link">
+		<i class="login-icon md-person-outline wcp-white"></i>
        	<a class="login_button" id="show_login" href="">$login_text</a>
 	</div>
 EOC;
@@ -496,9 +529,9 @@ EOC;
 
 			if ($this->can_access ) {  // general access to the leads
         		if ('frontsort' == $this->curr_page) {  // Front fields sorting
-					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-front-sort.php');
-					$wcp_front_sort = new wcp_front_sort;
-					$this->main_section = apply_filters('wcp_front_sort_filter', $wcp_front_sort->get_front_sorting());
+					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-front-manage.php');
+					$wcp_front_manage = new wcp_front_manage;
+					$this->main_section = apply_filters('wcp_front_sort_filter', $wcp_front_manage->get_front_sorting());
         		} elseif ('fields' == $this->curr_page) { // Field setup
 					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-fields.php');
 					$wcp_fields = new wcp_fields();
@@ -531,18 +564,18 @@ EOC;
 					$wcp_logging = new wcp_logging();
 					$this->main_section = apply_filters('wcp_logging_filter', $wcp_logging->log_entries());
 					$bar_tools = '<div class="bar-tools">'
-						. '<i class="remove-all-logs wcp-white wcp-md md-remove-circle-outline" title="'
-						. __('Remove all log entries', 'shlcm') . '"> </i>'
 						. '<div class="log-search">'
                         . '<input class="log-search-input" placeholder="' . __('Search', 'shwcp') . '" type="search" value="" />'
-                        . '</div></div>';
+                        . '</div>'
+						. '<div class="remove-holder"><i class="remove-all-logs wcp-white wcp-sm md-remove-circle-outline" title="'
+                        . __('Remove all log entries', 'shlcm') . '"> </i></div></div>';
 				} elseif ('events' == $this->curr_page) { // Events
 					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-events.php');
 					$wcp_events = new wcp_events();
 					$this->main_section = apply_filters('wcp_events_filter', $wcp_events->show_events());
 					if ($this->can_edit) {
 						$bar_tools = '<div class="bar-tools">'
-								. '<i class="add-edit-event wcp-white wcp-md md-add" title="' . __('Add New Event', 'shwcp')
+								. '<i class="add-edit-event wcp-white wcp-sm md-add" title="' . __('Add New Event', 'shwcp')
 								. '"> </i></div>';
 					}
 				} else { // get the default view
@@ -795,8 +828,8 @@ EOC;
             if ($this->can_edit
 				&& $this->curr_page != 'entry'
 			) {
-                $top_search .= '<i class="add-lead wcp-white wcp-md md-add" title="' . __('Add Entry', 'shwcp')
-                            . '"> </i>';
+                $top_search .= '<div class="add-holder"><i class="add-lead wcp-white wcp-sm md-add hidden-xs" title="' 
+					. __('Add Entry', 'shwcp') . '"> </i></div>';
             }
 
             $top_search .= '</div>';

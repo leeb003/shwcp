@@ -60,6 +60,55 @@ class db_updater {
                     	"
                 	);
             	}
+				/******************************** 3.0.5 *******************************/
+				$front_filter_exists = $wpdb->get_var(
+					"
+                    SELECT `COLUMN_NAME`
+                    FROM `INFORMATION_SCHEMA`.`COLUMNS`
+                    WHERE `TABLE_SCHEMA`='$wpdb->dbname'
+                    AND `TABLE_NAME`='$sort_table'
+                    AND `COLUMN_NAME`='front_filter_active'
+                    "
+                );
+				if (!$front_filter_exists) { // front_filter_active is not present add it - since 3.0.5
+					$wpdb->query("ALTER TABLE $sort_table add column front_filter_active int(11) NOT NULL DEFAULT '0'");
+				}
+				$front_filter_sort_exists = $wpdb->get_var(
+                    "
+                    SELECT `COLUMN_NAME`
+                    FROM `INFORMATION_SCHEMA`.`COLUMNS`
+                    WHERE `TABLE_SCHEMA`='$wpdb->dbname'
+                    AND `TABLE_NAME`='$sort_table'
+                    AND `COLUMN_NAME`='front_filter_sort'
+                    "
+                );
+                if (!$front_filter_sort_exists) { // front_filter_sort is not present add it - since 3.0.5
+                    $wpdb->query("ALTER TABLE $sort_table add column front_filter_sort int(11) NOT NULL DEFAULT '0'");
+					// and set the defaults shown for source, status and type (if they weren't set up previously)
+				
+					$wpdb->update(
+                    	$sort_table,
+                    	array( 'front_filter_active' => 1, 'front_filter_sort' => 1 ),
+                    	array( 'orig_name' => 'l_source' ),
+                    	array( '%d', '%d' ),
+                    	array( '%s' )
+                	);
+					$wpdb->update(
+                    	$sort_table,
+                    	array( 'front_filter_active' => 1, 'front_filter_sort' => 2 ),
+                    	array( 'orig_name' => 'l_status' ),
+                    	array( '%d', '%d' ),
+                    	array( '%s' )
+                	);
+					$wpdb->update(
+                    	$sort_table,
+                    	array( 'front_filter_active' => 1, 'front_filter_sort' => 3 ),
+                    	array( 'orig_name' => 'l_type' ),
+                    	array( '%d', '%d' ),
+                    	array( '%s' )
+               		);
+				}
+
         	}	
 		}	/* End Sort Table Changes */
 

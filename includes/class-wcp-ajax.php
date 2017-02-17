@@ -335,19 +335,52 @@
 						);
 					}
 
-					$created_by = $wpdb->get_var("SELECT created_by FROM $this->table_main where id=$lead_id");
+					$created_by    = $wpdb->get_var("SELECT created_by FROM $this->table_main where id=$lead_id");
 					$creation_date = $wpdb->get_var("SELECT creation_date FROM $this->table_main where id=$lead_id");
-					$updated_info = get_userdata($this->current_user->ID);
-					$updated_by = $updated_info->user_login;
+					$lead_files    = $wpdb->get_var("SELECT lead_files FROM $this->table_main where id=$lead_id");
+					$updated_info  = get_userdata($this->current_user->ID);
+					$updated_by    = $updated_info->user_login;
 
 					// add in the extra fields to send back
 					$field_vals['id'] = $lead_id;
 					$field_vals['created_by'] = $created_by;
 					$field_vals['creation_date'] = $creation_date;
+					// files display
+					$max_display = 4;
+                    $file_data = unserialize($lead_files);
+                    $td_content = '<div class="files-preview">';
+                    $count = count($file_data);
+                    $inc = 1;
+                    if (isset($file_data[0])) { // check that we have at least 1 file
+                    	foreach ($file_data as $fk => $fv) {
+                        	$file = $fv['name'];
+                            $ext  = pathinfo($file, PATHINFO_EXTENSION);
+                            $ext  = strtolower($ext);
+                            $file_url = $shwcp_upload_url . '/' . $lead_id . '-files' . '/' . $file;
+                            // check for filetype image existing and link to default if it doesn't
+                            $preview_image_loc = SHWCP_ROOT_PATH . '/assets/img/filetypes/' . $ext . '.png';
+                            if ( !file_exists($preview_image_loc) ) {
+                            	$preview_image_url = SHWCP_ROOT_URL . '/assets/img/filetypes/raw.png';
+                            } else {
+                                $preview_image_url = SHWCP_ROOT_URL . '/assets/img/filetypes/' . $ext . '.png';
+                            }
+                            $td_content .= '<div><a href="' . $file_url . '" title="' . $file
+                                        . '" target="_blank"><img src="' . $preview_image_url . '" /></a></div>';
+                            $inc++;
+                            if ($inc > $max_display) {
+                            	$td_content .= '<div>...</div>';
+                                break;
+                            }
+                        }
+                    }
+                    $td_content .= '</div>';
+
+					$field_vals['lead_files'] = $td_content;
+
 
 					foreach ($sorting as $k => $v) {	
 						foreach ($field_vals as $k2 => $v2) {
-							$v2 = stripslashes($v2);
+							$v2 = is_array($v2) ? $v2 : stripslashes($v2);
 							if ($k2 == $v->orig_name && $v->sort_active == '1') {
 								if ($v->orig_name == 'l_source') {
 									$output_fields[$k2] = $l_source;
@@ -405,7 +438,14 @@
 						$translated_fields = $this->shwcp_return_entry($all_fields, $lead_id, $sorting, $sst);
                         do_action('wcp_update_entry_action', $translated_fields,$environment); 
 					}
-					$output_string = implode(', ', $output_fields);
+					// strip off lead_files for logging
+					$logging_fields = array();
+					foreach($output_fields as $k => $v) {
+						if ($k != 'lead_files') {
+							$logging_fields[$k] = $v;
+						}
+					}
+					$output_string = implode(', ', $logging_fields);
 					$detail = __('Entry ID', 'shwcp') . ' ' . $lead_id . __(' Fields-> ', 'shwcp') . $output_string;
 					$wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
 					$response['lead_id'] = $lead_id;
@@ -476,38 +516,38 @@
 				foreach ($keepers as $k => $v) {
 					foreach ($previous as $k2 => $v2) { // previous sort individual number tracking
 						if ($v2->orig_name == $v['orig_name']) {
-							$sort_ind = $v2->sort_ind_number;
-							$field_type = $v2->field_type;
-							$required_input = $v2->required_input;
+							$sort_ind            = $v2->sort_ind_number;
+							$field_type          = $v2->field_type;
+							$required_input      = $v2->required_input;
+							$front_filter_active = $v2->front_filter_active;
+							$front_filter_sort   = $v2->front_filter_sort;
 						}
 					}
 					$wpdb->insert(
 						$this->table_sort,
 						array(
-							'orig_name' => $v['orig_name'],
-							'translated_name' => $v['translated_name'],
-							'sort_number' => $k,
-							'sort_active' => 1,
-							'sort_ind_number' => $sort_ind,
-							'field_type' => $field_type,
-							'required_input' => $required_input,
+							'orig_name'           => $v['orig_name'],
+							'translated_name'     => $v['translated_name'],
+							'sort_number'         => $k,
+							'sort_active'         => 1,
+							'sort_ind_number'     => $sort_ind,
+							'field_type'          => $field_type,
+							'required_input'      => $required_input,
+							'front_filter_active' => $front_filter_active,
+							'front_filter_sort'   => $front_filter_sort
 						),
-						array(
-							'%s',
-							'%s',
-							'%d',
-							'%d',
-							'%d',
-							'%d'
-						)
+						array('%s','%s','%d','%d','%d','%d','%d','%d','%d')
 					);
 				}
 
                 foreach ($nonkeepers as $k => $v) {
 					foreach ($previous as $k2 => $v2) { // previous sort individual number tracking
                         if ($v2->orig_name == $v['orig_name']) {
-                            $sort_ind = $v2->sort_ind_number;
-							$field_type = $v2->field_type;
+                            $sort_ind            = $v2->sort_ind_number;
+							$field_type          = $v2->field_type;
+							$required_input      = $v2->required_input;
+                            $front_filter_active = $v2->front_filter_active;
+                            $front_filter_sort   = $v2->front_filter_sort;
                         }
                     }
                     $wpdb->insert(
@@ -518,21 +558,53 @@
                             'sort_number' => $k,
                             'sort_active' => 0,
 							'sort_ind_number' => $sort_ind,
-							'field_type' => $field_type
+							'field_type' => $field_type,
+							'required_input'      => $required_input,
+                            'front_filter_active' => $front_filter_active,
+                            'front_filter_sort'   => $front_filter_sort
                         ),
-                        array(
-                            '%s',
-                            '%s',
-                            '%d',
-                            '%d',
-							'%d'
-                        )
+                        array('%s','%s','%d','%d','%d','%d','%d','%d','%d')
                     );
                 }
 				$event = __('Changed Frontend Sorting', 'shwcp');
                 $detail = __('Modified Sort Results', 'shwcp');
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
 				$response['message'] = 'success';
+
+			// Frontend Filters
+			} elseif (isset($_POST['frontend_filter']) && $_POST['frontend_filter'] == 'true') {
+                $keepers    = isset($_POST['keepers']) ? $_POST['keepers'] : array();
+                $nonkeepers = isset($_POST['nonkeepers']) ? $_POST['nonkeepers'] : array();
+				foreach ($keepers as $k2 => $v2) {
+					$wpdb->update(
+                       	$this->table_sort,
+                       	array(
+                           	'front_filter_active' => 1,
+                           	'front_filter_sort'   => $k2
+                       	),
+						array('orig_name' => $v2['orig_name']),
+                       	array('%d','%d'),
+						array('%s')
+                   	);
+				}
+				foreach ($nonkeepers as $k2 => $v2) {
+					$wpdb->update(
+                        $this->table_sort,
+                        array(
+                            'front_filter_active' => 0,
+                            'front_filter_sort'   => $k2
+                        ),
+						array('orig_name' => $v2['orig_name']),
+                        array('%d','%d'),
+                        array('%s')
+                    );
+
+				}
+                $event = __('Changed Frontend Filters', 'shwcp');
+                $detail = __('Modified Front Filters', 'shwcp');
+                $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+                $response['message'] = 'success';
+
 
 			// Manage Dropdowns
 			} elseif (isset($_POST['manage_dropdowns']) && $_POST['manage_dropdowns'] == 'true') {
@@ -798,36 +870,34 @@
 
 
 						// update sorting
-						$sort_active = 0;
-						$sort_front = 0;
+						$sort_active         = 0;
+						$sort_number         = 0;
+						$front_filter_active = 0;
+						$front_filter_sort   = 0;
 						// get the current active status
 						foreach($last_sorting as $k2 => $v2) {
 							if ( $v['orig_name'] == $v2->orig_name ) {
-								$sort_active = $v2->sort_active;
-								$sort_front = $v2->sort_number;
+								$sort_active         = $v2->sort_active;
+								$sort_front          = $v2->sort_number;
+								$front_filter_active = $v2->front_filter_active;
+								$front_filter_sort   = $v2->front_filter_sort;
 							}
 						}
 						$wpdb->insert(
                             $this->table_sort,
                             array(
-                                'orig_name' => $v['orig_name'],
-                                'translated_name' => $v['trans_name'],
-                                'sort_number' => $sort_front,
-                                'sort_active' => $sort_active,
-								'sort_ind_number' => $i,
-								'field_type' => intval($v['field_type']),
-								'required_input' => intval($v['required'])
+                                'orig_name'           => $v['orig_name'],
+                                'translated_name'     => $v['trans_name'],
+                                'sort_number'         => $sort_number,
+                                'sort_active'         => $sort_active,
+								'sort_ind_number'     => $i,
+								'field_type'          => $v['field_type'],
+								'required_input'      => $v['required'],
+								'front_filter_active' => $front_filter_active,
+								'front_filter_sort'   => $front_filter_sort
 
                             ),
-                            array(
-                                '%s',
-                                '%s',
-								'%d',
-                                '%d',
-                                '%d',
-								'%d',
-								'%d'
-                            )
+                            array('%s','%s','%d','%d','%d','%d','%d','%d','%d')
                         );
 						$i++;
 					}

@@ -381,7 +381,7 @@ class SHWCP_API_Tabs {
 		?>
 		<input class="database-name" name="<?php echo $this->first_tab_key_db; ?>[database_name]" 
             value="<?php echo esc_attr( $this->first_tab['database_name'] ); ?>" />
-        <p><?php echo __("The name used to associate the WP Contacts page template with a specific database.  If you have multiple databases, you'll be able to select this on a page that is using the WP Contacts template.", 'shwcp'); ?></p>
+        <p><?php echo __("The name used to associate the WP Contacts page template with a specific database.  If you have multiple databases, you'll be able to select this on a page that is using the WP Contacts template.  This is also used in our api and our Zapier extension.", 'shwcp'); ?></p>
         <?php
     }
 

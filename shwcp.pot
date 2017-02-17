@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Contacts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-21 10:03-0700\n"
+"POT-Creation-Date: 2017-02-16 13:51-0700\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lee Beck <info@scripthat.com>\n"
 "Language-Team: SH-Themes <info@sh-themes.com>\n"
@@ -356,7 +356,7 @@ msgid "All Entries"
 msgstr ""
 
 #: includes/class-wcp-front.php:446
-msgid "Front Page Sorting"
+msgid "Manage Front Page"
 msgstr ""
 
 #: includes/class-wcp-front.php:448
@@ -403,41 +403,44 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: includes/class-wcp-front.php:472
+#: includes/class-wcp-front.php:474
 msgid "Login"
 msgstr ""
 
-#: includes/class-wcp-front.php:535
-msgid "Remove all log entries"
-msgstr ""
-
-#: includes/class-wcp-front.php:537
-#: includes/class-wcp-front.php:792
+#: includes/class-wcp-front.php:539
+#: includes/class-wcp-front.php:796
+#: includes/class-allleads.php:354
 msgid "Search"
 msgstr ""
 
-#: includes/class-wcp-front.php:545
+#: includes/class-wcp-front.php:542
+msgid "Remove all log entries"
+msgstr ""
+
+#: includes/class-wcp-front.php:549
 msgid "Add New Event"
 msgstr ""
 
-#: includes/class-wcp-front.php:557
+#: includes/class-wcp-front.php:561
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: includes/class-wcp-front.php:597
+#: includes/class-wcp-front.php:601
 #: includes/class-wcp-logging.php:169
 msgid "Unknown"
 msgstr ""
 
-#: includes/class-wcp-front.php:603
+#: includes/class-wcp-front.php:607
 msgid "Logo"
 msgstr ""
 
-#: includes/class-wcp-front.php:772
+#: includes/class-wcp-front.php:776
+#: includes/class-allleads.php:560
 msgid "All Fields"
 msgstr ""
 
-#: includes/class-wcp-front.php:798
+#: includes/class-wcp-front.php:803
+#: includes/class-allleads.php:535
 msgid "Add Entry"
 msgstr ""
 
@@ -594,7 +597,7 @@ msgid "Database Actions Available"
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:343
-#: includes/class-wcp-api-tabs.php:931
+#: includes/class-wcp-api-tabs.php:936
 msgid "Backup Database"
 msgstr ""
 
@@ -647,7 +650,7 @@ msgid "If you haven't done so, create a blank page for WP Contacts and assign th
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:384
-msgid "The name used to associate the WP Contacts page template with a specific database.  If you have multiple databases, you'll be able to select this on a page that is using the WP Contacts template."
+msgid "The name used to associate the WP Contacts page template with a specific database.  If you have multiple databases, you'll be able to select this on a page that is using the WP Contacts template.  This is also used in our api and our Zapier extension."
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:396
@@ -748,7 +751,7 @@ msgid "Link URL (e.g. http://www.example.com)"
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:588
-#: includes/class-wcp-api-tabs.php:1206
+#: includes/class-wcp-api-tabs.php:1211
 msgid "Delete"
 msgstr ""
 
@@ -832,186 +835,185 @@ msgstr ""
 msgid "Allow <b>Manage Own Leads</b> users to change lead ownership (hand leads off to other users) ?"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:872
-msgid "WP Username"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:872
-msgid "Access"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:884
+#: includes/class-wcp-api-tabs.php:869
 msgid "No Access"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:886
+#: includes/class-wcp-api-tabs.php:870
 msgid "Read Only"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:888
+#: includes/class-wcp-api-tabs.php:871
 msgid "Manage Own Leads"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:890
+#: includes/class-wcp-api-tabs.php:872
 msgid "Full Access"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:905
+#: includes/class-wcp-api-tabs.php:878
+msgid "WP Username"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:878
+msgid "Access"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:910
 msgid "Variable"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:906
+#: includes/class-wcp-api-tabs.php:911
 msgid "Value"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:908
+#: includes/class-wcp-api-tabs.php:913
 msgid "PHP version running"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:936
+#: includes/class-wcp-api-tabs.php:941
 msgid "Backup Database Now"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:942
+#: includes/class-wcp-api-tabs.php:947
 msgid "This will create a new backup of the current state of your database."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:947
+#: includes/class-wcp-api-tabs.php:952
 msgid "Database has been backed up!"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:952
+#: includes/class-wcp-api-tabs.php:957
 msgid "Please Wait, while the database is backed up."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:978
+#: includes/class-wcp-api-tabs.php:983
 msgid "Restore Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:981
+#: includes/class-wcp-api-tabs.php:986
 msgid "--SELECT--"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:996
+#: includes/class-wcp-api-tabs.php:1001
 msgid "Confirm Database Restore"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1002
+#: includes/class-wcp-api-tabs.php:1007
 msgid "This option will restore a backup of your choice back into the database (and overwrite existing entry data)."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1007
+#: includes/class-wcp-api-tabs.php:1012
 msgid "Database has been Restored!"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1012
+#: includes/class-wcp-api-tabs.php:1017
 msgid "Please Wait, while the database is restored."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1038
+#: includes/class-wcp-api-tabs.php:1043
 msgid "Delete Backup"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1061
+#: includes/class-wcp-api-tabs.php:1066
 msgid "Reset Database to Defaults"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1066
+#: includes/class-wcp-api-tabs.php:1071
 msgid "Confirm Database Reset"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1072
+#: includes/class-wcp-api-tabs.php:1077
 msgid "Warning, this action will clear all entries (and data) and restore the database to default (like a new installation)."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1074
+#: includes/class-wcp-api-tabs.php:1079
 msgid "  Use this only if you want to start over fresh again.  Your Main Settings and Permissions will remain intact."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1078
+#: includes/class-wcp-api-tabs.php:1083
 msgid "Database has been reset to the initial state, you can now go to the frontend and start working with it again."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1097
+#: includes/class-wcp-api-tabs.php:1102
 msgid "WP Contacts"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1114
+#: includes/class-wcp-api-tabs.php:1119
 msgid "Default Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1144
-#: includes/class-wcp-api-tabs.php:1159
+#: includes/class-wcp-api-tabs.php:1149
+#: includes/class-wcp-api-tabs.php:1164
 msgid "Add New Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1146
+#: includes/class-wcp-api-tabs.php:1151
 msgid "Delete Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1160
+#: includes/class-wcp-api-tabs.php:1165
 msgid "New Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1161
+#: includes/class-wcp-api-tabs.php:1166
 msgid "Unique Database Name"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1162
+#: includes/class-wcp-api-tabs.php:1167
 msgid "Add Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1164
+#: includes/class-wcp-api-tabs.php:1169
 msgid "Create an entirely new and separate database.  Afterwards, you can set a page to use this database instead of the default.  You can also customize all settings and configurations separately for each database.  Be sure to provide a concise and unique name for this so you can locate it correctly when assigning to a page."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1165
+#: includes/class-wcp-api-tabs.php:1170
 msgid "Steps to get this database up and running"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1166
+#: includes/class-wcp-api-tabs.php:1171
 msgid "Create the database with a unique name here"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1167
+#: includes/class-wcp-api-tabs.php:1172
 msgid "Configure initial settings and access for the database and save them!"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1168
+#: includes/class-wcp-api-tabs.php:1173
 msgid "Assign the database to a new or existing page using the WP Contacts page template"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1169
+#: includes/class-wcp-api-tabs.php:1174
 msgid "Database has been created!  Go to the menu for WP Contacts and select your new database to start editing it."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1205
+#: includes/class-wcp-api-tabs.php:1210
 msgid "Choose the database you would like to remove and click submit to confirm"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1207
+#: includes/class-wcp-api-tabs.php:1212
 msgid "Delete Existing Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1208
+#: includes/class-wcp-api-tabs.php:1213
 msgid "--Select--"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1212
+#: includes/class-wcp-api-tabs.php:1217
 msgid "Delete unneeded databases.  You cannot delete the default database, but you can reset it to it's default state under the Database tab for managing it."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1213
+#: includes/class-wcp-api-tabs.php:1218
 msgid "Database has been removed."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1376
+#: includes/class-wcp-api-tabs.php:1381
 msgid "Database"
 msgstr ""
 
 #: includes/class-wcp-sst-fields.php:25
 #: includes/class-wcp-ie.php:25
-#: includes/class-wcp-front-sort.php:25
 #: includes/class-wcp-stats.php:17
 #: includes/class-wcp-logging.php:48
 msgid "You do not have access to this page"
@@ -1051,7 +1053,7 @@ msgid "Import Entries"
 msgstr ""
 
 #: includes/class-wcp-ie.php:35
-#: includes/class-wcp-ie.php:70
+#: includes/class-wcp-ie.php:71
 msgid "Export Entries"
 msgstr ""
 
@@ -1087,68 +1089,88 @@ msgstr ""
 msgid "Entries have been imported, you can view and further edit them on the main page"
 msgstr ""
 
-#: includes/class-wcp-ie.php:71
-msgid "Export All Rows or ID Range"
-msgstr ""
-
-#: includes/class-wcp-ie.php:74
-msgid "All Rows"
+#: includes/class-wcp-ie.php:72
+msgid "Export All Rows, ID Range, or Filter Export"
 msgstr ""
 
 #: includes/class-wcp-ie.php:75
+msgid "All Rows"
+msgstr ""
+
+#: includes/class-wcp-ie.php:76
 msgid "ID Range"
 msgstr ""
 
 #: includes/class-wcp-ie.php:78
+msgid "Filter Export"
+msgstr ""
+
+#: includes/class-wcp-ie.php:81
 msgid "From ID"
 msgstr ""
 
-#: includes/class-wcp-ie.php:83
+#: includes/class-wcp-ie.php:86
 msgid "To ID"
 msgstr ""
 
-#: includes/class-wcp-ie.php:88
+#: includes/class-wcp-ie.php:92
+msgid "Add Filter"
+msgstr ""
+
+#: includes/class-wcp-ie.php:95
+msgid "Select Field"
+msgstr ""
+
+#: includes/class-wcp-ie.php:103
+msgid "Filter"
+msgstr ""
+
+#: includes/class-wcp-ie.php:107
+msgid "Remove"
+msgstr ""
+
+#: includes/class-wcp-ie.php:110
 msgid "Select the Columns to export"
 msgstr ""
 
-#: includes/class-wcp-ie.php:90
+#: includes/class-wcp-ie.php:112
 msgid "Check / Uncheck All"
 msgstr ""
 
-#: includes/class-wcp-ie.php:116
+#: includes/class-wcp-ie.php:138
 msgid "Links to Photos"
 msgstr ""
 
-#: includes/class-wcp-ie.php:118
+#: includes/class-wcp-ie.php:140
 msgid "Links to Files"
 msgstr ""
 
-#: includes/class-wcp-ie.php:121
+#: includes/class-wcp-ie.php:143
 msgid "Choose a format:"
 msgstr ""
 
-#: includes/class-wcp-ie.php:123
+#: includes/class-wcp-ie.php:145
 msgid "CSV"
 msgstr ""
 
-#: includes/class-wcp-ie.php:124
+#: includes/class-wcp-ie.php:146
 msgid "Excel"
 msgstr ""
 
-#: includes/class-wcp-ie.php:131
-#: includes/class-wcp-ie.php:141
+#: includes/class-wcp-ie.php:153
+#: includes/class-wcp-ie.php:163
 msgid "Submit"
 msgstr ""
 
-#: includes/class-wcp-ie.php:138
+#: includes/class-wcp-ie.php:160
 msgid "Export your entries to a MailChimp List"
 msgstr ""
 
-#: includes/class-wcp-ie.php:139
+#: includes/class-wcp-ie.php:161
 msgid "As long as your server allows external connections to Mail Chimp, you can add your API Key and choose the list to export entries to, otherwise you can export to csv and upload to MailChimp.  You can retrieve your MailChimp API Key by logging into MailChimp.com and going to Your Account -> Extras -> API Keys."
 msgstr ""
 
-#: includes/class-wcp-ie.php:140
+#: includes/class-wcp-ie.php:162
 msgid "MailChimp API Key"
 msgstr ""
 
@@ -1157,32 +1179,20 @@ msgstr ""
 msgid "CF7 Form Submittal"
 msgstr ""
 
-#: includes/class-form-integration.php:297
-#: includes/class-form-integration.php:299
-#: includes/class-form-integration.php:453
-#: includes/class-form-integration.php:455
+#: includes/class-form-integration.php:301
+#: includes/class-form-integration.php:303
+#: includes/class-form-integration.php:457
+#: includes/class-form-integration.php:459
 msgid "Ninja Form Submittal"
 msgstr ""
 
-#: includes/class-form-integration.php:628
-#: includes/class-form-integration.php:630
+#: includes/class-form-integration.php:632
+#: includes/class-form-integration.php:634
 msgid "Gravity Form Submittal"
 msgstr ""
 
 #: includes/class-paginate.php:23
 msgid "Previous"
-msgstr ""
-
-#: includes/class-wcp-front-sort.php:34
-msgid "Fields To Display On Main View (In Order)"
-msgstr ""
-
-#: includes/class-wcp-front-sort.php:35
-msgid "Fields Not To Display On Main View"
-msgstr ""
-
-#: includes/class-wcp-front-sort.php:36
-msgid "Save Changes"
 msgstr ""
 
 #: includes/class-wcp-stats.php:252
@@ -1242,6 +1252,7 @@ msgid "IP Address"
 msgstr ""
 
 #: includes/class-wcp-logging.php:175
+#: includes/class-allleads.php:479
 msgid "Sort Entries"
 msgstr ""
 
@@ -1249,11 +1260,17 @@ msgstr ""
 #: includes/class-wcp-logging.php:191
 #: includes/class-wcp-logging.php:223
 #: includes/class-wcp-logging.php:233
+#: includes/class-allleads.php:492
+#: includes/class-allleads.php:506
+#: includes/class-allleads.php:622
+#: includes/class-allleads.php:635
 msgid "Sort Descending"
 msgstr ""
 
 #: includes/class-wcp-logging.php:186
 #: includes/class-wcp-logging.php:229
+#: includes/class-allleads.php:501
+#: includes/class-allleads.php:631
 msgid "Sort Ascending"
 msgstr ""
 
@@ -1269,32 +1286,31 @@ msgstr ""
 msgid "WPC Event"
 msgstr ""
 
-#: includes/class-allleads.php:85
+#: includes/class-allleads.php:91
 msgid "All"
 msgstr ""
 
-#: includes/class-allleads.php:311
+#: includes/class-allleads.php:350
 msgid "Total Entries"
 msgstr ""
 
-#: includes/class-allleads.php:312
+#: includes/class-allleads.php:351
 msgid "Check All"
 msgstr ""
 
-#: includes/class-allleads.php:313
+#: includes/class-allleads.php:352
 msgid "Uncheck All"
 msgstr ""
 
-#: includes/class-allleads.php:314
+#: includes/class-allleads.php:353
 msgid "Delete Checked"
 msgstr ""
 
-#: includes/class-allleads.php:528
-#: includes/class-wcp-individual.php:716
+#: includes/class-allleads.php:590
 msgid "No Results Found"
 msgstr ""
 
-#: includes/class-allleads.php:588
+#: includes/class-allleads.php:650
 msgid "Quick Edit"
 msgstr ""
 
@@ -1308,6 +1324,10 @@ msgstr ""
 
 #: includes/class-wcp-fields.php:44
 msgid "Core Fields cannot be removed, but all can be renamed.  Dropdown and Date Time field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed."
+msgstr ""
+
+#: includes/class-wcp-fields.php:45
+msgid "Save Changes"
 msgstr ""
 
 #: includes/class-wcp-fields.php:46
@@ -1373,12 +1393,12 @@ msgstr ""
 #: includes/class-wcp-fields.php:64
 #: includes/class-wcp-ajax.php:64
 #: includes/class-wcp-ajax.php:221
-#: includes/class-wcp-ajax.php:413
-#: includes/class-wcp-ajax.php:1416
-#: includes/class-wcp-ajax.php:1540
-#: includes/class-wcp-ajax.php:1596
-#: includes/class-wcp-ajax.php:1646
-#: includes/class-wcp-ajax.php:2253
+#: includes/class-wcp-ajax.php:462
+#: includes/class-wcp-ajax.php:1495
+#: includes/class-wcp-ajax.php:1619
+#: includes/class-wcp-ajax.php:1675
+#: includes/class-wcp-ajax.php:1725
+#: includes/class-wcp-ajax.php:2332
 msgid "Cancel"
 msgstr ""
 
@@ -1478,48 +1498,48 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:389
+#: includes/class-wcp-ajax.php:431
 #: includes/class-wcp-rest.php:600
 #: includes/class-wcp-rest.php:1136
 msgid "Added Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:394
+#: includes/class-wcp-ajax.php:436
 #: includes/class-wcp-rest.php:631
 #: includes/class-wcp-rest.php:1126
 msgid "Updated Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:400
+#: includes/class-wcp-ajax.php:449
 #: includes/class-wcp-rest.php:1148
 msgid "Entry ID"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:400
+#: includes/class-wcp-ajax.php:449
 #: includes/class-wcp-rest.php:1148
 msgid " Fields-> "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:411
+#: includes/class-wcp-ajax.php:460
 msgid "Confirm Removal Of The Following Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:412
+#: includes/class-wcp-ajax.php:461
 msgid "Remove Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:439
+#: includes/class-wcp-ajax.php:488
 #: includes/class-wcp-rest.php:573
 msgid "Deleted Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:440
-#: includes/class-wcp-ajax.php:1454
-#: includes/class-wcp-ajax.php:1511
-#: includes/class-wcp-ajax.php:1567
-#: includes/class-wcp-ajax.php:1625
-#: includes/class-wcp-ajax.php:1666
-#: includes/class-wcp-ajax.php:1777
+#: includes/class-wcp-ajax.php:489
+#: includes/class-wcp-ajax.php:1533
+#: includes/class-wcp-ajax.php:1590
+#: includes/class-wcp-ajax.php:1646
+#: includes/class-wcp-ajax.php:1704
+#: includes/class-wcp-ajax.php:1745
+#: includes/class-wcp-ajax.php:1856
 #: includes/class-wcp-rest.php:574
 #: includes/class-wcp-rest.php:601
 #: includes/class-wcp-rest.php:632
@@ -1527,397 +1547,405 @@ msgstr ""
 msgid "Entry ID "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:523
+#: includes/class-wcp-ajax.php:569
 msgid "Changed Frontend Sorting"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:524
+#: includes/class-wcp-ajax.php:570
 msgid "Modified Sort Results"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:826
+#: includes/class-wcp-ajax.php:603
+msgid "Changed Frontend Filters"
+msgstr ""
+
+#: includes/class-wcp-ajax.php:604
+msgid "Modified Front Filters"
+msgstr ""
+
+#: includes/class-wcp-ajax.php:905
 msgid "Changed Fields"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:827
+#: includes/class-wcp-ajax.php:906
 msgid "Modified Entry Fields "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:991
+#: includes/class-wcp-ajax.php:1070
 msgid "Modified SST"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:992
+#: includes/class-wcp-ajax.php:1071
 msgid "Modified Sources, Status, and Types"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1002
-#: includes/class-wcp-ajax.php:1055
-#: includes/class-wcp-ajax.php:1473
+#: includes/class-wcp-ajax.php:1081
+#: includes/class-wcp-ajax.php:1134
+#: includes/class-wcp-ajax.php:1552
 msgid "Error uploading"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1035
+#: includes/class-wcp-ajax.php:1114
 #: includes/class-wcp-rest.php:744
 msgid "Uploaded Image"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1036
+#: includes/class-wcp-ajax.php:1115
 #: includes/class-wcp-rest.php:745
 msgid "New Image set for Entry ID "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1101
+#: includes/class-wcp-ajax.php:1180
 msgid "No Assignment"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1102
+#: includes/class-wcp-ajax.php:1181
 msgid "Import Now"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1103
+#: includes/class-wcp-ajax.php:1182
 msgid "Step 2, Assign your spreadsheet columns to <b>WP Contacts</b> columns"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1107
+#: includes/class-wcp-ajax.php:1186
 msgid "Total Rows to import"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1113
+#: includes/class-wcp-ajax.php:1192
 msgid "Imported Entry File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1114
+#: includes/class-wcp-ajax.php:1193
 msgid "File Name: "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1139
+#: includes/class-wcp-ajax.php:1218
 msgid "You have not assigned any of your columns, you need to set at least one."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1140
+#: includes/class-wcp-ajax.php:1219
 msgid "Error"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1320
+#: includes/class-wcp-ajax.php:1399
 msgid "Please select at least 1 field for exporting."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1321
+#: includes/class-wcp-ajax.php:1400
 msgid "Select Fields"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1322
+#: includes/class-wcp-ajax.php:1401
 msgid "OK"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1331
+#: includes/class-wcp-ajax.php:1410
 msgid "Select Your MailChimp list to import into"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1332
+#: includes/class-wcp-ajax.php:1411
 msgid "Email Address Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1333
+#: includes/class-wcp-ajax.php:1412
 msgid "First Name Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1334
+#: includes/class-wcp-ajax.php:1413
 msgid "Last Name Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1335
+#: includes/class-wcp-ajax.php:1414
 msgid "Choose A Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1336
+#: includes/class-wcp-ajax.php:1415
 msgid "Ready to send to MailChimp, click confirm to subscribe entries to your list."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1337
+#: includes/class-wcp-ajax.php:1416
 msgid "Confirm Submission"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1401
+#: includes/class-wcp-ajax.php:1480
 msgid "Your entries have been submitted to MailChimp, below are the details"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1412
+#: includes/class-wcp-ajax.php:1491
 msgid "Are you sure you wish to remove the following file?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1415
+#: includes/class-wcp-ajax.php:1494
 msgid "Confirm Remove File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1417
-#: includes/class-wcp-ajax.php:2254
+#: includes/class-wcp-ajax.php:1496
+#: includes/class-wcp-ajax.php:2333
 msgid "Confirm"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1428
-#: includes/class-wcp-ajax.php:1531
-#: includes/class-wcp-individual.php:195
+#: includes/class-wcp-ajax.php:1507
+#: includes/class-wcp-ajax.php:1610
+#: includes/class-wcp-individual.php:198
 msgid "Last Modified"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1453
+#: includes/class-wcp-ajax.php:1532
 msgid "Removed Entry File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1454
+#: includes/class-wcp-ajax.php:1533
 msgid " File:"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1510
+#: includes/class-wcp-ajax.php:1589
 #: includes/class-wcp-rest.php:686
 msgid "Added Files"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1511
+#: includes/class-wcp-ajax.php:1590
 msgid " New File:"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1539
-#: includes/class-wcp-individual.php:732
+#: includes/class-wcp-ajax.php:1618
+#: includes/class-wcp-individual.php:735
 msgid "Add A Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1541
-#: includes/class-wcp-ajax.php:1597
+#: includes/class-wcp-ajax.php:1620
+#: includes/class-wcp-ajax.php:1676
 msgid "Save Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1566
+#: includes/class-wcp-ajax.php:1645
 msgid "Added a note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1595
+#: includes/class-wcp-ajax.php:1674
 msgid "Edit Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1624
+#: includes/class-wcp-ajax.php:1703
 msgid "Edited existing note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1644
+#: includes/class-wcp-ajax.php:1723
 msgid "Remove Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1645
+#: includes/class-wcp-ajax.php:1724
 msgid "Are you sure you wish to delete this note?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1647
+#: includes/class-wcp-ajax.php:1726
 msgid "Delete Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1665
+#: includes/class-wcp-ajax.php:1744
 msgid "Removed a note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1776
+#: includes/class-wcp-ajax.php:1855
 msgid "Modified Entry Details"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1943
+#: includes/class-wcp-ajax.php:2022
 msgid "Remove All Logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1944
+#: includes/class-wcp-ajax.php:2023
 msgid "Do you really want to remove all logging activity?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1945
+#: includes/class-wcp-ajax.php:2024
 msgid "Remove Logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1952
+#: includes/class-wcp-ajax.php:2031
 msgid "Removed all logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1953
+#: includes/class-wcp-ajax.php:2032
 msgid "Cleared all logging entries "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1988
+#: includes/class-wcp-ajax.php:2067
 msgid "New Entry - "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1996
+#: includes/class-wcp-ajax.php:2075
 msgid "New Entry Created"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2032
+#: includes/class-wcp-ajax.php:2111
 msgid "For"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2224
+#: includes/class-wcp-ajax.php:2303
 msgid "Event Deleted"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2225
+#: includes/class-wcp-ajax.php:2304
 msgid "User has deleted event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2252
+#: includes/class-wcp-ajax.php:2331
 msgid "Add/Edit An Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2255
+#: includes/class-wcp-ajax.php:2334
 msgid "Title"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2256
+#: includes/class-wcp-ajax.php:2335
 msgid "Start Time"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2257
+#: includes/class-wcp-ajax.php:2336
 msgid "End Time"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2258
+#: includes/class-wcp-ajax.php:2337
 msgid "Event Color"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2259
+#: includes/class-wcp-ajax.php:2338
 msgid "Repeat"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2260
+#: includes/class-wcp-ajax.php:2339
 msgid "Repeating Event?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2263
+#: includes/class-wcp-ajax.php:2342
 msgid "Every Day"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2264
+#: includes/class-wcp-ajax.php:2343
 msgid "Every Week"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2265
+#: includes/class-wcp-ajax.php:2344
 msgid "Every Month"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2266
+#: includes/class-wcp-ajax.php:2345
 msgid "Every Year"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2269
+#: includes/class-wcp-ajax.php:2348
 msgid "Notify"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2270
+#: includes/class-wcp-ajax.php:2349
 msgid "Enable Notification?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2271
+#: includes/class-wcp-ajax.php:2350
 msgid "Event Description"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2273
+#: includes/class-wcp-ajax.php:2352
 msgid "Minute(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2274
+#: includes/class-wcp-ajax.php:2353
 msgid "Hour(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2275
+#: includes/class-wcp-ajax.php:2354
 msgid "Day(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2276
+#: includes/class-wcp-ajax.php:2355
 msgid "Week(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2277
+#: includes/class-wcp-ajax.php:2356
 msgid "Month(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2280
+#: includes/class-wcp-ajax.php:2359
 msgid "Who receives notifications?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2283
+#: includes/class-wcp-ajax.php:2362
 msgid "Before"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2284
+#: includes/class-wcp-ajax.php:2363
 msgid "After"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2318
+#: includes/class-wcp-ajax.php:2397
 msgid "Event start time is not before end time or time is blank."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2322
+#: includes/class-wcp-ajax.php:2401
 msgid "Please add a title."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2364
+#: includes/class-wcp-ajax.php:2443
 msgid "Edited Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2365
+#: includes/class-wcp-ajax.php:2444
 msgid "User has edited the event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2391
+#: includes/class-wcp-ajax.php:2470
 msgid "New Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2392
+#: includes/class-wcp-ajax.php:2471
 msgid "User has added a new event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2449
+#: includes/class-wcp-ajax.php:2528
 msgid "Please Log In"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2450
+#: includes/class-wcp-ajax.php:2529
 msgid "Please log in to continue"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2476
+#: includes/class-wcp-ajax.php:2555
 msgid "Wrong username or password."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2478
+#: includes/class-wcp-ajax.php:2557
 msgid "Login successful, redirecting..."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2602
+#: includes/class-wcp-ajax.php:2681
 msgid "You must select a backup to restore."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2609
+#: includes/class-wcp-ajax.php:2688
 msgid "The backup selected is missing required data, please select another"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2762
+#: includes/class-wcp-ajax.php:2841
 msgid "is invalid."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2768
+#: includes/class-wcp-ajax.php:2847
 msgid "needs a date set."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2773
+#: includes/class-wcp-ajax.php:2852
 msgid "is required."
 msgstr ""
 
-#: includes/class-wcp-export.php:51
+#: includes/class-wcp-export.php:101
 msgid "Exported Entries"
 msgstr ""
 
-#: includes/class-wcp-export.php:109
+#: includes/class-wcp-export.php:160
 msgid "Image Link"
 msgstr ""
 
-#: includes/class-wcp-export.php:112
+#: includes/class-wcp-export.php:163
 msgid "File Links"
 msgstr ""
 
@@ -1933,54 +1961,83 @@ msgstr ""
 msgid "You do not have access to this entry"
 msgstr ""
 
-#: includes/class-wcp-individual.php:104
+#: includes/class-wcp-individual.php:107
 msgid "Entry Details"
 msgstr ""
 
-#: includes/class-wcp-individual.php:105
-msgid "Remove"
-msgstr ""
-
-#: includes/class-wcp-individual.php:128
-#: includes/class-wcp-individual.php:134
+#: includes/class-wcp-individual.php:131
+#: includes/class-wcp-individual.php:137
 msgid "There are currently no files uploaded."
 msgstr ""
 
-#: includes/class-wcp-individual.php:130
 #: includes/class-wcp-individual.php:133
+#: includes/class-wcp-individual.php:136
 msgid "Existing Files"
 msgstr ""
 
-#: includes/class-wcp-individual.php:158
+#: includes/class-wcp-individual.php:161
 msgid "Drag or click to upload a jpg, png or gif image file"
 msgstr ""
 
-#: includes/class-wcp-individual.php:159
+#: includes/class-wcp-individual.php:162
 msgid "Set Image"
 msgstr ""
 
-#: includes/class-wcp-individual.php:219
+#: includes/class-wcp-individual.php:222
 msgid "Queued for upload"
 msgstr ""
 
-#: includes/class-wcp-individual.php:220
+#: includes/class-wcp-individual.php:223
 msgid "Add Files"
 msgstr ""
 
-#: includes/class-wcp-individual.php:233
+#: includes/class-wcp-individual.php:236
 msgid "Drag or click to upload a file or multiple files"
 msgstr ""
 
-#: includes/class-wcp-individual.php:645
+#: includes/class-wcp-individual.php:648
 msgid "Save Fields"
 msgstr ""
 
-#: includes/class-wcp-individual.php:661
+#: includes/class-wcp-individual.php:664
 msgid "Notes"
 msgstr ""
 
-#: includes/class-wcp-individual.php:693
+#: includes/class-wcp-individual.php:696
 msgid "Last Updated by"
+msgstr ""
+
+#: includes/class-wcp-front-manage.php:35
+msgid "Fields to display on main view (in order)"
+msgstr ""
+
+#: includes/class-wcp-front-manage.php:36
+msgid "Fields not to display on main view"
+msgstr ""
+
+#: includes/class-wcp-front-manage.php:37
+msgid "Save Sorting"
+msgstr ""
+
+#: includes/class-wcp-front-manage.php:65
+#: includes/class-wcp-front-manage.php:74
+msgid "Files"
+msgstr ""
+
+#: includes/class-wcp-front-manage.php:87
+msgid "Save Filters"
+msgstr ""
+
+#: includes/class-wcp-front-manage.php:88
+msgid "Top Filters shown on front page (in order)"
+msgstr ""
+
+#: includes/class-wcp-front-manage.php:89
+msgid "Top Filters disabled on front page"
+msgstr ""
+
+#: includes/class-wcp-front-manage.php:90
+msgid "Note: You can add more filters by creating dropdown field types.  They will then be available here for selection."
 msgstr ""
 
 #: includes/class-wcp-rest.php:521

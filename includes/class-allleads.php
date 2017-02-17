@@ -47,6 +47,12 @@
 					SELECT * from $this->table_sort
 				"
 			);
+			$filtering = $wpdb->get_results(
+                "
+                    SELECT * from $this->table_sort where front_filter_active=1 order by front_filter_sort
+                "
+            );
+
 			$originals = array();  // array for comparing the field request against to make sure its legit
 			foreach($all_sort as $k => $v) {
 				$originals[] = $v->orig_name;
@@ -90,7 +96,7 @@
 			$sst_sources = $wpdb->get_results("select * from $this->table_sst where sst_type='1' order by sst_order asc");
 			$sst_status  = $wpdb->get_results("select * from $this->table_sst where sst_type='2' order by sst_order asc");
 			$sst_types   = $wpdb->get_results("select * from $this->table_sst where sst_type='3' order by sst_order asc");
-			$sst_all = $wpdb->get_results("select * from $this->table_sst order by sst_id asc");
+			$sst_all = $wpdb->get_results("select * from $this->table_sst order by sst_order asc");
 
 			// Searching query
             if (isset($_GET['wcp_search']) && $_GET['wcp_search'] == 'true') {
@@ -247,7 +253,38 @@
                     }
                 }
             }
-
+			// dropdown filters type 10 fields
+			$dropdowns = array();
+			$dropdown_filter = array();
+			foreach ($filtering as $k => $v) {
+				if ($v->orig_name != 'l_source'
+					&& $v->orig_name != 'l_status'
+					&& $v->orig_name != 'l_type'
+				) {
+					$current = $sst_pre . ' ' . $v->translated_name;
+					$num_value = false;
+                    if (array_key_exists($v->orig_name, $_GET)) {
+                        $num_value = intval($_GET[$v->orig_name]);
+						$dropdown_filter[] = 'AND l.' . $v->orig_name . '=' . $num_value;
+                    }
+					foreach($sst_all as $sst_k => $sst_v) {
+						if ($sst_v->sst_id == $num_value) {
+							$current = '<span class="wcp-primary">' . $sst_v->sst_name . '</span>';
+						}
+						$trans_name = stripslashes($v->translated_name);
+						$default_url = esc_url(remove_query_arg( array($v->orig_name)));
+						$dropdowns[$v->orig_name] = array(
+							'current'       => $current,
+							'trans'         => $trans_name,
+							'sst_name'      => $sst_v->sst_name,
+							'default_url'   => $default_url,
+							'value'         => $num_value
+						);
+					}
+				}
+			}
+			
+			$dropdown_q = implode(' ', $dropdown_filter);			
 			// Total lead count for pagination & display
 			$lead_count = $wpdb->get_var(
 				"
@@ -259,6 +296,7 @@
                     $so_filter
                     $st_filter
                     $ty_filter
+					$dropdown_q
                     $ownleads
                     $search
                     $order_by
@@ -298,6 +336,7 @@
 					$so_filter
 					$st_filter
 					$ty_filter
+					$dropdown_q
 					$ownleads
 					$search
                     $order_by
@@ -334,91 +373,108 @@
             	$page_ind_arg = add_query_arg( array('wcp' => 'entry'), get_permalink() );
 			}
 
+			// Filtering 
 			$so_default = esc_url(remove_query_arg( array('so')));
 			$st_default = esc_url(remove_query_arg( array('st')));
 			$ty_default = esc_url(remove_query_arg( array('ty')));
 
-            $wcp_main = <<<EOC
+			$wcp_main = <<<EOC
 
-							<div class="row">
-								<div class="sst-bar col-sm-6 col-xs-12">
-									<ul class="sst-select">
+                            <div class="row">
+                                <div class="sst-bar col-sm-6 col-xs-12">
+                                    <ul class="sst-select">
+EOC;
+
+			foreach ($filtering as $fk => $fv) {
+				if ($fv->orig_name == 'l_source') {
+            		$wcp_main .= <<<EOC
+
 										<li><a href="#">$so_current</a>
 										  <ul>
 											<li><a href="$so_default">$sst_pre {$sst_trans['l_source']->translated_name}</a></li>
 EOC;
-			foreach ($sst_sources as $k => $v) {
-				$v->sst_name = stripslashes($v->sst_name);	
-				$source_link = esc_url(add_query_arg( array('so'=>$v->sst_id)));
-				if ($so && $so==$v->sst_id) {
+					foreach ($sst_sources as $k => $v) {
+						$v->sst_name = stripslashes($v->sst_name);	
+						$source_link = esc_url(add_query_arg( array('so'=>$v->sst_id)));
+						if ($so && $so==$v->sst_id) {
+							$wcp_main .= '<li><a class="wcp-primary" href="' . $source_link . '">' . $v->sst_name . '</a></li>';
+						} else {
+							$wcp_main .= '<li><a href="' . $source_link . '">' . $v->sst_name . '</a></li>';
+						}
+					}
+					$wcp_main .= '</ul></li>';
+
+				} elseif ($fv->orig_name == 'l_status') {
 					$wcp_main .= <<<EOC
 
-											<li><a class="wcp-primary" href="$source_link">$v->sst_name</a></li>
-
-EOC;
-				} else {
-					$wcp_main .= <<<EOC
-
-											<li><a href="$source_link">$v->sst_name</a></li>
-
-EOC;
-				}
-			}
-
-			$wcp_main .= <<<EOC
-
-										  </ul>
-										</li>
 										<li><a href="#">$st_current</a>
 											<ul>
 												<li><a href="$st_default">$sst_pre {$sst_trans['l_status']->translated_name}</a>
 												</li>
 
 EOC;
-			foreach ($sst_status as $k => $v) {
-				$v->sst_name = stripslashes($v->sst_name);
-				$status_link = esc_url(add_query_arg( array('st'=>$v->sst_id)));
-				if ($st && $st==$v->sst_id) {
+					foreach ($sst_status as $k => $v) {
+						$v->sst_name = stripslashes($v->sst_name);
+						$status_link = esc_url(add_query_arg( array('st'=>$v->sst_id)));
+						if ($st && $st==$v->sst_id) {
+							$wcp_main .= '<li><a class="wcp-primary" href="' . $status_link . '">' . $v->sst_name . '</a></li>';
+                		} else {	
+							$wcp_main .= '<li><a href="' . $status_link . '">' . $v->sst_name . '</a></li>';
+						}
+            		}
+					$wcp_main .= '</ul></li>';
+				} elseif ($fv->orig_name == 'l_type') {
 					$wcp_main .= <<<EOC
 
-                    							<li><a class="wcp-primary" href="$status_link">$v->sst_name</a></li>
-
-EOC;
-                } else {	
-					$wcp_main .= <<<EOC
-
-												<li><a href="$status_link">$v->sst_name</a></li>
-
-EOC;
-				}
-            }
-
-			$wcp_main .= <<<EOC
-
-                        					</ul>
-                    					</li>
 										<li><a href="#">$ty_current</a>
 											<ul>
 												<li><a href="$ty_default">$sst_pre {$sst_trans['l_type']->translated_name}</a></li>
 
 EOC;
-			foreach ($sst_types as $k => $v) {
-				$v->sst_name = stripslashes($v->sst_name);
-				$types_link = esc_url(add_query_arg( array('ty'=>$v->sst_id)));
-				if ($ty && $ty==$v->sst_id) {
-					$wcp_main .= <<<EOC
+					foreach ($sst_types as $k => $v) {
+						$v->sst_name = stripslashes($v->sst_name);
+						$types_link = esc_url(add_query_arg( array('ty'=>$v->sst_id)));
+						if ($ty && $ty==$v->sst_id) {
+							$wcp_main .= '<li><a class="wcp-primary" href="' . $types_link . '">' . $v->sst_name . '</a></li>';
+                		} else {
+							$wcp_main .= '<li><a href="' . $types_link . '">' . $v->sst_name . '</a></li>';
+						}
+            		}
+					$wcp_main .= '</ul></li>';
 
-                    							<li><a class="wcp-primary" href="$types_link">$v->sst_name</a></li>
-
+				} else {  // dropdown type 10 fields
+					foreach ($dropdowns as $dk => $dv) {
+						$orig_name = $current = $trans = $default_url = $value = ''; // clear out first just in case
+						if ($fv->orig_name == $dk) {
+							$orig_name = $dk;
+							$current = $dv['current'];
+							$trans = $dv['trans'];
+							$default_url = $dv['default_url'];
+							$value = $dv['value'];
+							$wcp_main .= <<<EOC
+                            
+                                        <li><a href="#">$current</a>
+											<ul>
+												<li><a href="{$dv['default_url']}">$sst_pre $trans</a></li>
 EOC;
-                } else {
-					$wcp_main .= <<<EOC
-
-												<li><a href="$types_link">$v->sst_name</a></li>
-
-EOC;
+							foreach ($sst_all as $sst_k => $sst_v) {
+                        		if ($orig_name == $sst_v->sst_type_desc) {
+                            		$sst_v->sst_name = stripslashes($sst_v->sst_name);
+                            		$dd_link = esc_url(add_query_arg( array($orig_name => $sst_v->sst_id)));
+                            		if ($value && $value==$sst_v->sst_id) {
+                                		$wcp_main .= '<li><a class="wcp-primary" href="' . $dd_link . '">' . $sst_v->sst_name 
+											   . '</a></li>';
+                            		} else {
+                                		$wcp_main .= '<li><a href="' . $dd_link . '">' . $sst_v->sst_name . '</a></li>';
+                            		}
+                        		}
+                    		}
+							$wcp_main .= '</ul></li>';
+						}
+					}
 				}
-            }
+			}
+
 			// Sorting for small menu
 			$sort_text = __('Sort Entries', 'shwcp');
 			$small_sort = '';
@@ -463,8 +519,6 @@ EOC;
 		
 
 			$wcp_main .= <<<EOC
-                        					</ul>
-                    					</li>
 										<li>	
 											<a href="#" class="wcp-sort-menu">
 												<i class="wcp-md md-sort $sort_activated" title="$sort_text"></i>
@@ -474,6 +528,14 @@ EOC;
 											</ul>
 										</li>
 										<li><a href="#" class="wcp-search-menu"><i class="wcp-md md-search"> </i></a></li>
+EOC;
+			// no access to adding for entry page and people who can't edit 
+            if ($this->can_edit
+            ) {
+                $wcp_main .= '<li><i class="add-lead wcp-md md-add" title="' . __('Add Entry', 'shwcp') . '"> </i></li>';
+            }
+		
+			$wcp_main .= <<<EOC
 									</ul>
 								</div>
 								<div class="col-sm-6 col-xs-12 lead-count">
@@ -537,7 +599,7 @@ EOC;
 			$wcp_main .= <<<EOC
 
 							<table class="wcp-table">
-            					<tr class='header-row'>
+            					<tr id='header-row' class='header-row'>
 
 EOC;
 
@@ -682,7 +744,38 @@ EOC;
 
 						foreach ($sorting as $sk => $sv) {
 							if ($k == $sv->translated_name) {  // match up the sorting for each field to get the field type display
-								if ($sv->field_type == '10') { // dropdown fields
+
+								if ($sv->orig_name == 'lead_files') { // Contact files display
+									$max_display = 4;
+									$file_data = unserialize($v);
+									$td_content = '<div class="files-preview">';
+									$count = count($file_data);
+									$inc = 1;
+									if (isset($file_data[0])) { // check that we have at least 1 file
+										foreach ($file_data as $fk => $fv) {
+											$file = $fv['name'];
+											$ext  = pathinfo($file, PATHINFO_EXTENSION);
+											$ext  = strtolower($ext);
+											$file_url = $shwcp_upload_url . '/' . $lead['wcp_lead_id'] . '-files' . '/' . $file;
+											// check for filetype image existing and link to default if it doesn't
+											$preview_image_loc = SHWCP_ROOT_PATH . '/assets/img/filetypes/' . $ext . '.png';
+											if ( !file_exists($preview_image_loc) ) {
+												$preview_image_url = SHWCP_ROOT_URL . '/assets/img/filetypes/raw.png';
+											} else {
+												$preview_image_url = SHWCP_ROOT_URL . '/assets/img/filetypes/' . $ext . '.png';
+                    						}
+											$td_content .= '<div><a href="' . $file_url . '" title="' . $file 
+														 . '" target="_blank"><img src="' . $preview_image_url . '" /></a></div>';
+											$inc++;
+											if ($inc > $max_display) {
+												$td_content .= '<div>...</div>';
+												break;
+											}
+										}
+									}
+									$td_content .= '</div>';
+
+								} elseif ($sv->field_type == '10') { // dropdown fields
 									$selected = '';
 									foreach($sst_all as $k2 => $v2) {
                                         if ($sv->orig_name == $v2->sst_type_desc) {   // matching sst's
@@ -828,10 +921,10 @@ EOC;
 
 									<td class='edit-td'>
 										<span class='wcp-lead lead-id-{$lead['wcp_lead_id']}'>
-											<i class='wcp-md md-create'> </i>
+											<i class='wcp-sm md-create'> </i>
 										</span>
                           				<span class='delete-lead'>
-											<i class='wcp-red wcp-md md-remove-circle-outline'></i>
+											<i class='wcp-red wcp-sm md-remove-circle-outline'></i>
 										</span>
 										<span class="delete-all-selected">
 											<input id="wcp-delete-all-{$lead['wcp_lead_id']}" 

@@ -60,8 +60,8 @@ jQuery(function ($) {  // use $ for jQuery
 		}
 	});
 	$(document).on('click', '.wcp-search', function() {
-		$('.wcp-search-input').css('width', '250px');
-		$('.wcp-search-input').css('background-color', 'rgba(0,0,0,0.15)');
+		$('.wcp-search-input').css('width', '200px').css('height', '64px');
+		$('.wcp-search-input').css('background-color', 'rgba(0,0,0,0.1)');
 		$('.wcp-search-input').css('color', '#ffffff');
 		$('.second-menu').find('.wcp-search-input').css('color', 'rgba(0,0,0,0.84)');
 		$('.wcp-select').show();
@@ -86,7 +86,7 @@ jQuery(function ($) {  // use $ for jQuery
         }
     });
     $(document).on('click', '.log-search', function() {
-        $('.log-search-input').css('width', '300px');
+        $('.log-search-input').css('width', '200px').css('height', '64px');
         $('.log-search-input').css('background', 'rgba(0,0,0,0.15)');
         $('.log-search-input').css('color', '#ffffff');
     });

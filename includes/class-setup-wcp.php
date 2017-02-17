@@ -147,7 +147,9 @@
 				. " sort_active int(11) NOT NULL,"
 				. " sort_ind_number bigint(20) NOT NULL,"
 				. " field_type int(11) DEFAULT '1' NOT NULL,"
-				. " required_input int(11) DEFAULT '0' NOT NULL"
+				. " required_input int(11) DEFAULT '0' NOT NULL,"
+				. " front_filter_active int(11) DEFAULT '0' NOT NULL,"
+				. " front_filter_sort int(11) DEFAULT '0' NOT NULL"
 				. " ) $charset_collate;";
 
 
@@ -357,7 +359,9 @@
                    'translated_name' => 'Source',
                    'sort_number' => '7',
                    'sort_active' => '1',
-				   'sort_ind_number' => '7'
+				   'sort_ind_number' => '7',
+				   'front_filter_active' => '1',
+				   'front_filter_sort' => '1'
                 )
             );
 			$wpdb->insert(
@@ -367,7 +371,9 @@
                    'translated_name' => 'Status',
                    'sort_number' => '8',
                    'sort_active' => '1',
-				   'sort_ind_number' => '8'
+				   'sort_ind_number' => '8',
+				   'front_filter_active' => '1',
+				   'front_filter_sort' => '2'
                 )
             );
 			$wpdb->insert(
@@ -377,7 +383,9 @@
                    'translated_name' => 'Type',
                    'sort_number' => '9',
                    'sort_active' => '1',
-				   'sort_ind_number' => '9'
+				   'sort_ind_number' => '9',
+				   'front_filter_active' => '1',
+				   'front_filter_sort' => '3'
                 )
             );
 			$wpdb->insert(

@@ -280,7 +280,7 @@ jQuery(function ($) {  // use $ for jQuery
 			$('.date-choice').on('hidden', function() {
     			$.fn.modal.Constructor.prototype.enforceFocus = enforceModalFocusFn;
 			});
-			$('.date-choice').modal({ backdrop : false });
+			$('.date-choice').modal({ backdrop : false }).css('padding-right','0'); // clear bootstrap padding and backdrop
 
 
 			$('.shwcp-rating').rateit();
@@ -349,10 +349,10 @@ jQuery(function ($) {  // use $ for jQuery
 				}
 				var individualLink = '?wcp_page=ind&lead=' + response.lead_id;
 				var editTD = '<span class="wcp-lead lead-id-' + response.lead_id + '">'
-						   + '<i class="wcp-md md-create"> </i>'
+						   + '<i class="wcp-sm md-create"> </i>'
 						   + '</span> '
 						   + '<span class="delete-lead">'
-						   + '<i class="wcp-red wcp-md md-remove-circle-outline"> </i></span> '
+						   + '<i class="wcp-red wcp-sm md-remove-circle-outline"> </i></span> '
 					       + '<span class="delete-all-selected">'
                            + '<input id="wcp-delete-all-' + response.lead_id + '" '
                            + 'class="delete-all delete-' + response.lead_id + '" type="checkbox" />'
@@ -371,8 +371,10 @@ jQuery(function ($) {  // use $ for jQuery
 				$.each(response.sorting, function(sk, sv) {  // layout field types
 					if (sv.orig_name == k) { // match up sorting for each field to get the field type display
 						dataTH = sv.translated_name;
+						if (sv.orig_name == 'lead_files') { // Lead Files
+							tdContent = v;  // already formatted on ajax side
 
-						if (sv.field_type == '9') { // Checkbox
+						} else if (sv.field_type == '9') { // Checkbox
 							var checked = '';
 							var disabled = 'disabled="disabled"';
 							var checkbox = (v == '1') ? v : '';
@@ -592,11 +594,70 @@ jQuery(function ($) {  // use $ for jQuery
 		return false;
 	});
 
+	/* Front Filters */
+	$(document).on('click', '.save-filters', function() {
+        var keepersArray = {};
+        var nonKeepersArray = {};
+        var orig_name;
+        var translated_name;
+        var inc = 0;
+        $('.filter-keepers').find('li').each( function() {
+            inc++;
+            orig_name = $(this).attr('class').split(' ')[1];
+            translated_name = $(this).text();
+            keepersArray[inc] = {
+                orig_name : orig_name,
+                translated_name : translated_name
+            }
+        });
+        $('.filter-nonkeepers').find('li').each( function() {
+            inc++;
+            orig_name = $(this).attr('class').split(' ')[1];
+            translated_name = $(this).text();
+            nonKeepersArray[inc] = {
+                orig_name : orig_name,
+                translated_name : translated_name
+            }
+        });
+        var keepers = keepersArray;
+        var nonKeepers = nonKeepersArray;
+
+        $.post(WCP_Ajax.ajaxurl, {
+            // wp ajax action
+            action: 'ajax-wcpfrontend',
+            // vars
+            frontend_filter: 'true',
+            nextNonce : WCP_Ajax.nextNonce,
+            postID : WCP_Ajax.postID,
+            keepers: keepers,
+            nonkeepers: nonKeepers
+
+        }, function(response) {
+            if (response.logged_in == 'false') {
+                showLogInDiag(response.title, response.body, response.login_button, response.close);
+                return false;
+            }
+            //alert(response.message);
+            $('.save-filters').addClass('saved').delay(5000).queue(function() {
+                $('.save-filters').removeClass('saved').dequeue();
+            });
+        });
+        return false;
+    });
+
 	/* Front Sorting */
     $(document).on('mousedown touchstart', '.keepers li, .nonkeepers li', function() {
         $(this).addClass('active-elem');
     });
     $(document).on('mouseup touchend', '.keepers li, .nonkeepers li', function() {
+        $(this).removeClass('active-elem');
+    });
+
+	/* Front Filters */
+	$(document).on('mousedown touchstart', '.filter-keepers li, .filter-nonkeepers li', function() {
+        $(this).addClass('active-elem');
+    });
+    $(document).on('mouseup touchend', '.filter-keepers li, .filter-nonkeepers li', function() {
         $(this).removeClass('active-elem');
     });
 
@@ -621,6 +682,13 @@ jQuery(function ($) {  // use $ for jQuery
             connectWith: '.front-sorting',
         });
     });
+
+	// Front page filters
+	$(function() {
+		$('.filter-keepers, .filter-nonkeepers').sortable ({
+			connectWith: '.front-filters'
+		});
+	});
 	/* End Front Sorting */
 
 

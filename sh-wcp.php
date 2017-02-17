@@ -104,7 +104,7 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
 	}
 
 	/*
-	 * Update db tables check 
+	 * Update db tables check - runs on new installs and WP Contacts update 
 	 */
 	add_action('init', 'shwcp_db_check');
 	function shwcp_db_check() {
