@@ -1183,18 +1183,18 @@ class SHWCP_API_Tabs {
                     </td>
                     <td class="option-name entries_ownership wcp-disabled">
                         <p class="role-title"><?php echo __('Change Entry Ownership', 'shwcp'); ?></p>
-                        <input type="radio" name="" value="yes" disabled="disabled"><?php echo __('Can Change', 'shwcp');?><br />
-                        <input type="radio" name="" value="no" disabled="disabled" checked="checked"><?php echo __('Cannot Change', 'shwcp');?><br />
+                        <input type="radio" name="" value="yes"><?php echo __('Can Change', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('Cannot Change', 'shwcp');?><br />
                     </td>
 					<td class="option-name manage_entry_files wcp-disabled">
                         <p class="role-title"><?php echo __('Manage Entry Files', 'shwcp'); ?></p>
-                        <input type="radio" name="" value="yes" disabled="disabled"><?php echo __('Yes', 'shwcp');?><br />
-                        <input type="radio" name="" value="no" disabled="disabled" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                        <input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
                     </td>   
                     <td class="option-name manage_entry_photo wcp-disabled">
                         <p class="role-title"><?php echo __('Manage Entry Photo', 'shwcp'); ?></p>
-                        <input type="radio" name="" value="yes" disabled="disabled"><?php echo __('Yes', 'shwcp');?><br />
-                        <input type="radio" name="" value="no" disabled="disabled" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                        <input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
                     </td> 
 				</tr>
 				<tr>
