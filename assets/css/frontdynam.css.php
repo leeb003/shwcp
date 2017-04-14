@@ -83,11 +83,6 @@ header('Content-type: text/css');
 	color: <?php echo $primary_color; ?>;
 }
 
-.wcp-button.saved:after {
-  border-right: 2px solid <?php echo $primary_color; ?>;
-  border-bottom: 2px solid <?php echo $primary_color; ?>;
-}
-
 .wcp-container [type="checkbox"]:checked + label:before,
 .wcp-modal [type="checkbox"]:checked + label:before {
   border-right: 2px solid <?php echo $primary_color; ?>;
@@ -135,6 +130,13 @@ textarea.materialize-textarea:focus:not([readonly]) {
 
 .wcp-footer {
 	color: <?php echo $primary_color; ?>;
+}
+.left-col-width .ui-slider-range {
+	background: <?php echo $primary_color; ?>;
+	opacity: 0.5;
+}
+.left-col-width.ui-slider > .ui-slider-handle {
+	background: <?php echo $primary_color; ?>;
 }
 
 <?php echo $admin_adjust; ?>

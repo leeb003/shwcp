@@ -138,26 +138,8 @@ jQuery(function ($) {  // use $ for jQuery
 			var i = 1;
 			modalBody = '<div class="wcp-edit-lead leadID-' + leadID + ' row">';
 			$.each(response.translated, function(k,v) {
-				if ('l_source' == k
-					|| 'l_status' == k
-					|| 'l_type' == k
-				) {
-					modalBody += '<div class="col-md-6"><div class="input-field"><label for=' + k + '>' + v.trans + '</label>'
-							  + '<select class="lead_select ' + k + ' input-select">';
-					$.each(response.sst, function(k2,v2) {
-						var selected = '';
-						if (k == v2.sst_type_desc) {   // matching sst's
-							if (v.value == v2.sst_id) { // selected
-								selected = 'selected="selected"';
-							}
-							modalBody += '<option value="' + v2.sst_id + '" ' + selected + '>' + v2.sst_name + '</option>';
-						} 
-					});
-					modalBody += '</select></div></div>';
-
-				} else if ('owned_by' == k) {  // Owners
-					if (response.access == 'ownleads'
-						&& response.can_change_ownership == 'no' 
+				if ('owned_by' == k) {  // Owners
+					if (response.can_change_ownership == 'no' 
 					){
 						modalBody += '<div class="col-md-6"><div class="input-field">';
 						modalBody += '<input class="lead_select ' + k + '" type="hidden" value="' + response.current_user + '" />'; 
@@ -239,6 +221,11 @@ jQuery(function ($) {  // use $ for jQuery
                             + '</label><input class="lead_field '
                             + k + ' date-choice" value="' + v.value + '" type="text"></div></div>';
 
+					} else if (fieldType == '11') { // date only with datepicker needs class for it
+                        modalBody += '<div class="col-md-6"><div class="input-field"><label for=' + k + '>' + v.trans
+                            + '</label><input class="lead_field '
+                            + k + ' date-only-choice" value="' + v.value + '" type="text"></div></div>';
+
 					} else if (v.type == '99') {
 							modalBody += '<div class="col-md-12"><div class="input-field fields-grouptitle"><h3 for=' 
 									+ k + '>' + v.trans 
@@ -271,6 +258,13 @@ jQuery(function ($) {  // use $ for jQuery
 				changeYear: true,
 			    yearRange: '-150:+50'
         	});
+			
+			$('.date-only-choice').datepicker({
+                dateFormat : WCP_Ajax.dateFormat,
+                changeYear: true,
+                yearRange: '-150:+50'
+            });			
+
 			// Since date-choice is essentially a nested modal it's enforceFocus method
 			// must be no-op'd or the following error results 
 			// "Uncaught RangeError: Maximum call stack size exceeded"
@@ -281,6 +275,11 @@ jQuery(function ($) {  // use $ for jQuery
     			$.fn.modal.Constructor.prototype.enforceFocus = enforceModalFocusFn;
 			});
 			$('.date-choice').modal({ backdrop : false }).css('padding-right','0'); // clear bootstrap padding and backdrop
+
+			$('.date-only-choice').on('hidden', function() {
+                $.fn.modal.Constructor.prototype.enforceFocus = enforceModalFocusFn;
+            });
+            $('.date-only-choice').modal({ backdrop : false }).css('padding-right','0'); // clear bootstrap padding and backdrop	
 
 
 			$('.shwcp-rating').rateit();
@@ -308,9 +307,6 @@ jQuery(function ($) {  // use $ for jQuery
             fieldVals[name] = value;
         });
 
-        var lsource = $('select.l_source :selected').text();
-        var lstatus = $('select.l_status :selected').text();
-        var ltype = $('select.l_type :selected').text();
         $.post(WCP_Ajax.ajaxurl, {
             // wp ajax action
             action: 'ajax-wcpfrontend',
@@ -321,9 +317,6 @@ jQuery(function ($) {  // use $ for jQuery
 			postID         : WCP_Ajax.postID,
             field_vals     : fieldVals,
 			dropdown_fields: dropdownFields,
-            l_source       : lsource,
-            l_status       : lstatus,
-            l_type         : ltype
         }, function(response) {
 			if (response.logged_in == 'false') {
                 showLogInDiag(response.title, response.body, response.login_button, response.close);
@@ -543,59 +536,195 @@ jQuery(function ($) {  // use $ for jQuery
 		});
 	});
 
-	/* Front Sorting */
-	$(document).on('click', '.save-sorting', function() {
-		var keepersArray = {};
-		var nonKeepersArray = {};
-		var orig_name;
-		var translated_name;
-		var inc = 0;
-		$('.keepers').find('li').each( function() {
-			inc++;
-			orig_name = $(this).attr('class').split(' ')[1];
-			translated_name = $(this).text();
-			keepersArray[inc] = {
-				orig_name : orig_name,
-				translated_name : translated_name
-			}
-		});
-		$('.nonkeepers').find('li').each( function() {
-			inc++;
-			orig_name = $(this).attr('class').split(' ')[1];
-            translated_name = $(this).text();
-			nonKeepersArray[inc] = {
-				orig_name : orig_name,
-				translated_name : translated_name
-			}
-		});
-		var keepers = keepersArray;
-		var nonKeepers = nonKeepersArray;
+	/* Front End Export Form */
+	$(document).on('click', '.export-view', function() {
+		var modalBody = '';
+		var getParams = $(document).find('.export-query').html(); // get the hidden Get query parameters
+        $.post(WCP_Ajax.ajaxurl, {
+            // wp ajax action
+            action: 'ajax-wcpfrontend',
+            // vars
+            export_view  : 'true',
+            nextNonce  : WCP_Ajax.nextNonce,
+            postID     : WCP_Ajax.postID
+        }, function(response) {
+            if (response.logged_in == 'false') {
+                showLogInDiag(response.title, response.body, response.login_button, response.close);
+                return false;
+            }
 
-		$.post(WCP_Ajax.ajaxurl, {
+            modalBody += '<div class="export-front-view row">'
+				       + '<form action="' + response.export_url + '" class="export-front-form" method="POST">'
+					   + '<div class="col-md-12"><input type="checkbox" id="allfields" class="allfields" />'
+					   + '<label for="allfields">' + response.all_text + '</label></p><hr /></div>'
+					   + response.field_choices
+					   + '<div class="col-md-6 col-sm-12"><hr /><div class="input-field"><label for="export-type">' 
+					   + response.format_text
+                       + '</label><select id="export-type" class="input-select" name="output-type">'
+                       + '<option value="csv">' + response.csv_text + '</option>'
+                       + '<option value="excel">' + response.excel_text + '</option>'
+                       + '</select></div></div>'
+					   + '<input type="hidden" name="front_page" value="true" />'
+					   + '<input type="hidden" name="action" value="wcpexport">'
+					   + '<input type="hidden" name="postID" value="' + WCP_Ajax.postID + '" />'
+					   + getParams
+					   + '</form></div>';
+
+            // add large class to modal (remove for smaller ones)
+            $('.wcp-modal').find('.modal-dialog').addClass('modal-lg');
+
+            $('.wcp-modal').find('.modal-title').html(response.title);
+            $('.wcp-modal').find('.modal-body').html(modalBody);
+            var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">'
+                        + response.cancel_button + '</button>'
+                        + '<button type="button" class="btn btn-primary export-front-button">'
+                        + response.confirm_button + '</button>';
+            $('.wcp-modal').find('.modal-footer').html(footer);
+            $('.wcp-modal').modal();
+			selectFieldGenerate();
+        });
+	});
+
+	/* Front End Export check all fields */
+    $(document).on('click', '.allfields', function() {
+        $('.export-field').each( function() {
+            if ($('.allfields').is(':checked')) {
+                $(this).attr("checked", true);
+            } else {
+                $(this).attr("checked", false);
+            }
+        });
+    });
+
+	/* Submit Front End Export Form */
+	$(document).on('click', '.export-front-button', function(e) {
+		var count_check = $(".export-field:checked").length;
+        if (count_check == 0) {
+            var modalBody = '';
+            $.post(WCP_Ajax.ajaxurl, {
+                // wp ajax action
+                action: 'ajax-wcpfrontend',
+                // vars
+                export_nofields: 'true',
+                nextNonce  : WCP_Ajax.nextNonce,
+                postID     : WCP_Ajax.postID
+            }, function(response) {
+
+                modalBody += response.body;
+                // add large class to modal (remove for smaller ones)
+                $('.wcp-modal').find('.modal-dialog').addClass('modal-lg');
+
+                $('.wcp-modal').find('.modal-title').html(response.title);
+                $('.wcp-modal').find('.modal-body').html('<p class="modal-paragraph">' + modalBody + '</p>');
+                var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">'
+                        + response.cancel_button + '</button>';
+                $('.wcp-modal').find('.modal-footer').html(footer);
+                $('.wcp-modal').modal();
+            });
+            return false;
+		} else {
+			$('.export-front-form').submit();
+			$('.wcp-modal').modal('hide');
+			return false;
+		}
+	});
+
+	/* Front Sorting */
+    $(document).on('mousedown touchstart', '.keepers li, .nonkeepers li', function() {
+        $(this).addClass('active-elem');
+    });
+    $(document).on('mouseup touchend', '.keepers li, .nonkeepers li', function() {
+        $(this).removeClass('active-elem');
+    });
+
+	/* Front Filters */
+	$(document).on('mousedown touchstart', '.filter-keepers li, .filter-nonkeepers li', function() {
+        $(this).addClass('active-elem');
+    });
+    $(document).on('mouseup touchend', '.filter-keepers li, .filter-nonkeepers li', function() {
+        $(this).removeClass('active-elem');
+    });
+
+	/* Field Sorting */
+	$(document).on('mousedown touchstart', '.wcp-fields .wcp-fielddiv', function() {
+        $(this).addClass('active-fielddiv');
+    });
+    $(document).on('mouseup touchend', '.wcp-fields .wcp-fielddiv', function() {
+        $(this).removeClass('active-fielddiv');
+    });
+
+    $(function() {
+        $('.keepers, .nonkeepers').sortable ({
+            connectWith: '.front-sorting',
+			stop: function(event, ui) {
+                updateFrontFields();
+            }
+        });
+    });
+
+	// Front page filters
+	$(function() {
+		$('.filter-keepers, .filter-nonkeepers').sortable ({
+			connectWith: '.front-filters',
+			stop: function(event, ui) {
+                updateFrontFilters();
+            }
+		});
+	});
+
+	/* Update Front Fields */
+	var updateFrontFields = function() {
+	    var keepersArray = {};
+        var nonKeepersArray = {};
+        var orig_name;
+        var translated_name;
+        var inc = 0;
+        $('.keepers').find('li').each( function() {
+            inc++;
+            orig_name = $(this).attr('class').split(' ')[1];
+            translated_name = $(this).text();
+            keepersArray[inc] = {
+                orig_name : orig_name,
+                translated_name : translated_name
+            }
+        });
+        $('.nonkeepers').find('li').each( function() {
+            inc++;
+            orig_name = $(this).attr('class').split(' ')[1];
+            translated_name = $(this).text();
+            nonKeepersArray[inc] = {
+                orig_name : orig_name,
+                translated_name : translated_name
+            }
+        });
+        var keepers = keepersArray;
+        var nonKeepers = nonKeepersArray;
+
+        $.post(WCP_Ajax.ajaxurl, {
             // wp ajax action
             action: 'ajax-wcpfrontend',
             // vars
             frontend_sort: 'true',
             nextNonce : WCP_Ajax.nextNonce,
-			postID : WCP_Ajax.postID,
-			keepers: keepers,
-			nonkeepers: nonKeepers
+            postID : WCP_Ajax.postID,
+            keepers: keepers,
+            nonkeepers: nonKeepers
 
         }, function(response) {
-			if (response.logged_in == 'false') {
+            if (response.logged_in == 'false') {
                 showLogInDiag(response.title, response.body, response.login_button, response.close);
                 return false;
             }
-			//alert(response.message);
-			$('.save-sorting').addClass('saved').delay(5000).queue(function() {
-                $('.save-sorting').removeClass('saved').dequeue();
-            });
-		});
-		return false;
-	});
+            //alert(response.message);
+            //$('.save-sorting').addClass('saved').delay(5000).queue(function() {
+             //   $('.save-sorting').removeClass('saved').dequeue();
+            //});
+        });
+        return false;
+    };
 
-	/* Front Filters */
-	$(document).on('click', '.save-filters', function() {
+    /* Update Front Filters */
+	var updateFrontFilters = function() {
         var keepersArray = {};
         var nonKeepersArray = {};
         var orig_name;
@@ -638,58 +767,130 @@ jQuery(function ($) {  // use $ for jQuery
                 return false;
             }
             //alert(response.message);
-            $('.save-filters').addClass('saved').delay(5000).queue(function() {
-                $('.save-filters').removeClass('saved').dequeue();
-            });
+            //$('.save-filters').addClass('saved').delay(5000).queue(function() {
+            //    $('.save-filters').removeClass('saved').dequeue();
+            //});
         });
         return false;
+    };
+
+	/* End Front Sorting */
+
+	/* Manage Individual Page */
+    $(document).on('mousedown touchstart', '.man-left-side li, .man-right-side li, .man-bottom li', function() {
+        $(this).addClass('active-tile');
+    });
+	$(document).on('mouseup touchend', '.man-left-side li, .man-right-side li, .man-bottom li', function() {
+        $(this).removeClass('active-tile');
     });
 
-	/* Front Sorting */
-    $(document).on('mousedown touchstart', '.keepers li, .nonkeepers li', function() {
-        $(this).addClass('active-elem');
-    });
-    $(document).on('mouseup touchend', '.keepers li, .nonkeepers li', function() {
-        $(this).removeClass('active-elem');
-    });
-
-	/* Front Filters */
-	$(document).on('mousedown touchstart', '.filter-keepers li, .filter-nonkeepers li', function() {
-        $(this).addClass('active-elem');
-    });
-    $(document).on('mouseup touchend', '.filter-keepers li, .filter-nonkeepers li', function() {
-        $(this).removeClass('active-elem');
-    });
-
-	/* Field Sorting */
-	$(document).on('mousedown touchstart', '.wcp-fielddiv', function() {
-        $(this).addClass('active-fielddiv');
-    });
-    $(document).on('mouseup touchend', '.wcp-fielddiv', function() {
-        $(this).removeClass('active-fielddiv');
-    });
-
-	/* SST Sorting */
-	$(document).on('mousedown touchstart', '.wcp-sst .l_source, .wcp-sst .l_status, .wcp-sst .l_type', function() {
-        $(this).addClass('active-sst');
-    });
-    $(document).on('mouseup touchend', '.wcp-sst .l_source, .wcp-sst .l_status, .wcp-sst .l_type', function() {
-        $(this).removeClass('active-sst');
-    });
-
-    $(function() {
-        $('.keepers, .nonkeepers').sortable ({
-            connectWith: '.front-sorting',
-        });
-    });
-
-	// Front page filters
 	$(function() {
-		$('.filter-keepers, .filter-nonkeepers').sortable ({
-			connectWith: '.front-filters'
+		$('.man-left-side, .man-right-side, .man-bottom').sortable({
+			connectWith: '.man-ind',
+			stop: function(event, ui) {
+				updateIndividual();
+			}
 		});
 	});
-	/* End Front Sorting */
+
+	// Width adjustment for columns 
+	var changeColumns = function(value) {
+		//var value = $(this).val();
+		var rightSide = 12 - value;
+		$('.manage-individual .left-column').removeClass(
+			function (index, className) {
+				return (className.match (/(^|\s)col-md-\S+/g) || []).join(' ');
+			}).addClass('col-md-' + value);
+		$('.manage-individual .right-column').removeClass(
+			function (index, className) {
+				return (className.match(/(^|\s)col-md-\S+/g) || []).join(' ');
+			}).addClass('col-md-' + rightSide);
+	};
+
+	// slider
+	$( function() {
+		var value = WCP_Ajax.indColumns; // individual columns value from options
+		var handle = $('#slide-handle');
+  		$(".left-col-width").slider({
+			range: "min",
+			min: 2,
+			value: value,
+			max: 10,
+			create: function() {
+				handle.text( $(this).slider("value"));
+			},
+			slide: function(event, ui) {
+				handle.text( ui.value);
+				changeColumns(ui.value);
+				updateIndividual(ui.value);
+			}
+		});
+  	});
+	
+	// Tile status
+	$(document).on('click', '.ind-status', function() {
+		var status = $(this).attr('class').split(' ')[1];
+		var enabledText  = $(document).find('.enabled-text').text();
+		var disabledText = $(document).find('.disabled-text').text();
+		if (status == 'enabled') {
+			$(this).removeClass('enabled').addClass('disabled');
+			$(this).find('i').removeClass('md-done').addClass('md-clear').attr('title', disabledText);
+			var disabledOverlay = '<div class="disabled-overlay"></div>';
+			$(this).closest('li').find('.disabled-overlay').removeClass('notshown');
+		} else {
+			$(this).removeClass('disabled').addClass('enabled');
+            $(this).find('i').removeClass('md-clear').addClass('md-done').attr('title', enabledText);
+			$(this).closest('li').find('.disabled-overlay').addClass('notshown');
+		}
+		updateIndividual();
+		return false;
+	});
+
+	// Update individual management settings
+	var updateIndividual = function(columns='') {
+		if (!columns) {
+			var columns= $(document).find('.left-col-width').slider("option", "value");
+		}
+		var tiles = {};
+		var inc = 1;
+		$('.ind-tile').each( function() {
+			var side;
+			if ($(this).parent('ul').hasClass('man-left-side')) {
+				side = 'keep-left';
+			} else if ($(this).parent('ul').hasClass('man-right-side')) {
+				side = 'keep-right';
+			} else if ($(this).parent('ul').hasClass('man-bottom')) {
+				side = 'keep-bottom';
+			}
+			var status = $(this).find('.ind-status').attr('class').split(' ')[1];
+			var tile = $(this).attr('class').split(' ')[1];
+			tiles[inc] = {
+				tile : tile,
+                side : side,
+                status : status,
+            };
+			inc++;
+		});
+		//alert(tiles.toSource());
+		$.post(WCP_Ajax.ajaxurl, {
+            action: 'ajax-wcpfrontend',
+            // vars
+            manage_individual: 'true',
+            nextNonce : WCP_Ajax.nextNonce,
+            postID    : WCP_Ajax.postID,
+			tiles	  : tiles,
+			columns   : columns
+        }, function(response) {
+            if (response.logged_in == 'false') {
+                showLogInDiag(response.title, response.body, response.login_button, response.close);
+                return false;
+            } else if (response.saved) {
+				//alert('saved');
+			}
+		});
+	};	
+
+	/* End Manage Individual Page */
 
 
 	/* Manage Fields */
@@ -963,6 +1164,7 @@ jQuery(function ($) {  // use $ for jQuery
 		var phoneText      = $(document).find('.phone-text').text();
 		var emailText      = $(document).find('.email-text').text();
 		var websiteText    = $(document).find('.website-text').text();
+		var dateOnlyText   = $(document).find('.date-only-text').text();
 		var dateText       = $(document).find('.date-text').text();
 		var rateText       = $(document).find('.rate-text').text();
 		var dropdownText   = $(document).find('.dropdown-text').text();
@@ -991,6 +1193,8 @@ jQuery(function ($) {  // use $ for jQuery
 					 + ' data-text="' + websiteText + '" />'+ websiteText + '<br />'
 					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="6"'
 					 + ' data-text="' + mapText + '" />'+ mapText + '<br />'
+					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="11"'
+                     + ' data-text="' + dateOnlyText + '" />'+ dateOnlyText + '<br />'
 					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="7"'
 					 + ' data-text="' + dateText + '" />'+ dateText + '<br />'
 					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="8"'
@@ -1064,169 +1268,6 @@ jQuery(function ($) {  // use $ for jQuery
 	});
 
 	/* End Manage Fields */
-
-	/* SST Page */
-	$(document).on('click', '.add-sst', function() {
-		// set a unique identifier to set the id on saves
-		var unique = randomString();
-		var entry = $(this).closest('.wcp-sst').find('.sst-clone').html();
-		var wrapClass = $(this).closest('.wcp-sst').find('.sst-clone').attr('class').split(' ')[1];
-		var wrap = '<div class="' + wrapClass + '"></div>';
-		$(this).closest('.wcp-sst').find('.wcp-sst-holder').prepend(wrap);
-		$(this).closest('.wcp-sst').find('.' + wrapClass + ':first').attr('data-unique', unique);
-		$(this).closest('.wcp-sst').find('.wcp-sst-holder div:first').hide().prepend(entry).slideDown();
-	});
-
-	$(document).on('click', '.remove-sst', function() {
-		$(this).closest('div').addClass('removal-set');
-		$(this).closest('div').find('input').addClass('remove').attr('disabled', 'disabled');
-		$(this).removeClass('remove-sst wcp-red md-remove-circle-outline').addClass('no-remove-sst md-highlight-remove');
-	});
-
-	$(document).on('click', '.no-remove-sst', function() {
-		$(this).closest('div').removeClass('removal-set');
-		$(this).closest('div').find('input').removeClass('remove').removeAttr('disabled');
-		$(this).removeClass('no-remove-sst md-highlight-remove').addClass('remove-sst wcp-red md-remove-circle-outline');
-	});
-
-    $(function() {
-        $('.wcp-sst-holder').sortable ({});
-    });
-
-	$(document).on('click', '.save-sst', function() {
-		var source = {};
-		var status = {};
-		var type = {};
-		var i = 0;	
-		$('.wcp-sources .wcp-sst-holder .l_source').each( function() {		
-			var sstID = $(this).find('input').attr('class').split(' ')[0].split('-')[1];
-			var remove = 'false';
-			if ($(this).find('input').hasClass('remove')) {
-				remove = 'true';
-			}
-			var sstName = $(this).find('input').val();
-			if (sstName == '') {  // Placeholder text is default...for now
-				sstName = $(this).find('input').attr('placeholder');
-			}
-			var unique = '';
-			if (sstID == 'new') {
-				unique = $(this).data('unique');
-			}
-			source[i] = {
-				id: sstID,
-				name: sstName,
-				remove: remove,
-				unique: unique
-			};
-			i++;
-		});
-		i = 0;
-		$('.wcp-status .wcp-sst-holder .l_status').each( function() { 
-            var sstID = $(this).find('input').attr('class').split(' ')[0].split('-')[1];
-			var remove = 'false';
-            if ($(this).find('input').hasClass('remove')) {
-                remove = 'true';
-            }
-            var sstName = $(this).find('input').val();
-            if (sstName == '') {  // Placeholder text is default...for now
-                sstName = $(this).find('input').attr('placeholder');
-            }
-			var unique = '';
-            if (sstID == 'new') {
-                unique = $(this).data('unique');
-            }
-            status[i] = {
-                id: sstID,
-                name: sstName,
-				remove: remove,
-				unique: unique
-            };
-            i++;
-        });
-		i = 0;
-		$('.wcp-types .wcp-sst-holder .l_type').each( function() { 
-            var sstID = $(this).find('input').attr('class').split(' ')[0].split('-')[1];
-			var remove = 'false';
-            if ($(this).find('input').hasClass('remove')) {
-                remove = 'true';
-            }
-            var sstName = $(this).find('input').val();
-            if (sstName == '') {  // Placeholder text is default...for now
-                sstName = $(this).find('input').attr('placeholder');
-            }
-			var unique = '';
-            if (sstID == 'new') {
-                unique = $(this).data('unique');
-            }
-            type[i] = {
-                id: sstID,
-                name: sstName,
-				remove: remove,
-				unique: unique
-            };
-            i++;
-        });
-
-        $.post(WCP_Ajax.ajaxurl, {
-            // wp ajax action
-            action: 'ajax-wcpfrontend',
-            // vars
-            source: source,
-			status: status,
-			type: type,
-			sst_fields: 'true',
-            nextNonce : WCP_Ajax.nextNonce,
-			postID    : WCP_Ajax.postID
-
-        }, function(response) {
-			if (response.logged_in == 'false') {
-                showLogInDiag(response.title, response.body, response.login_button, response.close);
-                return false;
-            }
-			$('.removal-set').slideUp();
-			// relabel new fields
-			var newEntries = response.new_entries;
-			$('.source-new').each( function() {
-				var unique = $(this).closest('div').data('unique');
-				var newField = $(this);
-				$.each(newEntries, function(k,v) {
-					if (v.unique == unique) {
-						newField.removeClass().addClass('source-' + v.id);
-					}
-				});
-			});
-
-			$('.status-new').each( function() {
-                var unique = $(this).closest('div').data('unique');
-                var newField = $(this);
-                $.each(newEntries, function(k,v) {
-                    if (v.unique == unique) {
-                        newField.removeClass().addClass('status-' + v.id);
-                    }
-                });
-            });
-
-			$('.type-new').each( function() {
-                var unique = $(this).closest('div').data('unique');
-                var newField = $(this);
-                $.each(newEntries, function(k,v) {
-                    if (v.unique == unique) {
-                        newField.removeClass().addClass('type-' + v.id);
-                    }
-                });
-            });
-
-			$('.save-sst').addClass('saved').delay(5000).queue(function() {
-                $('.save-sst').removeClass('saved').dequeue();
-            });
-			
-
-            //showLeadDiag(response, leadID);
-        });
-        return false;
-    });
-
-	/* End SST Page */
 
 	/* Start file upload sections */
 	// drag & drop indication for all file uploads
@@ -1926,7 +1967,7 @@ jQuery(function ($) {  // use $ for jQuery
 			var noteContainer = '<div class="lead-note leadID-' + response.lead_id + ' noteID-' + response.note_id + '">'
                 + '<i class="wcp-red wcp-md md-remove-circle-outline remove-note"> </i>'
 				+ '<i class="wcp-md md-create edit-note"> </i>'
-                + '<span class="timeline-header">🕓 ' + response.date_added + '</span>'
+                + '<span class="timeline-header"><i class="wcp-dark md-history"></i> ' + response.date_added + '</span>'
             	+ '<span class="timeline-body">' + response.note + '</span>'
                 + '</div>';
 			$(noteContainer).prependTo('.lead-notes-container').effect("highlight", {color: WCP_Ajax.contactsColor}, 2000);
@@ -2016,9 +2057,6 @@ jQuery(function ($) {  // use $ for jQuery
 			fieldVals[name] = value;
 		});
 
-        var lsource = $('select.l_source :selected').text();
-        var lstatus = $('select.l_status :selected').text();
-        var ltype = $('select.l_type :selected').text();
         $.post(WCP_Ajax.ajaxurl, {
             // wp ajax action
             action: 'ajax-wcpfrontend',
@@ -2028,9 +2066,6 @@ jQuery(function ($) {  // use $ for jQuery
             nextNonce         : WCP_Ajax.nextNonce,
 			postID            : WCP_Ajax.postID,
             field_vals        : fieldVals,
-            l_source          : lsource,
-            l_status          : lstatus,
-            l_type            : ltype
         }, function(response) {
 			if (response.logged_in == 'false') {
                 showLogInDiag(response.title, response.body, response.login_button, response.close);
@@ -2060,6 +2095,14 @@ jQuery(function ($) {  // use $ for jQuery
 			timeFormat : WCP_Ajax.timeFormat,
 			changeYear: true,
 			yearRange: '-150:+50'
+		});
+	});
+	// Enable date only picker
+	$(document).ready(function() {
+		$('.date-only-choice').datepicker({
+			dateFormat: WCP_Ajax.dateFormat,
+            changeYear: true,
+            yearRange: '-150:+50'
 		});
 	});
 
@@ -2676,4 +2719,3 @@ jQuery(function ($) {  // use $ for jQuery
 	// End Fixed quick edit entries
 
 });
-

@@ -16,12 +16,20 @@
             global $wpdb;
 			$this->load_db_options(); // load the current tables and options
 
-            // no access to this page for non-admins
+            // no access to this page for non-admins and custom roles with no access
             $this->get_the_current_user();
-            if ($this->current_access != 'full') {
+			$custom_role = $this->get_custom_role();
+            if ($this->current_access != 'full'
+				&& !$custom_role['access']
+			) {
                 $content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
                 return $content;
-            }
+            } elseif ($custom_role['access'] 
+            	&& $custom_role['perms']['manage_fields'] != 'yes'
+        	) { 
+            	$content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
+            	return $content;
+        	}
 
 			$content = '<div class="wcp-tabs">'
                      . '<ul class="tab-select">'
@@ -41,7 +49,7 @@
             );
 
             $field_title      = __('Add, Edit, Sort (for individual view and forms) and Remove Fields', 'shwcp');
-            $field_desc       = __('Core Fields cannot be removed, but all can be renamed.  Dropdown and Date Time field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed.', 'shwcp');
+            $field_desc       = __('Core Fields cannot be removed, but all can be renamed.  Dropdown and Date field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed.', 'shwcp');
             $save             = __('Save Changes', 'shwcp');
             $add_new_text     = __('Add New Field', 'shwcp');
             $new_text         = __('New Field', 'shwcp');
@@ -51,6 +59,7 @@
             $email_text       = __('Email Address', 'shwcp');
             $website_text     = __('Website Address', 'shwcp');
             $map_text         = __('Google Map Link', 'shwcp');
+			$date_only_text   = __('Date', 'shwcp');
             $date_text        = __('Date Time', 'shwcp');
             $rate_text        = __('Rating', 'shwcp');
             $check_text       = __('Checkbox', 'shwcp');
@@ -63,9 +72,11 @@
             $remove_set_text  = __('Set For Removal', 'shwcp');
             $cancel_text      = __('Cancel', 'shwcp');
 
-            $date_warning = __('If changing an existing field type to the Date Time selection all existing data for this field will be removed.  Just make sure that is what you want before saving.', 'shwcp');
+            $date_warning = __('If changing an existing field type to the Date or Date Time selection all existing data for this field will be removed.  Just make sure that is what you want before saving.', 'shwcp');
             $date_warning_title = __('Warning', 'shwcp');
             $date_warning_close = __('Close', 'shwcp');
+			$sortable_text = __('Sortable Fields', 'shwcp');
+			$sortable_desc = __('You can add new fields, sort, rename, change field types and most of these can be removed.', 'shwcp'); 
 	
 			$content .= <<<EOC
 			<div class="fields-container" id="fields-container">
@@ -85,8 +96,23 @@
                 	</div>
             	</div>
             	<div class="clear-both"></div>
+				<div class="row"><div class="col-md-6 sortables">
+					<h4>$sortable_text</h4>
+					<p>$sortable_desc</p>
             	<div class="wcp-fields">
 EOC;
+
+			$non_sort_fields = '';
+			/* These are the non-sortables that will go on the right hand side */
+            $non_sorters = array(
+				'id',
+               	'created_by', 
+				'creation_date', 
+				'updated_by', 
+				'updated_date', 
+				'lead_files'
+            );
+
             foreach ($lead_columns as $k => $v) {
                 if (!in_array($v->orig_name, $this->field_noremove)) {
                     $remove = '<i class="remove-field wcp-red wcp-md md-remove-circle-outline" title="' . $remove_text . '"></i>'
@@ -99,10 +125,11 @@ EOC;
                     // 4 email address
                     // 5 website address
                     // 6 google map address
-                    // 7 date picker
+                    // 7 date time picker
                     // 8 rating
                     // 9 checkbox
 					// 10 dropdown select
+					// 11 date only picker
                     // 99 group title
                     if (isset($v->field_type) ) {
                         $field_type = $v->field_type;
@@ -110,7 +137,7 @@ EOC;
                         $field_type = '1';
                     }
 
-			$checked = 'checked="checked"';
+					$checked = 'checked="checked"';
                     $field_options = '<div class="field-options-holder">'
                         . '<i class="field-options wcp-md md-data-usage" title="'
                         . $field_type_text . '"></i>'
@@ -134,6 +161,9 @@ EOC;
                         . '<input type="radio" class="field-type" name="' . $v->orig_name . '-type" value="6" '
                         . (($field_type == '6') ? $checked : '')
                         . ' data-text="' . $map_text . '" />' . $map_text . '<br />'
+						. '<input type="radio" class="field-type" name="' . $v->orig_name . '-type" value="11" '
+						. (($field_type == '11') ? $checked : '')
+                        . ' data-text="' . $date_only_text . '" />' . $date_only_text . '<br />'
                         . '<input type="radio" class="field-type" name="' . $v->orig_name . '-type" value="7" '
                         . (($field_type == '7') ? $checked : '')
                         . ' data-text="' . $date_text . '" />' . $date_text . '<br />'
@@ -167,6 +197,8 @@ EOC;
                         $specific_type = '<div class="field-options-title"><span>' . $website_text . '</span></div>';
                     } elseif ($field_type == '6') {
                         $specific_type = '<div class="field-options-title"><span>' . $map_text . '</span></div>';
+					} elseif ($field_type == '11') {
+						$specific_type = '<div class="field-options-title"><span>' . $date_only_text . '</span></div>';
                     } elseif ($field_type == '7') {
                         $specific_type = '<div class="field-options-title"><span>' . $date_text . '</span></div>';
                     } elseif ($field_type == '8') {
@@ -194,7 +226,8 @@ EOC;
                     $group_title_bg = '';
                 }
                 $clean_name  = stripslashes($v->translated_name);
-                $content .= '<div class="wcp-fielddiv"' . $group_title_bg . '><div class="wcp-group input-field">'
+
+                $fielddiv = '<div class="wcp-fielddiv"' . $group_title_bg . '><div class="wcp-group input-field">'
                     . '<label for="' . $v->orig_name . '" class="field-label">' . $v->orig_name . '</label>'
                     . '<input class="wcp-field ' . $v->orig_name . '" type="text" id="' . $v->orig_name
                     . '" value="' . $clean_name . '" required />'
@@ -203,10 +236,26 @@ EOC;
                     . '<i class="wcp-md md-sort" title="' . __('Sort', 'shwcp') . '"></i>'
                     . $required_field
                     . '</div>';
+				if (!in_array($v->orig_name, $non_sorters)) {				
+					$content .= $fielddiv;
+				} else {
+					$non_sort_fields .= $fielddiv;
+				}
             }
 
+			$nonsort_text = __('Non Sortable Fields', 'shwcp');
+			$nonsort_desc = __('These are built in fields that can be displayed in other locations, you may rename them below.', 'shwcp');
 			$content .= <<<EOC
-            	</div>
+            			</div>
+					</div>
+					<div class="col-md-6 non-sortables">
+						<h4>$nonsort_text</h4>
+						<p>$nonsort_desc</p>
+						<div class="wcp-nonsort-fields">
+							$non_sort_fields
+						</div>
+					</div>
+				</div>
             	<div class="remove-set-text" style="display:none;">$remove_set_text</div>
             	<div class="remove-text" style="display:none;">$remove_text</div>
             	<div class="new-text" style="display:none;">$new_text</div>
@@ -217,6 +266,7 @@ EOC;
             	<div class="email-text" style="display:none;">$email_text</div>
             	<div class="website-text" style="display:none;">$website_text</div>
             	<div class="map-text" style="display:none;">$map_text</div>
+				<div class="date-only-text" style="display:none;">$date_only_text</div>
             	<div class="date-text" style="display:none;">$date_text</div>
             	<div class="rate-text" style="display:none;">$rate_text</div>
 				<div class="dropdown-text" style="display:none;">$dropdown_text</div>

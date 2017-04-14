@@ -105,8 +105,76 @@ form #submit {
 }
 
 .wcp-cust-link,
-.wcp-cust-url {
+.wcp-cust-url,
+.wcp-cust-role {
 	border:0;
+}
+
+.wcp-cust-role {
+	padding: 10px;
+}
+.wcp-table-access-options {
+	width: 100%;
+}
+.wcp-table-access-options td,
+.wcp-user-roles td {
+	vertical-align: top;
+}
+
+.wcp-user-roles {
+	border-collapse:separate;
+	border-spacing: 0 20px;
+}
+
+tr.cust-role-row {
+	background-color: rgba(0, 142, 194, 0.1);
+}
+
+td.role-access {
+	padding-top: 0;
+}
+td.role-name {
+	padding-top: 17px;
+}
+
+.wcp-user-roles p.role-title {
+	background-color: #fff;
+	padding: 5px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+	color: #008ec2;
+}
+
+.wcp-user-roles .wcp-disabled p.role-title {
+	background-color: #ccc;
+}
+
+.remove-cust .remove-cont {
+	position: relative;
+	width: 40px;
+	height: 40px;
+}
+
+.remove-cust .remove-button {
+	background-color: #ccc;
+	color: #fff;
+	position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    text-align: center;
+    z-index: 3;
+    transition: all 0.3s ease-in;
+	cursor: pointer;
+}
+.remove-cust .remove-button:hover {
+	background-color: #f44336;
+}
+.remove-cust .remove-button i {
+	line-height: 40px;
+	font-size: 20px;
 }
 
 .wcp-cust-url {

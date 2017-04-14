@@ -360,6 +360,7 @@
                    'sort_number' => '7',
                    'sort_active' => '1',
 				   'sort_ind_number' => '7',
+				   'field_type' => '10',
 				   'front_filter_active' => '1',
 				   'front_filter_sort' => '1'
                 )
@@ -372,6 +373,7 @@
                    'sort_number' => '8',
                    'sort_active' => '1',
 				   'sort_ind_number' => '8',
+				   'field_type' => '10',
 				   'front_filter_active' => '1',
 				   'front_filter_sort' => '2'
                 )
@@ -384,6 +386,7 @@
                    'sort_number' => '9',
                    'sort_active' => '1',
 				   'sort_ind_number' => '9',
+				   'field_type' => '10',
 				   'front_filter_active' => '1',
 				   'front_filter_sort' => '3'
                 )
@@ -412,4 +415,63 @@
 
 		}
 
+		/* 
+		 * Initial default options settings saved when they don't exist 
+		 * Adds current user and gives them full access
+		 */
+		public function options_shwcp($dbnumber='') {
+			$this->get_the_current_user();
+			$user_id = $this->current_user->ID;
+
+			$permissions = array(
+				'own_leads_change_owner' => 'yes',
+				'permission_settings'    => array(
+					$user_id => 'full'
+				),
+			);
+
+			$main_settings = array(
+				'database_name'         => 'Default',
+				'page_public'           => 'false',
+				'page_page'             => 'true',
+				'page_page_count'       => '20',
+				'default_sort'          => 'id',
+				'default_sort_dir'      => 'asc',
+				'show_admin'            => 'false',
+				'page_color'            => '#dd3333',
+				'logo_attachment_url'   => SHWCP_ROOT_URL . '/assets/img/wpcontacts.png',
+            	'logo_attachment_id'    => '',
+				'page_footer'           => 'WP Contacts &copy;2017 SH-Themes',
+				'page_greeting'         => 'Welcome To <span class="wcp-primary">WP</span> Contacts',
+				'contact_image'         => 'true',
+				'contact_image_url'     => '',
+				'contact_image_id'      => '',
+				'contact_upload'        => 'true',
+				'license_key'           => '',
+				'fixed_edit'            => 'false',
+				'all_fields'            => 'true',
+				'calendar_events'       => 'false',
+				'calender_notify'       => 'false',
+				'calendar_entries_new'  => 'false',
+				'calendar_entries_date' => 'false',
+				'mailchimp_api'         => 'false',
+				'custom_time'           => 'false',
+				'custom_css'            => '',
+				'custom_js'             => '',
+				'troubleshoot'          => 'false'
+			);
+
+			$main_settings_option     = 'shwcp_main_settings' . $dbnumber;
+			$permissions_option       = 'shwcp_permissions' . $dbnumber;
+			$frontend_settings_option = 'shwcp_frontend_settings' . $dbnumber;
+
+			// Check if option exists, if not set it
+			if (!get_option($main_settings_option)) {
+				update_option($main_settings_option, $main_settings);
+			}
+			if (!get_option($permissions_option)) {
+				update_option($permissions_option, $permissions);
+			}
+		}
+		
 	} // end class

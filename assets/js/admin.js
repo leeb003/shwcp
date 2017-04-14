@@ -204,17 +204,84 @@ jQuery(function ($) {  // use $ for jQuery
 		$(this).closest('tr').remove();
 	});
 
-	// Delete link
-	
-	// Sort links
-
-
 	/* End First Tab Settings */
 
 	/* Second Tab (Fields) Settings */
 
+	// Add custom role
+	// copy hidden table of options and modify names for saving
+	$(document).on('click', '.wcp-custom-role', function() {
+		var roleName       = $(document).find('.wcp-role-name').text();
+		var roleLabel      = $(document).find('.wcp-role-label').text();
+		var removeRoleText = $(document).find('.remove-role-text').text();
+		var currentDB      = $(document).find('input[name=option_page]').val();
+		var uniqueString   = 'Custom-' + Math.floor(Math.random() * 26) + Date.now();
+		var currRows = 0; // default start
+		$('.cust-role-row').each(function() {
+			var tempRow = parseInt($(this).attr('class').split(' ')[1].split('-')[1]);
+			if (tempRow > currRows) {
+				currRows = tempRow;
+			}
+		});
+		var nextRow = currRows + 1;
+		// clone hidden table
+		var optionsClone = $('.wcp-access-options').find('.wcp-table-access-options').clone();
+		// modify names
+		optionsClone.find('td').each(function() {
+			if ($(this).hasClass('option-name')) {
+				var entryName = $(this).attr('class').split(' ')[1];
+				$(this).find('input').each(function() {
+					var inputName = currentDB + '[custom_roles][' + nextRow + '][' + entryName + ']';
+					$(this).attr('name', inputName);
+				});
+			}
+		});
+	
+		var addRole = '<tr class="cust-role-row row-' + nextRow + '"><td class="role-name">'
+					+ '<p class="role-title">' + roleLabel + '</p>'
+					+ '<input class="wcp-cust-role" name="' 
+					+ currentDB + '[custom_roles][' + nextRow + '][name]" '
+				    + 'placeholder="' + roleName + '" />'
+					+ '<input class="wcp-cust-unique hide-me" name="' + currentDB + '[custom_roles][' + nextRow + '][unique]"'
+                    + ' value="' + uniqueString + '" />'
+					+ '</td>'
+					+ '<td class="role-access"></td>'
+					+ '<td class="remove-cust"><div class="remove-cont">'
+					+ '<div class="remove-button" title="' + removeRoleText + '"><i class="md-clear"> </i>'
+					+ '</div></div></td></tr>';
 
+		$('.wcp-user-roles').prepend(addRole);
+		$('.row-' + nextRow + ' .role-access').append(optionsClone);
+		
+		return false;
+	});
 
+	// delete custom role
+	$(document).on('click', '.remove-cust .remove-button', function() {
+		$(this).closest('.cust-role-row').fadeOut().remove();
+		return false;
+	});
+
+	// Set dependent fields disabled for Edit Entries if no access
+	$(document).ready(function() {
+		$('.entries_edit').each(function() {
+			var editChecked = $(this).find('.entries_edit_option:checked').val();
+			if (editChecked == 'none') {
+				$(this).closest('tr').find('.entries_ownership, .manage_entry_files, .manage_entry_photo')
+				.addClass('wcp-disabled'); //.find('input').prop('disabled', true);
+			}
+		});
+	});
+	$(document).on('change', '.entries_edit', function() {
+		var editChecked = $(this).find('.entries_edit_option:checked').val();
+		if (editChecked == 'none') {
+            $(this).closest('tr').find('.entries_ownership, .manage_entry_files, .manage_entry_photo')
+            .addClass('wcp-disabled'); //.find('input').prop('disabled', true);
+        } else {
+			$(this).closest('tr').find('.entries_ownership, .manage_entry_files, .manage_entry_photo')
+            .removeClass('wcp-disabled'); //.find('input').prop('disabled', false);
+		}
+	});
 
 	/* End Second Tab Settings */
 

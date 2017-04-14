@@ -28,6 +28,7 @@
 		protected $log_count;	   // total log count
 		protected $first_tab;
 		protected $second_tab;
+		protected $frontend_settings;
 		protected $can_access;
 		protected $can_edit;
 		protected $current_access;
@@ -56,10 +57,8 @@
                 'updated_by',
                 'creation_date',
                 'updated_date',
-                'l_source',
-                'l_status',
-                'l_type',
-				'owned_by'
+				'owned_by',
+				'lead_files'
             );
             // non editable fields
             $this->field_noedit = array(
@@ -165,8 +164,9 @@
             $this->table_notes    = $wpdb->prefix . SHWCP_NOTES  . $db;
 			$this->table_events   = $wpdb->prefix . SHWCP_EVENTS . $db;
 
-			$this->first_tab = get_option('shwcp_main_settings' . $db);
-			$this->second_tab = get_option('shwcp_permissions'  . $db);
+			$this->first_tab         = get_option('shwcp_main_settings' . $db);
+			$this->second_tab        = get_option('shwcp_permissions'  . $db);
+			$this->frontend_settings = get_option('shwcp_frontend_settings' . $db);
 			$this->dt_opt(); // Set the date formats
 			// return $db for calls that need it
 			return $db;
@@ -241,6 +241,7 @@
 
 			// access and permissions
             // permissions are none, readonly, ownleads, full, notset
+			// We now have custom roles as well
             $this->current_access = isset($this->second_tab['permission_settings'][$this->current_user->ID]) 
 				? $this->second_tab['permission_settings'][$this->current_user->ID] : 'notset';
             $wcp_public = isset($this->first_tab['page_public']) ? $this->first_tab['page_public'] : 'false';
@@ -259,8 +260,33 @@
             if ($this->current_access == 'full' || $this->current_access == 'ownleads') {
                 $this->can_edit = true;
             }
+		}
 
-
+		/**
+		 * Get Custom roles info if it's set
+		 * returns array access name or false and perms 
+		 */
+		public function get_custom_role() {
+			$custom = array();
+			$current_user = wp_get_current_user();
+			$custom['access'] = isset($this->second_tab['permission_settings'][$this->current_user->ID])
+			? $this->second_tab['permission_settings'][$this->current_user->ID] : false;
+			if ($custom['access'] == 'none'
+				|| $custom['access'] == 'readonly' 
+				|| $custom['access'] == 'ownleads'
+				|| $custom['access'] == 'full'
+				|| $custom['access'] == 'notset'
+			) {
+				$custom['access'] = false;
+			} else {
+				$custom_roles = isset($this->second_tab['custom_roles']) ? $this->second_tab['custom_roles'] : array();
+				foreach ($custom_roles as $k => $v) {
+					if ($v['unique'] == $custom['access']) {
+						$custom['perms']  = $custom_roles[$k];
+					}
+				}
+			}
+			return $custom;
 		}
 
 		/**

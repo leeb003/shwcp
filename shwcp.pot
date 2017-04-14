@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Contacts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-16 13:51-0700\n"
+"POT-Creation-Date: 2017-04-14 13:54-0700\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lee Beck <info@scripthat.com>\n"
 "Language-Team: SH-Themes <info@sh-themes.com>\n"
@@ -16,1161 +16,1367 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/class-wcp-front.php:201
+#: includes/class-wcp-front.php:213
 msgid "Clear"
 msgstr ""
 
-#: includes/class-wcp-front.php:202
+#: includes/class-wcp-front.php:214
 msgid "Default"
 msgstr ""
 
-#: includes/class-wcp-front.php:203
+#: includes/class-wcp-front.php:215
 msgid "Select Color"
 msgstr ""
 
-#: includes/class-wcp-front.php:225
-#: includes/class-wcp-front.php:305
-#: includes/class-wcp-stats.php:40
+#: includes/class-wcp-front.php:237
+#: includes/class-wcp-front.php:318
+#: includes/class-wcp-stats.php:44
 msgid "January"
 msgstr ""
 
-#: includes/class-wcp-front.php:226
-#: includes/class-wcp-front.php:306
-#: includes/class-wcp-stats.php:41
+#: includes/class-wcp-front.php:238
+#: includes/class-wcp-front.php:319
+#: includes/class-wcp-stats.php:45
 msgid "February"
 msgstr ""
 
-#: includes/class-wcp-front.php:227
-#: includes/class-wcp-front.php:307
-#: includes/class-wcp-stats.php:42
+#: includes/class-wcp-front.php:239
+#: includes/class-wcp-front.php:320
+#: includes/class-wcp-stats.php:46
 msgid "March"
 msgstr ""
 
-#: includes/class-wcp-front.php:228
-#: includes/class-wcp-front.php:308
-#: includes/class-wcp-stats.php:43
+#: includes/class-wcp-front.php:240
+#: includes/class-wcp-front.php:321
+#: includes/class-wcp-stats.php:47
 msgid "April"
 msgstr ""
 
-#: includes/class-wcp-front.php:229
-#: includes/class-wcp-front.php:243
-#: includes/class-wcp-front.php:309
-#: includes/class-wcp-front.php:323
-#: includes/class-wcp-stats.php:44
+#: includes/class-wcp-front.php:241
+#: includes/class-wcp-front.php:255
+#: includes/class-wcp-front.php:322
+#: includes/class-wcp-front.php:336
+#: includes/class-wcp-stats.php:48
 msgid "May"
 msgstr ""
 
-#: includes/class-wcp-front.php:230
-#: includes/class-wcp-front.php:310
-#: includes/class-wcp-stats.php:45
+#: includes/class-wcp-front.php:242
+#: includes/class-wcp-front.php:323
+#: includes/class-wcp-stats.php:49
 msgid "June"
 msgstr ""
 
-#: includes/class-wcp-front.php:231
-#: includes/class-wcp-front.php:311
-#: includes/class-wcp-stats.php:46
+#: includes/class-wcp-front.php:243
+#: includes/class-wcp-front.php:324
+#: includes/class-wcp-stats.php:50
 msgid "July"
 msgstr ""
 
-#: includes/class-wcp-front.php:232
-#: includes/class-wcp-front.php:312
-#: includes/class-wcp-stats.php:47
+#: includes/class-wcp-front.php:244
+#: includes/class-wcp-front.php:325
+#: includes/class-wcp-stats.php:51
 msgid "August"
 msgstr ""
 
-#: includes/class-wcp-front.php:233
-#: includes/class-wcp-front.php:313
-#: includes/class-wcp-stats.php:48
+#: includes/class-wcp-front.php:245
+#: includes/class-wcp-front.php:326
+#: includes/class-wcp-stats.php:52
 msgid "September"
 msgstr ""
 
-#: includes/class-wcp-front.php:234
-#: includes/class-wcp-front.php:314
-#: includes/class-wcp-stats.php:49
+#: includes/class-wcp-front.php:246
+#: includes/class-wcp-front.php:327
+#: includes/class-wcp-stats.php:53
 msgid "October"
 msgstr ""
 
-#: includes/class-wcp-front.php:235
-#: includes/class-wcp-front.php:315
-#: includes/class-wcp-stats.php:50
+#: includes/class-wcp-front.php:247
+#: includes/class-wcp-front.php:328
+#: includes/class-wcp-stats.php:54
 msgid "November"
 msgstr ""
 
-#: includes/class-wcp-front.php:236
-#: includes/class-wcp-front.php:316
-#: includes/class-wcp-stats.php:51
+#: includes/class-wcp-front.php:248
+#: includes/class-wcp-front.php:329
+#: includes/class-wcp-stats.php:55
 msgid "December"
 msgstr ""
 
-#: includes/class-wcp-front.php:239
-#: includes/class-wcp-front.php:319
+#: includes/class-wcp-front.php:251
+#: includes/class-wcp-front.php:332
 msgid "Jan"
 msgstr ""
 
-#: includes/class-wcp-front.php:240
-#: includes/class-wcp-front.php:320
+#: includes/class-wcp-front.php:252
+#: includes/class-wcp-front.php:333
 msgid "Feb"
 msgstr ""
 
-#: includes/class-wcp-front.php:241
-#: includes/class-wcp-front.php:321
+#: includes/class-wcp-front.php:253
+#: includes/class-wcp-front.php:334
 msgid "Mar"
 msgstr ""
 
-#: includes/class-wcp-front.php:242
-#: includes/class-wcp-front.php:322
+#: includes/class-wcp-front.php:254
+#: includes/class-wcp-front.php:335
 msgid "Apr"
 msgstr ""
 
-#: includes/class-wcp-front.php:244
-#: includes/class-wcp-front.php:324
+#: includes/class-wcp-front.php:256
+#: includes/class-wcp-front.php:337
 msgid "Jun"
 msgstr ""
 
-#: includes/class-wcp-front.php:245
-#: includes/class-wcp-front.php:325
+#: includes/class-wcp-front.php:257
+#: includes/class-wcp-front.php:338
 msgid "Jul"
 msgstr ""
 
-#: includes/class-wcp-front.php:246
-#: includes/class-wcp-front.php:326
+#: includes/class-wcp-front.php:258
+#: includes/class-wcp-front.php:339
 msgid "Aug"
 msgstr ""
 
-#: includes/class-wcp-front.php:247
-#: includes/class-wcp-front.php:327
+#: includes/class-wcp-front.php:259
+#: includes/class-wcp-front.php:340
 msgid "Sep"
 msgstr ""
 
-#: includes/class-wcp-front.php:248
-#: includes/class-wcp-front.php:328
+#: includes/class-wcp-front.php:260
+#: includes/class-wcp-front.php:341
 msgid "Oct"
 msgstr ""
 
-#: includes/class-wcp-front.php:249
-#: includes/class-wcp-front.php:329
+#: includes/class-wcp-front.php:261
+#: includes/class-wcp-front.php:342
 msgid "Nov"
 msgstr ""
 
-#: includes/class-wcp-front.php:250
-#: includes/class-wcp-front.php:330
+#: includes/class-wcp-front.php:262
+#: includes/class-wcp-front.php:343
 msgid "Dec"
 msgstr ""
 
-#: includes/class-wcp-front.php:253
-#: includes/class-wcp-front.php:333
+#: includes/class-wcp-front.php:265
+#: includes/class-wcp-front.php:346
 msgid "Sunday"
 msgstr ""
 
-#: includes/class-wcp-front.php:254
-#: includes/class-wcp-front.php:334
+#: includes/class-wcp-front.php:266
+#: includes/class-wcp-front.php:347
 msgid "Monday"
 msgstr ""
 
-#: includes/class-wcp-front.php:255
-#: includes/class-wcp-front.php:335
+#: includes/class-wcp-front.php:267
+#: includes/class-wcp-front.php:348
 msgid "Tuesday"
 msgstr ""
 
-#: includes/class-wcp-front.php:256
-#: includes/class-wcp-front.php:336
+#: includes/class-wcp-front.php:268
+#: includes/class-wcp-front.php:349
 msgid "Wednesday"
 msgstr ""
 
-#: includes/class-wcp-front.php:257
-#: includes/class-wcp-front.php:337
+#: includes/class-wcp-front.php:269
+#: includes/class-wcp-front.php:350
 msgid "Thursday"
 msgstr ""
 
-#: includes/class-wcp-front.php:258
-#: includes/class-wcp-front.php:338
+#: includes/class-wcp-front.php:270
+#: includes/class-wcp-front.php:351
 msgid "Friday"
 msgstr ""
 
-#: includes/class-wcp-front.php:259
-#: includes/class-wcp-front.php:339
+#: includes/class-wcp-front.php:271
+#: includes/class-wcp-front.php:352
 msgid "Saturday"
 msgstr ""
 
-#: includes/class-wcp-front.php:262
-#: includes/class-wcp-front.php:342
+#: includes/class-wcp-front.php:274
+#: includes/class-wcp-front.php:355
 msgid "Sun"
 msgstr ""
 
-#: includes/class-wcp-front.php:263
-#: includes/class-wcp-front.php:343
+#: includes/class-wcp-front.php:275
+#: includes/class-wcp-front.php:356
 msgid "Mon"
 msgstr ""
 
-#: includes/class-wcp-front.php:264
-#: includes/class-wcp-front.php:344
+#: includes/class-wcp-front.php:276
+#: includes/class-wcp-front.php:357
 msgid "Tue"
 msgstr ""
 
-#: includes/class-wcp-front.php:265
-#: includes/class-wcp-front.php:345
+#: includes/class-wcp-front.php:277
+#: includes/class-wcp-front.php:358
 msgid "Wed"
 msgstr ""
 
-#: includes/class-wcp-front.php:266
-#: includes/class-wcp-front.php:346
+#: includes/class-wcp-front.php:278
+#: includes/class-wcp-front.php:359
 msgid "Thu"
 msgstr ""
 
-#: includes/class-wcp-front.php:267
-#: includes/class-wcp-front.php:347
+#: includes/class-wcp-front.php:279
+#: includes/class-wcp-front.php:360
 msgid "Fri"
 msgstr ""
 
-#: includes/class-wcp-front.php:268
-#: includes/class-wcp-front.php:348
+#: includes/class-wcp-front.php:280
+#: includes/class-wcp-front.php:361
 msgid "Sat"
 msgstr ""
 
-#: includes/class-wcp-front.php:270
+#: includes/class-wcp-front.php:282
 msgid "Today"
 msgstr ""
 
-#: includes/class-wcp-front.php:271
+#: includes/class-wcp-front.php:283
 msgid "Month"
 msgstr ""
 
-#: includes/class-wcp-front.php:272
+#: includes/class-wcp-front.php:284
 msgid "Week"
 msgstr ""
 
-#: includes/class-wcp-front.php:273
+#: includes/class-wcp-front.php:285
 msgid "Day"
 msgstr ""
 
-#: includes/class-wcp-front.php:300
-#: includes/class-wcp-front.php:370
+#: includes/class-wcp-front.php:313
+#: includes/class-wcp-front.php:383
 msgid "Close"
 msgstr ""
 
-#: includes/class-wcp-front.php:301
+#: includes/class-wcp-front.php:314
 msgid "Prev"
 msgstr ""
 
-#: includes/class-wcp-front.php:302
+#: includes/class-wcp-front.php:315
 #: includes/class-paginate.php:24
 msgid "Next"
 msgstr ""
 
-#: includes/class-wcp-front.php:303
+#: includes/class-wcp-front.php:316
 msgid "Current"
 msgstr ""
 
-#: includes/class-wcp-front.php:351
+#: includes/class-wcp-front.php:364
 msgid "Su"
 msgstr ""
 
-#: includes/class-wcp-front.php:352
+#: includes/class-wcp-front.php:365
 msgid "Mo"
 msgstr ""
 
-#: includes/class-wcp-front.php:353
+#: includes/class-wcp-front.php:366
 msgid "Tu"
 msgstr ""
 
-#: includes/class-wcp-front.php:354
+#: includes/class-wcp-front.php:367
 msgid "We"
 msgstr ""
 
-#: includes/class-wcp-front.php:355
+#: includes/class-wcp-front.php:368
 msgid "Th"
 msgstr ""
 
-#: includes/class-wcp-front.php:356
+#: includes/class-wcp-front.php:369
 msgid "Fr"
 msgstr ""
 
-#: includes/class-wcp-front.php:357
+#: includes/class-wcp-front.php:370
 msgid "Sa"
 msgstr ""
 
-#: includes/class-wcp-front.php:359
+#: includes/class-wcp-front.php:372
 msgid "He"
 msgstr ""
 
-#: includes/class-wcp-front.php:362
-#: includes/class-wcp-front.php:363
+#: includes/class-wcp-front.php:375
+#: includes/class-wcp-front.php:376
 msgid "Time"
 msgstr ""
 
-#: includes/class-wcp-front.php:364
+#: includes/class-wcp-front.php:377
 msgid "Hour"
 msgstr ""
 
-#: includes/class-wcp-front.php:365
+#: includes/class-wcp-front.php:378
 msgid "Minute"
 msgstr ""
 
-#: includes/class-wcp-front.php:366
+#: includes/class-wcp-front.php:379
 msgid "Second"
 msgstr ""
 
-#: includes/class-wcp-front.php:367
+#: includes/class-wcp-front.php:380
 msgid "Millisecond"
 msgstr ""
 
-#: includes/class-wcp-front.php:368
+#: includes/class-wcp-front.php:381
 msgid "Time Zone"
 msgstr ""
 
-#: includes/class-wcp-front.php:369
+#: includes/class-wcp-front.php:382
 msgid "Now"
 msgstr ""
 
-#: includes/class-wcp-front.php:372
+#: includes/class-wcp-front.php:385
 msgid "AM"
 msgstr ""
 
-#: includes/class-wcp-front.php:372
+#: includes/class-wcp-front.php:385
 msgid "A"
 msgstr ""
 
-#: includes/class-wcp-front.php:375
+#: includes/class-wcp-front.php:388
 msgid "PM"
 msgstr ""
 
-#: includes/class-wcp-front.php:375
+#: includes/class-wcp-front.php:388
 msgid "P"
 msgstr ""
 
-#: includes/class-wcp-front.php:395
+#: includes/class-wcp-front.php:408
 msgid "Sending user info, please wait..."
 msgstr ""
 
-#: includes/class-wcp-front.php:433
-#: includes/class-wcp-front.php:434
+#: includes/class-wcp-front.php:462
+#: includes/class-wcp-front.php:463
 msgid "Home"
 msgstr ""
 
-#: includes/class-wcp-front.php:442
+#: includes/class-wcp-front.php:483
 msgid "Clear Filters"
 msgstr ""
 
-#: includes/class-wcp-front.php:445
+#: includes/class-wcp-front.php:486
 msgid "All Entries"
 msgstr ""
 
-#: includes/class-wcp-front.php:446
+#: includes/class-wcp-front.php:487
+msgid "Settings"
+msgstr ""
+
+#: includes/class-wcp-front.php:488
 msgid "Manage Front Page"
 msgstr ""
 
-#: includes/class-wcp-front.php:448
+#: includes/class-wcp-front.php:490
+msgid "Manage Individual Page"
+msgstr ""
+
+#: includes/class-wcp-front.php:492
 msgid "Manage Fields"
 msgstr ""
 
-#: includes/class-wcp-front.php:450
-msgid "Sources Types & Status"
-msgstr ""
-
-#: includes/class-wcp-front.php:452
+#: includes/class-wcp-front.php:494
 msgid "Individual Entry"
 msgstr ""
 
-#: includes/class-wcp-front.php:454
+#: includes/class-wcp-front.php:496
 msgid "Import & Export"
 msgstr ""
 
-#: includes/class-wcp-front.php:456
+#: includes/class-wcp-front.php:498
 msgid "Statistics"
 msgstr ""
 
-#: includes/class-wcp-front.php:458
+#: includes/class-wcp-front.php:500
 msgid "Logging"
 msgstr ""
 
-#: includes/class-wcp-front.php:460
+#: includes/class-wcp-front.php:502
 msgid "Events"
 msgstr ""
 
-#: includes/class-wcp-front.php:467
+#: includes/class-wcp-front.php:509
 msgid "Username"
 msgstr ""
 
-#: includes/class-wcp-front.php:468
+#: includes/class-wcp-front.php:510
 msgid "Password"
 msgstr ""
 
-#: includes/class-wcp-front.php:469
+#: includes/class-wcp-front.php:511
 msgid "Lost Your Password?"
 msgstr ""
 
-#: includes/class-wcp-front.php:471
+#: includes/class-wcp-front.php:513
 msgid "Logout"
 msgstr ""
 
-#: includes/class-wcp-front.php:474
+#: includes/class-wcp-front.php:516
 msgid "Login"
 msgstr ""
 
-#: includes/class-wcp-front.php:539
-#: includes/class-wcp-front.php:796
-#: includes/class-allleads.php:354
+#: includes/class-wcp-front.php:576
+#: includes/class-wcp-front.php:898
+#: includes/class-allleads.php:293
 msgid "Search"
 msgstr ""
 
-#: includes/class-wcp-front.php:542
+#: includes/class-wcp-front.php:579
 msgid "Remove all log entries"
 msgstr ""
 
-#: includes/class-wcp-front.php:549
+#: includes/class-wcp-front.php:586
 msgid "Add New Event"
 msgstr ""
 
-#: includes/class-wcp-front.php:561
+#: includes/class-wcp-front.php:598
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: includes/class-wcp-front.php:601
-#: includes/class-wcp-logging.php:169
+#: includes/class-wcp-front.php:638
+#: includes/class-wcp-logging.php:177
 msgid "Unknown"
 msgstr ""
 
-#: includes/class-wcp-front.php:607
+#: includes/class-wcp-front.php:644
 msgid "Logo"
 msgstr ""
 
-#: includes/class-wcp-front.php:776
-#: includes/class-allleads.php:560
+#: includes/class-wcp-front.php:878
+#: includes/class-allleads.php:446
 msgid "All Fields"
 msgstr ""
 
-#: includes/class-wcp-front.php:803
-#: includes/class-allleads.php:535
+#: includes/class-wcp-front.php:912
+#: includes/class-wcp-front.php:920
+#: includes/class-allleads.php:412
 msgid "Add Entry"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:225
+#: includes/class-wcp-front.php:914
+#: includes/class-wcp-front.php:930
+msgid "Export View"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:226
 msgid "Main Settings"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:228
+#: includes/class-wcp-api-tabs.php:229
 msgid "Main Contacts Settings"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:230
+#: includes/class-wcp-api-tabs.php:231
 msgid "Page for WP Contacts"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:232
+#: includes/class-wcp-api-tabs.php:233
 msgid "Database Name"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:235
+#: includes/class-wcp-api-tabs.php:236
 msgid "Public Accessibility"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:238
+#: includes/class-wcp-api-tabs.php:239
 msgid "Use Pagination"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:240
+#: includes/class-wcp-api-tabs.php:241
 msgid "Pagination Results"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:242
+#: includes/class-wcp-api-tabs.php:243
 msgid "Default Front Sort"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:244
+#: includes/class-wcp-api-tabs.php:245
 msgid "Show WP Admin Bar"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:246
+#: includes/class-wcp-api-tabs.php:247
 msgid "Primary Color"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:248
+#: includes/class-wcp-api-tabs.php:249
 msgid "Logo Image"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:250
+#: includes/class-wcp-api-tabs.php:251
 msgid "Footer Text"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:252
+#: includes/class-wcp-api-tabs.php:253
 msgid "Greeting Text"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:254
+#: includes/class-wcp-api-tabs.php:255
 msgid "Entry Image"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:256
+#: includes/class-wcp-api-tabs.php:257
 msgid "Default Entry Image"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:258
+#: includes/class-wcp-api-tabs.php:259
 msgid "Contact Uploads"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:262
+#: includes/class-wcp-api-tabs.php:263
 msgid "Envato Purchase Code"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:266
+#: includes/class-wcp-api-tabs.php:267
 msgid "Fixed Edit Column"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:269
+#: includes/class-wcp-api-tabs.php:270
 msgid "Search All Fields"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:272
+#: includes/class-wcp-api-tabs.php:273
 msgid "Enable Events"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:275
+#: includes/class-wcp-api-tabs.php:276
 msgid "Enable Event Notifications"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:278
+#: includes/class-wcp-api-tabs.php:279
 msgid "Calendar New Entries"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:281
+#: includes/class-wcp-api-tabs.php:282
 msgid "Calendar Date Entries"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:284
+#: includes/class-wcp-api-tabs.php:285
 msgid "Enable MailChimp Export"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:287
+#: includes/class-wcp-api-tabs.php:288
 msgid "Use WordPress Date & Time Settings"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:290
+#: includes/class-wcp-api-tabs.php:291
 msgid "Custom Menu Links"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:293
+#: includes/class-wcp-api-tabs.php:294
 msgid "Custom CSS"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:296
+#: includes/class-wcp-api-tabs.php:297
 msgid "Custom Javascript"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:300
+#: includes/class-wcp-api-tabs.php:301
 msgid "Troubleshooting"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:310
+#: includes/class-wcp-api-tabs.php:311
+#: includes/class-wcp-manage-perms.php:74
 msgid "Permissions"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:313
+#: includes/class-wcp-api-tabs.php:314
 msgid "Set Users Access to WP Contacts"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:314
-msgid "Manage Own Leads Ownership Change"
+#: includes/class-wcp-api-tabs.php:315
+#: includes/class-wcp-manage-perms.php:44
+msgid "Manage Own Entries Ownership Change"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:316
+#: includes/class-wcp-api-tabs.php:317
+#: includes/class-wcp-manage-perms.php:54
 msgid "Users"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:324
-msgid "Site Information"
+#: includes/class-wcp-api-tabs.php:319
+#: includes/class-wcp-manage-perms.php:75
+msgid "Custom Access Roles"
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:327
+msgid "Site Information"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:330
 msgid "Information about your server"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:329
+#: includes/class-wcp-api-tabs.php:332
 msgid "Info"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:338
+#: includes/class-wcp-api-tabs.php:341
 msgid "Database Operations"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:341
+#: includes/class-wcp-api-tabs.php:344
 msgid "Database Actions Available"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:343
-#: includes/class-wcp-api-tabs.php:936
+#: includes/class-wcp-api-tabs.php:346
+#: includes/class-wcp-api-tabs.php:1288
 msgid "Backup Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:345
+#: includes/class-wcp-api-tabs.php:348
 msgid "Restore Database Backup"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:347
+#: includes/class-wcp-api-tabs.php:350
 msgid "Current Backups"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:349
+#: includes/class-wcp-api-tabs.php:352
 msgid "Reset Database"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:358
+#: includes/class-wcp-api-tabs.php:361
 msgid "Set up WP Contacts general settings on this tab."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:359
-msgid "Set up WP Contacts Users and access to the frontend.  You will have Full Access by default, but you must save this screen initially. Keep in mind if you have public accessible set to true in the Main Settings, all logged in users will also be able to view leads."
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:360
-msgid "Note that these server settings will affect the size, amount, and time taken allowed for uploads and scripts.  Be aware of this as it will affect the size of uploads and time allowed for processing imports etc.  <br />These PHP settings may need to be adjusted on your server according to your requirements."
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:361
-msgid "You are running version"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:361
-msgid "of WP Contacts"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:361
-msgid "Have a question? Take a look at our"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:361
-msgid "Online Documentation"
+#: includes/class-wcp-api-tabs.php:362
+msgid "Set up WP Contacts Users and access to the frontend.  You will have Full Access by default. Keep in mind if you have public accessible set to true in the Main Settings, all logged in users will also be able to view entries."
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:363
+msgid "Note that these server settings will affect the size, amount, and time taken allowed for uploads and scripts.  Be aware of this as it will affect the size of uploads and time allowed for processing imports etc.  <br />These PHP settings may need to be adjusted on your server according to your requirements."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:364
+msgid "You are running version"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:364
+msgid "of WP Contacts"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:364
+msgid "Have a question? Take a look at our"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:364
+msgid "Online Documentation"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:366
 msgid "This section allows you to perform various actions on your database.  Pay attention to what you are doing as changes here will affect what you have in your database!"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:371
+#: includes/class-wcp-api-tabs.php:374
 msgid "If you haven't done so, create a blank page for WP Contacts and assign the WP Contacts Template to it first."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:384
+#: includes/class-wcp-api-tabs.php:387
 msgid "The name used to associate the WP Contacts page template with a specific database.  If you have multiple databases, you'll be able to select this on a page that is using the WP Contacts template.  This is also used in our api and our Zapier extension."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:396
-#: includes/class-wcp-api-tabs.php:424
-#: includes/class-wcp-api-tabs.php:441
-#: includes/class-wcp-api-tabs.php:458
-#: includes/class-wcp-api-tabs.php:475
-#: includes/class-wcp-api-tabs.php:493
-#: includes/class-wcp-api-tabs.php:517
-#: includes/class-wcp-api-tabs.php:535
-#: includes/class-wcp-api-tabs.php:553
-#: includes/class-wcp-api-tabs.php:571
-#: includes/class-wcp-api-tabs.php:661
-#: includes/class-wcp-api-tabs.php:677
-#: includes/class-wcp-api-tabs.php:793
-#: includes/class-wcp-api-tabs.php:835
+#: includes/class-wcp-api-tabs.php:399
+#: includes/class-wcp-api-tabs.php:427
+#: includes/class-wcp-api-tabs.php:444
+#: includes/class-wcp-api-tabs.php:461
+#: includes/class-wcp-api-tabs.php:478
+#: includes/class-wcp-api-tabs.php:496
+#: includes/class-wcp-api-tabs.php:520
+#: includes/class-wcp-api-tabs.php:538
+#: includes/class-wcp-api-tabs.php:556
+#: includes/class-wcp-api-tabs.php:574
+#: includes/class-wcp-api-tabs.php:664
+#: includes/class-wcp-api-tabs.php:680
+#: includes/class-wcp-api-tabs.php:796
+#: includes/class-wcp-api-tabs.php:838
 msgid "False"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:398
-#: includes/class-wcp-api-tabs.php:426
-#: includes/class-wcp-api-tabs.php:443
-#: includes/class-wcp-api-tabs.php:460
-#: includes/class-wcp-api-tabs.php:477
-#: includes/class-wcp-api-tabs.php:519
-#: includes/class-wcp-api-tabs.php:537
-#: includes/class-wcp-api-tabs.php:555
-#: includes/class-wcp-api-tabs.php:573
-#: includes/class-wcp-api-tabs.php:659
-#: includes/class-wcp-api-tabs.php:675
-#: includes/class-wcp-api-tabs.php:795
-#: includes/class-wcp-api-tabs.php:837
+#: includes/class-wcp-api-tabs.php:401
+#: includes/class-wcp-api-tabs.php:429
+#: includes/class-wcp-api-tabs.php:446
+#: includes/class-wcp-api-tabs.php:463
+#: includes/class-wcp-api-tabs.php:480
+#: includes/class-wcp-api-tabs.php:522
+#: includes/class-wcp-api-tabs.php:540
+#: includes/class-wcp-api-tabs.php:558
+#: includes/class-wcp-api-tabs.php:576
+#: includes/class-wcp-api-tabs.php:662
+#: includes/class-wcp-api-tabs.php:678
+#: includes/class-wcp-api-tabs.php:798
+#: includes/class-wcp-api-tabs.php:840
 msgid "True"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:401
+#: includes/class-wcp-api-tabs.php:404
 msgid "Choose if you want to allow people who are not logged in read access to WP Contacts"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:413
+#: includes/class-wcp-api-tabs.php:416
 msgid "Enter your Envato purchase code for updates."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:429
+#: includes/class-wcp-api-tabs.php:432
 msgid "Move scripts to header - only necessary if you are having javascript conflicts with a theme or other plugins. Symptoms would be frontend functionality is not working correctly.  Use as a last resort as the cause of the problem should be located and corrected."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:446
+#: includes/class-wcp-api-tabs.php:449
 msgid "Choose to enable a sticky edit column on the main view (Edit column stays visable).  Good for large frontend table views."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:463
+#: includes/class-wcp-api-tabs.php:466
 msgid "Choose to enable option to search all fields at once in search.  Warning, depending on your server capabilities and how many columns you have these have the potential to be slow.  It's always better to search specific fields."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:480
+#: includes/class-wcp-api-tabs.php:483
 msgid "Select if you would like to enable Calendar and Events functionality.  This will enable a new link in your frontend menu to the calendar."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:495
+#: includes/class-wcp-api-tabs.php:498
 msgid "Email"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:498
+#: includes/class-wcp-api-tabs.php:501
 msgid "On-Screen"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:500
+#: includes/class-wcp-api-tabs.php:503
 msgid "Both"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:504
+#: includes/class-wcp-api-tabs.php:507
 msgid "Select if you would like to enable event notifications for custom events created."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:522
+#: includes/class-wcp-api-tabs.php:525
 msgid "New Entries can show up from your database on your calendar, choose to display these or not."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:540
+#: includes/class-wcp-api-tabs.php:543
 msgid "Choose if you want to enable Entries Date Time fields to appear on your calendar."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:558
+#: includes/class-wcp-api-tabs.php:561
 msgid "Select if you would like to enable exporting direct to MailChimp.  Once enabled, exporting will show up on the frontend on the Import & Export link."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:576
+#: includes/class-wcp-api-tabs.php:579
 msgid "You can set WP Contacts to use the WordPress custom time settings under Settings -> General.  Keep in mind searching for partial dates will be the most flexible with this disabled.  "
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:586
+#: includes/class-wcp-api-tabs.php:589
 msgid "Link Text"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:587
+#: includes/class-wcp-api-tabs.php:590
 msgid "Link URL (e.g. http://www.example.com)"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:588
-#: includes/class-wcp-api-tabs.php:1211
+#: includes/class-wcp-api-tabs.php:591
+#: includes/class-wcp-api-tabs.php:1563
 msgid "Delete"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:589
+#: includes/class-wcp-api-tabs.php:592
 msgid "New window?"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:591
-#: includes/class-wcp-sst-fields.php:73
+#: includes/class-wcp-api-tabs.php:594
 msgid "Add New"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:625
+#: includes/class-wcp-api-tabs.php:628
 msgid "Add your own custom links to the slide out main menu."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:664
+#: includes/class-wcp-api-tabs.php:667
 msgid "Use pagination for results (highly recommended), or show all results in view."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:680
+#: includes/class-wcp-api-tabs.php:683
 msgid "Select if you want the Wordpress admin bar to show on Contacts page or not."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:698
+#: includes/class-wcp-api-tabs.php:701
 msgid "Set the pagination results per page"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:723
+#: includes/class-wcp-api-tabs.php:726
 msgid "Descending"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:725
+#: includes/class-wcp-api-tabs.php:728
 msgid "Ascending"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:728
+#: includes/class-wcp-api-tabs.php:731
 msgid "Choose the Front Page default view sorting field and direction (default is ID Descending)"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:741
+#: includes/class-wcp-api-tabs.php:744
 msgid "This sets the primary color for WP Contacts"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:752
-#: includes/class-wcp-api-tabs.php:812
-#: includes/class-wcp-ie.php:60
+#: includes/class-wcp-api-tabs.php:755
+#: includes/class-wcp-api-tabs.php:815
+#: includes/class-wcp-ie.php:89
 msgid "Upload"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:753
-#: includes/class-wcp-api-tabs.php:814
+#: includes/class-wcp-api-tabs.php:756
+#: includes/class-wcp-api-tabs.php:817
 msgid "Clear Image"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:776
+#: includes/class-wcp-api-tabs.php:779
 msgid "Greeting Text on login form, keep it relatively short"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:797
+#: includes/class-wcp-api-tabs.php:800
 msgid "Allow featured images for each entry."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:823
+#: includes/class-wcp-api-tabs.php:826
 msgid "Set an Entry image to use as default for new entries.  Keep in mind the size of the image can affect page loading."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:839
+#: includes/class-wcp-api-tabs.php:842
 msgid "Allow file uploads for Contact entries."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:853
+#: includes/class-wcp-api-tabs.php:856
+#: includes/class-wcp-api-tabs.php:954
+#: includes/class-wcp-api-tabs.php:1023
+#: includes/class-wcp-api-tabs.php:1032
+#: includes/class-wcp-api-tabs.php:1044
+#: includes/class-wcp-api-tabs.php:1054
+#: includes/class-wcp-api-tabs.php:1065
+#: includes/class-wcp-api-tabs.php:1094
+#: includes/class-wcp-api-tabs.php:1107
+#: includes/class-wcp-api-tabs.php:1131
+#: includes/class-wcp-api-tabs.php:1163
+#: includes/class-wcp-api-tabs.php:1192
+#: includes/class-wcp-api-tabs.php:1197
+#: includes/class-wcp-api-tabs.php:1204
+#: includes/class-wcp-api-tabs.php:1209
+#: includes/class-wcp-api-tabs.php:1214
+#: includes/class-wcp-api-tabs.php:1227
+#: includes/class-wcp-api-tabs.php:1235
+#: includes/class-wcp-api-tabs.php:1246
+#: includes/class-wcp-manage-perms.php:41
+#: includes/class-wcp-manage-perms.php:49
 msgid "No"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:855
+#: includes/class-wcp-api-tabs.php:858
+#: includes/class-wcp-api-tabs.php:950
+#: includes/class-wcp-api-tabs.php:1019
+#: includes/class-wcp-api-tabs.php:1029
+#: includes/class-wcp-api-tabs.php:1040
+#: includes/class-wcp-api-tabs.php:1050
+#: includes/class-wcp-api-tabs.php:1061
+#: includes/class-wcp-api-tabs.php:1090
+#: includes/class-wcp-api-tabs.php:1103
+#: includes/class-wcp-api-tabs.php:1127
+#: includes/class-wcp-api-tabs.php:1162
+#: includes/class-wcp-api-tabs.php:1191
+#: includes/class-wcp-api-tabs.php:1196
+#: includes/class-wcp-api-tabs.php:1203
+#: includes/class-wcp-api-tabs.php:1208
+#: includes/class-wcp-api-tabs.php:1213
+#: includes/class-wcp-api-tabs.php:1226
+#: includes/class-wcp-api-tabs.php:1234
+#: includes/class-wcp-api-tabs.php:1245
+#: includes/class-wcp-manage-perms.php:43
+#: includes/class-wcp-manage-perms.php:51
 msgid "Yes"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:858
-msgid "Allow <b>Manage Own Leads</b> users to change lead ownership (hand leads off to other users) ?"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:869
-msgid "No Access"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:870
-msgid "Read Only"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:871
-msgid "Manage Own Leads"
+#: includes/class-wcp-api-tabs.php:861
+msgid "Allow <b>Manage Own Entries</b> users to change entry ownership (hand entries off to other users) ?"
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:872
+#: includes/class-wcp-manage-perms.php:60
+msgid "No Access"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:873
+#: includes/class-wcp-manage-perms.php:61
+msgid "Read Only"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:874
+msgid "Manage Own Entries"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:875
+#: includes/class-wcp-manage-perms.php:63
 msgid "Full Access"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:878
+#: includes/class-wcp-api-tabs.php:886
+#: includes/class-wcp-manage-perms.php:55
 msgid "WP Username"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:878
+#: includes/class-wcp-api-tabs.php:886
+#: includes/class-wcp-manage-perms.php:56
 msgid "Access"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:910
-msgid "Variable"
+#: includes/class-wcp-api-tabs.php:916
+msgid "Add New Role"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:911
-msgid "Value"
+#: includes/class-wcp-api-tabs.php:917
+msgid "Before removing any custom roles, make sure none of your users are assigned to it."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:913
-msgid "PHP version running"
+#: includes/class-wcp-api-tabs.php:918
+msgid "Some features must be enabled in main settings (e.g. file uploads, entry photos, events.) before access is available."
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:941
-msgid "Backup Database Now"
+#: includes/class-wcp-api-tabs.php:932
+#: includes/class-wcp-api-tabs.php:1154
+msgid "Unique Role Name"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:935
+#: includes/class-wcp-api-tabs.php:1153
+msgid "Role Name"
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:947
-msgid "This will create a new backup of the current state of your database."
+#: includes/class-wcp-api-tabs.php:1161
+msgid "Add Entries"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:952
-msgid "Database has been backed up!"
+#: includes/class-wcp-api-tabs.php:958
+#: includes/class-wcp-api-tabs.php:1166
+msgid "Delete Entries"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:957
-msgid "Please Wait, while the database is backed up."
+#: includes/class-wcp-api-tabs.php:963
+#: includes/class-wcp-api-tabs.php:1167
+msgid "Delete Any Entries"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:983
-msgid "Restore Database"
+#: includes/class-wcp-api-tabs.php:967
+#: includes/class-wcp-api-tabs.php:1168
+msgid "Delete Own Entries"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:971
+#: includes/class-wcp-api-tabs.php:1000
+#: includes/class-wcp-api-tabs.php:1084
+#: includes/class-wcp-api-tabs.php:1121
+#: includes/class-wcp-api-tabs.php:1169
+#: includes/class-wcp-api-tabs.php:1182
+#: includes/class-wcp-api-tabs.php:1222
+#: includes/class-wcp-api-tabs.php:1241
+msgid "None"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:974
+#: includes/class-wcp-api-tabs.php:1172
+msgid "View Entries"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:977
+#: includes/class-wcp-api-tabs.php:1173
+msgid "View All Entries"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:981
+#: includes/class-wcp-api-tabs.php:1174
+msgid "View Own Entries"
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:986
-msgid "--SELECT--"
+#: includes/class-wcp-api-tabs.php:1179
+msgid "Edit Entries"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1001
-msgid "Confirm Database Restore"
+#: includes/class-wcp-api-tabs.php:990
+#: includes/class-wcp-api-tabs.php:1180
+msgid "Edit Any Entries"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:995
+#: includes/class-wcp-api-tabs.php:1181
+msgid "Edit Own Entries"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1004
+#: includes/class-wcp-api-tabs.php:1185
+msgid "Change Entry Ownership"
 msgstr ""
 
 #: includes/class-wcp-api-tabs.php:1007
-msgid "This option will restore a backup of your choice back into the database (and overwrite existing entry data)."
+#: includes/class-wcp-api-tabs.php:1186
+msgid "Can Change"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1012
-msgid "Database has been Restored!"
+#: includes/class-wcp-api-tabs.php:1011
+#: includes/class-wcp-api-tabs.php:1187
+msgid "Cannot Change"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1017
-msgid "Please Wait, while the database is restored."
+#: includes/class-wcp-api-tabs.php:1015
+#: includes/class-wcp-api-tabs.php:1190
+msgid "Manage Entry Files"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1043
-msgid "Delete Backup"
+#: includes/class-wcp-api-tabs.php:1026
+#: includes/class-wcp-api-tabs.php:1195
+msgid "Manage Entry Photo"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1066
-msgid "Reset Database to Defaults"
+#: includes/class-wcp-api-tabs.php:1037
+#: includes/class-wcp-api-tabs.php:1202
+msgid "Manage Settings - Front Page"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1071
-msgid "Confirm Database Reset"
+#: includes/class-wcp-api-tabs.php:1047
+#: includes/class-wcp-api-tabs.php:1207
+msgid "Manage Settings - Fields"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1077
-msgid "Warning, this action will clear all entries (and data) and restore the database to default (like a new installation)."
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1079
-msgid "  Use this only if you want to start over fresh again.  Your Main Settings and Permissions will remain intact."
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1083
-msgid "Database has been reset to the initial state, you can now go to the frontend and start working with it again."
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1102
-msgid "WP Contacts"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1119
-msgid "Default Database"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1149
-#: includes/class-wcp-api-tabs.php:1164
-msgid "Add New Database"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1151
-msgid "Delete Database"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1165
-msgid "New Database"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1166
-msgid "Unique Database Name"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1167
-msgid "Add Database"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1169
-msgid "Create an entirely new and separate database.  Afterwards, you can set a page to use this database instead of the default.  You can also customize all settings and configurations separately for each database.  Be sure to provide a concise and unique name for this so you can locate it correctly when assigning to a page."
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1170
-msgid "Steps to get this database up and running"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1171
-msgid "Create the database with a unique name here"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1172
-msgid "Configure initial settings and access for the database and save them!"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1173
-msgid "Assign the database to a new or existing page using the WP Contacts page template"
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1174
-msgid "Database has been created!  Go to the menu for WP Contacts and select your new database to start editing it."
-msgstr ""
-
-#: includes/class-wcp-api-tabs.php:1210
-msgid "Choose the database you would like to remove and click submit to confirm"
-msgstr ""
-
+#: includes/class-wcp-api-tabs.php:1057
 #: includes/class-wcp-api-tabs.php:1212
-msgid "Delete Existing Database"
+msgid "Manage Settings - Individual Page"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1213
-msgid "--Select--"
+#: includes/class-wcp-api-tabs.php:1070
+#: includes/class-wcp-api-tabs.php:1219
+msgid "View Statistics"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1217
-msgid "Delete unneeded databases.  You cannot delete the default database, but you can reset it to it's default state under the Database tab for managing it."
+#: includes/class-wcp-api-tabs.php:1075
+#: includes/class-wcp-api-tabs.php:1220
+msgid "View All Statistics"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1218
-msgid "Database has been removed."
+#: includes/class-wcp-api-tabs.php:1080
+#: includes/class-wcp-api-tabs.php:1221
+msgid "View Own Statistics"
 msgstr ""
 
-#: includes/class-wcp-api-tabs.php:1381
-msgid "Database"
+#: includes/class-wcp-api-tabs.php:1087
+#: includes/class-wcp-api-tabs.php:1225
+msgid "View Logs"
 msgstr ""
 
-#: includes/class-wcp-sst-fields.php:25
-#: includes/class-wcp-ie.php:25
-#: includes/class-wcp-stats.php:17
-#: includes/class-wcp-logging.php:48
-msgid "You do not have access to this page"
-msgstr ""
-
-#: includes/class-wcp-sst-fields.php:71
-msgid "Sources, Status & Types"
-msgstr ""
-
-#: includes/class-wcp-sst-fields.php:72
-msgid "These can be renamed under Manage Fields"
-msgstr ""
-
-#: includes/class-wcp-sst-fields.php:74
-msgid "New Field"
-msgstr ""
-
-#: includes/class-wcp-sst-fields.php:75
-msgid "Save All"
-msgstr ""
-
-#: includes/class-wcp-sst-fields.php:95
-#: includes/class-wcp-sst-fields.php:120
-#: includes/class-wcp-sst-fields.php:143
-msgid "Toggle Field Removal"
-msgstr ""
-
-#: includes/class-wcp-sst-fields.php:100
-#: includes/class-wcp-sst-fields.php:124
-#: includes/class-wcp-sst-fields.php:147
-msgid "Sort"
-msgstr ""
-
-#: includes/class-wcp-ie.php:33
-#: includes/class-wcp-ie.php:45
+#: includes/class-wcp-api-tabs.php:1100
+#: includes/class-wcp-api-tabs.php:1233
+#: includes/class-wcp-ie.php:43
+#: includes/class-wcp-ie.php:46
+#: includes/class-wcp-ie.php:74
 msgid "Import Entries"
 msgstr ""
 
-#: includes/class-wcp-ie.php:35
-#: includes/class-wcp-ie.php:71
+#: includes/class-wcp-api-tabs.php:1110
+#: includes/class-wcp-api-tabs.php:1238
+#: includes/class-wcp-ie.php:54
+#: includes/class-wcp-ie.php:58
+#: includes/class-wcp-ie.php:105
 msgid "Export Entries"
 msgstr ""
 
-#: includes/class-wcp-ie.php:39
+#: includes/class-wcp-api-tabs.php:1113
+#: includes/class-wcp-api-tabs.php:1239
+msgid "Export All"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1117
+#: includes/class-wcp-api-tabs.php:1240
+msgid "Export Own"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1124
+#: includes/class-wcp-api-tabs.php:1244
+msgid "Access Events Calendar (If Enabled)"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1141
+#: includes/class-wcp-api-tabs.php:1155
+msgid "Remove This Role"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1262
+msgid "Variable"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1263
+msgid "Value"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1265
+msgid "PHP version running"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1293
+msgid "Backup Database Now"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1299
+msgid "This will create a new backup of the current state of your database."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1304
+msgid "Database has been backed up!"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1309
+msgid "Please Wait, while the database is backed up."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1335
+msgid "Restore Database"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1338
+msgid "--SELECT--"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1353
+msgid "Confirm Database Restore"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1359
+msgid "This option will restore a backup of your choice back into the database (and overwrite existing entry data)."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1364
+msgid "Database has been Restored!"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1369
+msgid "Please Wait, while the database is restored."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1395
+msgid "Delete Backup"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1418
+msgid "Reset Database to Defaults"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1423
+msgid "Confirm Database Reset"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1429
+msgid "Warning, this action will clear all entries (and data) and restore the database to default (like a new installation)."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1431
+msgid "  Use this only if you want to start over fresh again.  Your Main Settings and Permissions will remain intact."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1435
+msgid "Database has been reset to the initial state, you can now go to the frontend and start working with it again."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1454
+msgid "WP Contacts"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1471
+msgid "Default Database"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1501
+#: includes/class-wcp-api-tabs.php:1516
+msgid "Add New Database"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1503
+msgid "Delete Database"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1517
+msgid "New Database"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1518
+msgid "Unique Database Name"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1519
+msgid "Add Database"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1521
+msgid "Create an entirely new and separate database.  Afterwards, you can set a page to use this database instead of the default.  You can also customize all settings and configurations separately for each database.  Be sure to provide a concise and unique name for this so you can locate it correctly when assigning to a page."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1522
+msgid "Steps to get this database up and running"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1523
+msgid "Create the database with a unique name here"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1524
+msgid "Configure initial settings and access for the database and save them!"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1525
+msgid "Assign the database to a new or existing page using the WP Contacts page template"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1526
+msgid "Database has been created!  Go to the menu for WP Contacts and select your new database to start editing it."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1562
+msgid "Choose the database you would like to remove and click submit to confirm"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1564
+msgid "Delete Existing Database"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1565
+msgid "--Select--"
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1569
+msgid "Delete unneeded databases.  You cannot delete the default database, but you can reset it to it's default state under the Database tab for managing it."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1570
+msgid "Database has been removed."
+msgstr ""
+
+#: includes/class-wcp-api-tabs.php:1733
+msgid "Database"
+msgstr ""
+
+#: includes/class-wcp-ie.php:26
+#: includes/class-wcp-ie.php:33
+#: includes/class-wcp-stats.php:19
+#: includes/class-wcp-stats.php:24
+#: includes/class-wcp-logging.php:51
+#: includes/class-wcp-logging.php:56
+#: includes/class-wcp-manage-perms.php:28
+msgid "You do not have access to this page"
+msgstr ""
+
+#: includes/class-wcp-ie.php:63
 msgid "Sync To MailChimp"
 msgstr ""
 
-#: includes/class-wcp-ie.php:47
+#: includes/class-wcp-ie.php:76
 msgid "Accepted file types are csv, xls, and xlsx."
 msgstr ""
 
-#: includes/class-wcp-ie.php:48
+#: includes/class-wcp-ie.php:77
 msgid "Import 1 file at a time."
 msgstr ""
 
-#: includes/class-wcp-ie.php:49
+#: includes/class-wcp-ie.php:78
 msgid "Your Import file will need a header row so you can line up your data with the columns in the next step."
 msgstr ""
 
-#: includes/class-wcp-ie.php:50
+#: includes/class-wcp-ie.php:79
 msgid "Importing is going to be directly impacted by your server php upload file limits and memory limits.  Ask your webhost how to increase these if needed."
 msgstr ""
 
-#: includes/class-wcp-ie.php:53
+#: includes/class-wcp-ie.php:82
 msgid "Drag or click to upload a csv, xls, or xlsx file"
 msgstr ""
 
-#: includes/class-wcp-ie.php:59
+#: includes/class-wcp-ie.php:88
 msgid "Complete"
 msgstr ""
 
-#: includes/class-wcp-ie.php:64
+#: includes/class-wcp-ie.php:93
 msgid "Entries have been imported, you can view and further edit them on the main page"
 msgstr ""
 
-#: includes/class-wcp-ie.php:72
+#: includes/class-wcp-ie.php:106
 msgid "Export All Rows, ID Range, or Filter Export"
 msgstr ""
 
-#: includes/class-wcp-ie.php:75
+#: includes/class-wcp-ie.php:109
 msgid "All Rows"
 msgstr ""
 
-#: includes/class-wcp-ie.php:76
+#: includes/class-wcp-ie.php:110
 msgid "ID Range"
 msgstr ""
 
-#: includes/class-wcp-ie.php:78
+#: includes/class-wcp-ie.php:112
 msgid "Filter Export"
 msgstr ""
 
-#: includes/class-wcp-ie.php:81
+#: includes/class-wcp-ie.php:115
 msgid "From ID"
 msgstr ""
 
-#: includes/class-wcp-ie.php:86
+#: includes/class-wcp-ie.php:120
 msgid "To ID"
 msgstr ""
 
-#: includes/class-wcp-ie.php:92
+#: includes/class-wcp-ie.php:126
 msgid "Add Filter"
 msgstr ""
 
-#: includes/class-wcp-ie.php:95
+#: includes/class-wcp-ie.php:129
 msgid "Select Field"
 msgstr ""
 
-#: includes/class-wcp-ie.php:103
+#: includes/class-wcp-ie.php:137
 msgid "Filter"
 msgstr ""
 
-#: includes/class-wcp-ie.php:107
+#: includes/class-wcp-ie.php:141
 msgid "Remove"
 msgstr ""
 
-#: includes/class-wcp-ie.php:110
+#: includes/class-wcp-ie.php:144
 msgid "Select the Columns to export"
 msgstr ""
 
-#: includes/class-wcp-ie.php:112
+#: includes/class-wcp-ie.php:146
 msgid "Check / Uncheck All"
 msgstr ""
 
-#: includes/class-wcp-ie.php:138
+#: includes/class-wcp-ie.php:174
 msgid "Links to Photos"
 msgstr ""
 
-#: includes/class-wcp-ie.php:140
+#: includes/class-wcp-ie.php:176
 msgid "Links to Files"
 msgstr ""
 
-#: includes/class-wcp-ie.php:143
+#: includes/class-wcp-ie.php:179
 msgid "Choose a format:"
 msgstr ""
 
-#: includes/class-wcp-ie.php:145
+#: includes/class-wcp-ie.php:181
 msgid "CSV"
 msgstr ""
 
-#: includes/class-wcp-ie.php:146
+#: includes/class-wcp-ie.php:182
 msgid "Excel"
 msgstr ""
 
-#: includes/class-wcp-ie.php:153
-#: includes/class-wcp-ie.php:163
+#: includes/class-wcp-ie.php:189
+#: includes/class-wcp-ie.php:200
 msgid "Submit"
 msgstr ""
 
-#: includes/class-wcp-ie.php:160
+#: includes/class-wcp-ie.php:197
 msgid "Export your entries to a MailChimp List"
 msgstr ""
 
-#: includes/class-wcp-ie.php:161
+#: includes/class-wcp-ie.php:198
 msgid "As long as your server allows external connections to Mail Chimp, you can add your API Key and choose the list to export entries to, otherwise you can export to csv and upload to MailChimp.  You can retrieve your MailChimp API Key by logging into MailChimp.com and going to Your Account -> Extras -> API Keys."
 msgstr ""
 
-#: includes/class-wcp-ie.php:162
+#: includes/class-wcp-ie.php:199
 msgid "MailChimp API Key"
 msgstr ""
 
@@ -1179,15 +1385,15 @@ msgstr ""
 msgid "CF7 Form Submittal"
 msgstr ""
 
-#: includes/class-form-integration.php:301
-#: includes/class-form-integration.php:303
-#: includes/class-form-integration.php:457
-#: includes/class-form-integration.php:459
+#: includes/class-form-integration.php:247
+#: includes/class-form-integration.php:249
+#: includes/class-form-integration.php:349
+#: includes/class-form-integration.php:351
 msgid "Ninja Form Submittal"
 msgstr ""
 
-#: includes/class-form-integration.php:632
-#: includes/class-form-integration.php:634
+#: includes/class-form-integration.php:470
+#: includes/class-form-integration.php:472
 msgid "Gravity Form Submittal"
 msgstr ""
 
@@ -1195,86 +1401,82 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-#: includes/class-wcp-stats.php:252
-msgid "New Entries"
-msgstr ""
-
-#: includes/class-wcp-stats.php:253
-msgid "Daily (1 Month)"
-msgstr ""
-
-#: includes/class-wcp-stats.php:254
-msgid "Weekly (6 Months)"
-msgstr ""
-
-#: includes/class-wcp-stats.php:255
-msgid "Monthly (1 Year)"
-msgstr ""
-
-#: includes/class-wcp-stats.php:256
-#: includes/class-wcp-stats.php:257
-#: includes/class-wcp-stats.php:258
+#: includes/class-wcp-stats.php:189
 msgid "Top 10"
 msgstr ""
 
-#: includes/class-wcp-stats.php:256
-#: includes/class-wcp-stats.php:257
-#: includes/class-wcp-stats.php:258
+#: includes/class-wcp-stats.php:190
 msgid "Distribution"
 msgstr ""
 
-#: includes/class-wcp-stats.php:259
+#: includes/class-wcp-stats.php:193
+msgid "New Entries"
+msgstr ""
+
+#: includes/class-wcp-stats.php:194
+msgid "Daily (1 Month)"
+msgstr ""
+
+#: includes/class-wcp-stats.php:195
+msgid "Weekly (6 Months)"
+msgstr ""
+
+#: includes/class-wcp-stats.php:196
+msgid "Monthly (1 Year)"
+msgstr ""
+
+#: includes/class-wcp-stats.php:197
 msgid "Entry Ownership Distribution"
 msgstr ""
 
-#: includes/class-wcp-logging.php:148
+#: includes/class-wcp-logging.php:156
 msgid "Log ID"
 msgstr ""
 
-#: includes/class-wcp-logging.php:154
+#: includes/class-wcp-logging.php:162
 msgid "User Login"
 msgstr ""
 
-#: includes/class-wcp-logging.php:157
+#: includes/class-wcp-logging.php:165
 msgid "Event"
 msgstr ""
 
-#: includes/class-wcp-logging.php:160
+#: includes/class-wcp-logging.php:168
 msgid "Details"
 msgstr ""
 
-#: includes/class-wcp-logging.php:163
+#: includes/class-wcp-logging.php:171
 msgid "Event Time"
 msgstr ""
 
-#: includes/class-wcp-logging.php:166
+#: includes/class-wcp-logging.php:174
 msgid "IP Address"
 msgstr ""
 
-#: includes/class-wcp-logging.php:175
-#: includes/class-allleads.php:479
+#: includes/class-wcp-logging.php:183
+#: includes/class-allleads.php:354
 msgid "Sort Entries"
 msgstr ""
 
-#: includes/class-wcp-logging.php:180
-#: includes/class-wcp-logging.php:191
-#: includes/class-wcp-logging.php:223
-#: includes/class-wcp-logging.php:233
-#: includes/class-allleads.php:492
-#: includes/class-allleads.php:506
-#: includes/class-allleads.php:622
-#: includes/class-allleads.php:635
+#: includes/class-wcp-logging.php:188
+#: includes/class-wcp-logging.php:199
+#: includes/class-wcp-logging.php:231
+#: includes/class-wcp-logging.php:241
+#: includes/class-allleads.php:369
+#: includes/class-allleads.php:383
+#: includes/class-allleads.php:510
+#: includes/class-allleads.php:523
 msgid "Sort Descending"
 msgstr ""
 
-#: includes/class-wcp-logging.php:186
-#: includes/class-wcp-logging.php:229
-#: includes/class-allleads.php:501
-#: includes/class-allleads.php:631
+#: includes/class-wcp-logging.php:194
+#: includes/class-wcp-logging.php:237
+#: includes/class-allleads.php:378
+#: includes/class-allleads.php:519
 msgid "Sort Ascending"
 msgstr ""
 
-#: includes/class-wcp-logging.php:260
+#: includes/class-wcp-logging.php:268
 msgid "No Log Entries found."
 msgstr ""
 
@@ -1286,183 +1488,245 @@ msgstr ""
 msgid "WPC Event"
 msgstr ""
 
-#: includes/class-allleads.php:91
+#: includes/class-wcp-manage-perms.php:35
+msgid "Set up permissions and access for your users."
+msgstr ""
+
+#: includes/class-wcp-manage-perms.php:45
+msgid "Allows <u>Manage Own Entries</u> users to change ownership (hand entries off to other users)"
+msgstr ""
+
+#: includes/class-wcp-manage-perms.php:47
+msgid "Manage Own Entries View All"
+msgstr ""
+
+#: includes/class-wcp-manage-perms.php:48
+msgid "Allow <u>Manage Own Entries</u> users to view all other entries"
+msgstr ""
+
+#: includes/class-wcp-manage-perms.php:62
+msgid "Manage Own Leads"
+msgstr ""
+
+#: includes/class-wcp-manage-perms.php:68
+msgid "Description"
+msgstr ""
+
+#: includes/class-wcp-manage-perms.php:69
+msgid "Description 2"
+msgstr ""
+
+#: includes/class-allleads.php:96
 msgid "All"
 msgstr ""
 
-#: includes/class-allleads.php:350
+#: includes/class-allleads.php:289
 msgid "Total Entries"
 msgstr ""
 
-#: includes/class-allleads.php:351
+#: includes/class-allleads.php:290
 msgid "Check All"
 msgstr ""
 
-#: includes/class-allleads.php:352
+#: includes/class-allleads.php:291
 msgid "Uncheck All"
 msgstr ""
 
-#: includes/class-allleads.php:353
+#: includes/class-allleads.php:292
 msgid "Delete Checked"
 msgstr ""
 
-#: includes/class-allleads.php:590
+#: includes/class-allleads.php:476
 msgid "No Results Found"
 msgstr ""
 
-#: includes/class-allleads.php:650
+#: includes/class-allleads.php:537
 msgid "Quick Edit"
 msgstr ""
 
-#: includes/class-wcp-fields.php:32
+#: includes/class-wcp-fields.php:40
 msgid "Manage Dropdown Options"
 msgstr ""
 
-#: includes/class-wcp-fields.php:43
+#: includes/class-wcp-fields.php:51
 msgid "Add, Edit, Sort (for individual view and forms) and Remove Fields"
 msgstr ""
 
-#: includes/class-wcp-fields.php:44
-msgid "Core Fields cannot be removed, but all can be renamed.  Dropdown and Date Time field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed."
-msgstr ""
-
-#: includes/class-wcp-fields.php:45
-msgid "Save Changes"
-msgstr ""
-
-#: includes/class-wcp-fields.php:46
-msgid "Add New Field"
-msgstr ""
-
-#: includes/class-wcp-fields.php:48
-msgid "Text Field"
-msgstr ""
-
-#: includes/class-wcp-fields.php:49
-msgid "Text Area"
-msgstr ""
-
-#: includes/class-wcp-fields.php:50
-msgid "Phone Number"
-msgstr ""
-
-#: includes/class-wcp-fields.php:51
-msgid "Email Address"
-msgstr ""
-
 #: includes/class-wcp-fields.php:52
-msgid "Website Address"
+msgid "Core Fields cannot be removed, but all can be renamed.  Dropdown and Date field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed."
 msgstr ""
 
 #: includes/class-wcp-fields.php:53
-msgid "Google Map Link"
+msgid "Save Changes"
 msgstr ""
 
 #: includes/class-wcp-fields.php:54
-msgid "Date Time"
+msgid "Add New Field"
 msgstr ""
 
 #: includes/class-wcp-fields.php:55
-msgid "Rating"
+msgid "New Field"
 msgstr ""
 
 #: includes/class-wcp-fields.php:56
-msgid "Checkbox"
+msgid "Text Field"
 msgstr ""
 
 #: includes/class-wcp-fields.php:57
-msgid "Field Type"
+msgid "Text Area"
 msgstr ""
 
 #: includes/class-wcp-fields.php:58
-msgid "Dropdown"
+msgid "Phone Number"
 msgstr ""
 
 #: includes/class-wcp-fields.php:59
-msgid "Group Title"
+msgid "Email Address"
 msgstr ""
 
 #: includes/class-wcp-fields.php:60
-msgid "Required"
+msgid "Website Address"
+msgstr ""
+
+#: includes/class-wcp-fields.php:61
+msgid "Google Map Link"
+msgstr ""
+
+#: includes/class-wcp-fields.php:62
+msgid "Date"
 msgstr ""
 
 #: includes/class-wcp-fields.php:63
-msgid "Set For Removal"
+msgid "Date Time"
 msgstr ""
 
 #: includes/class-wcp-fields.php:64
-#: includes/class-wcp-ajax.php:64
-#: includes/class-wcp-ajax.php:221
-#: includes/class-wcp-ajax.php:462
-#: includes/class-wcp-ajax.php:1495
-#: includes/class-wcp-ajax.php:1619
-#: includes/class-wcp-ajax.php:1675
-#: includes/class-wcp-ajax.php:1725
-#: includes/class-wcp-ajax.php:2332
-msgid "Cancel"
+msgid "Rating"
+msgstr ""
+
+#: includes/class-wcp-fields.php:65
+msgid "Checkbox"
 msgstr ""
 
 #: includes/class-wcp-fields.php:66
-msgid "If changing an existing field type to the Date Time selection all existing data for this field will be removed.  Just make sure that is what you want before saving."
+msgid "Field Type"
 msgstr ""
 
 #: includes/class-wcp-fields.php:67
+msgid "Dropdown"
+msgstr ""
+
+#: includes/class-wcp-fields.php:68
+msgid "Group Title"
+msgstr ""
+
+#: includes/class-wcp-fields.php:69
+msgid "Required"
+msgstr ""
+
+#: includes/class-wcp-fields.php:71
+msgid "Toggle Field Removal"
+msgstr ""
+
+#: includes/class-wcp-fields.php:72
+msgid "Set For Removal"
+msgstr ""
+
+#: includes/class-wcp-fields.php:73
+#: includes/class-wcp-ajax.php:64
+#: includes/class-wcp-ajax.php:241
+#: includes/class-wcp-ajax.php:472
+#: includes/class-wcp-ajax.php:519
+#: includes/class-wcp-ajax.php:1453
+#: includes/class-wcp-ajax.php:1577
+#: includes/class-wcp-ajax.php:1633
+#: includes/class-wcp-ajax.php:1683
+#: includes/class-wcp-ajax.php:2279
+msgid "Cancel"
+msgstr ""
+
+#: includes/class-wcp-fields.php:75
+msgid "If changing an existing field type to the Date or Date Time selection all existing data for this field will be removed.  Just make sure that is what you want before saving."
+msgstr ""
+
+#: includes/class-wcp-fields.php:76
 msgid "Warning"
 msgstr ""
 
-#: includes/class-wcp-fields.php:230
+#: includes/class-wcp-fields.php:78
+msgid "Sortable Fields"
+msgstr ""
+
+#: includes/class-wcp-fields.php:79
+msgid "You can add new fields, sort, rename, change field types and most of these can be removed."
+msgstr ""
+
+#: includes/class-wcp-fields.php:236
+#: includes/class-wcp-fields.php:286
+msgid "Sort"
+msgstr ""
+
+#: includes/class-wcp-fields.php:246
+msgid "Non Sortable Fields"
+msgstr ""
+
+#: includes/class-wcp-fields.php:247
+msgid "These are built in fields that can be displayed in other locations, you may rename them below."
+msgstr ""
+
+#: includes/class-wcp-fields.php:280
 msgid "Create your option lists for dropdown custom field types"
 msgstr ""
 
-#: includes/class-wcp-fields.php:231
+#: includes/class-wcp-fields.php:281
 msgid "You must have created and saved at least one dropdown field in Manage Fields first"
 msgstr ""
 
-#: includes/class-wcp-fields.php:232
+#: includes/class-wcp-fields.php:282
 msgid "Select the List to manage"
 msgstr ""
 
-#: includes/class-wcp-fields.php:233
+#: includes/class-wcp-fields.php:283
 msgid "Dropdown Field To Manage"
 msgstr ""
 
-#: includes/class-wcp-fields.php:234
+#: includes/class-wcp-fields.php:284
 msgid "Select"
 msgstr ""
 
-#: includes/class-wcp-fields.php:235
+#: includes/class-wcp-fields.php:285
 msgid "Toggle Option Removal"
 msgstr ""
 
-#: includes/class-wcp-fields.php:237
+#: includes/class-wcp-fields.php:287
 msgid "Options"
 msgstr ""
 
-#: includes/class-wcp-fields.php:238
+#: includes/class-wcp-fields.php:288
 msgid "Add New Option"
 msgstr ""
 
-#: includes/class-wcp-fields.php:239
+#: includes/class-wcp-fields.php:289
 msgid "Save Dropdown Options"
 msgstr ""
 
-#: includes/class-wcp-fields.php:240
+#: includes/class-wcp-fields.php:290
 msgid "New Option"
 msgstr ""
 
-#: includes/class-wcp-events.php:28
+#: includes/class-wcp-events.php:30
 msgid "Delete Event"
 msgstr ""
 
-#: includes/class-wcp-events.php:29
+#: includes/class-wcp-events.php:31
 msgid "Edit Event"
 msgstr ""
 
-#: includes/class-wcp-events.php:30
+#: includes/class-wcp-events.php:32
 msgid "Go To Entry"
 msgstr ""
 
-#: includes/class-wcp-events.php:31
+#: includes/class-wcp-events.php:33
 msgid "Click delete again if you are sure you want to remove this event."
 msgstr ""
 
@@ -1486,467 +1750,528 @@ msgstr ""
 msgid "Entry IDs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:216
+#: includes/class-wcp-ajax.php:236
 msgid "Add A New Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:218
+#: includes/class-wcp-ajax.php:238
 msgid "Edit Entry Information"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:220
+#: includes/class-wcp-ajax.php:240
 msgid "Save"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:431
-#: includes/class-wcp-rest.php:600
-#: includes/class-wcp-rest.php:1136
+#: includes/class-wcp-ajax.php:441
+#: includes/class-wcp-rest.php:596
+#: includes/class-wcp-rest.php:1069
 msgid "Added Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:436
-#: includes/class-wcp-rest.php:631
-#: includes/class-wcp-rest.php:1126
+#: includes/class-wcp-ajax.php:446
+#: includes/class-wcp-rest.php:627
+#: includes/class-wcp-rest.php:1059
 msgid "Updated Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:449
-#: includes/class-wcp-rest.php:1148
+#: includes/class-wcp-ajax.php:459
+#: includes/class-wcp-rest.php:1081
 msgid "Entry ID"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:449
-#: includes/class-wcp-rest.php:1148
+#: includes/class-wcp-ajax.php:459
+#: includes/class-wcp-rest.php:1081
 msgid " Fields-> "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:460
+#: includes/class-wcp-ajax.php:470
 msgid "Confirm Removal Of The Following Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:461
+#: includes/class-wcp-ajax.php:471
 msgid "Remove Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:488
-#: includes/class-wcp-rest.php:573
+#: includes/class-wcp-ajax.php:498
+#: includes/class-wcp-rest.php:569
 msgid "Deleted Entry"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:489
-#: includes/class-wcp-ajax.php:1533
-#: includes/class-wcp-ajax.php:1590
-#: includes/class-wcp-ajax.php:1646
-#: includes/class-wcp-ajax.php:1704
-#: includes/class-wcp-ajax.php:1745
-#: includes/class-wcp-ajax.php:1856
-#: includes/class-wcp-rest.php:574
-#: includes/class-wcp-rest.php:601
-#: includes/class-wcp-rest.php:632
-#: includes/class-wcp-rest.php:687
+#: includes/class-wcp-ajax.php:499
+#: includes/class-wcp-ajax.php:1491
+#: includes/class-wcp-ajax.php:1548
+#: includes/class-wcp-ajax.php:1604
+#: includes/class-wcp-ajax.php:1662
+#: includes/class-wcp-ajax.php:1703
+#: includes/class-wcp-ajax.php:1803
+#: includes/class-wcp-rest.php:570
+#: includes/class-wcp-rest.php:597
+#: includes/class-wcp-rest.php:628
+#: includes/class-wcp-rest.php:683
 msgid "Entry ID "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:569
+#: includes/class-wcp-ajax.php:518
+msgid "Export Current View"
+msgstr ""
+
+#: includes/class-wcp-ajax.php:520
+msgid "Export"
+msgstr ""
+
+#: includes/class-wcp-ajax.php:524
+msgid "Choose a format"
+msgstr ""
+
+#: includes/class-wcp-ajax.php:644
 msgid "Changed Frontend Sorting"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:570
+#: includes/class-wcp-ajax.php:645
 msgid "Modified Sort Results"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:603
+#: includes/class-wcp-ajax.php:678
 msgid "Changed Frontend Filters"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:604
+#: includes/class-wcp-ajax.php:679
 msgid "Modified Front Filters"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:905
+#: includes/class-wcp-ajax.php:983
 msgid "Changed Fields"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:906
+#: includes/class-wcp-ajax.php:984
 msgid "Modified Entry Fields "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1070
-msgid "Modified SST"
-msgstr ""
-
-#: includes/class-wcp-ajax.php:1071
-msgid "Modified Sources, Status, and Types"
-msgstr ""
-
-#: includes/class-wcp-ajax.php:1081
-#: includes/class-wcp-ajax.php:1134
-#: includes/class-wcp-ajax.php:1552
+#: includes/class-wcp-ajax.php:1060
+#: includes/class-wcp-ajax.php:1113
+#: includes/class-wcp-ajax.php:1510
 msgid "Error uploading"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1114
-#: includes/class-wcp-rest.php:744
+#: includes/class-wcp-ajax.php:1093
+#: includes/class-wcp-rest.php:740
 msgid "Uploaded Image"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1115
-#: includes/class-wcp-rest.php:745
+#: includes/class-wcp-ajax.php:1094
+#: includes/class-wcp-rest.php:741
 msgid "New Image set for Entry ID "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1180
+#: includes/class-wcp-ajax.php:1159
 msgid "No Assignment"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1181
+#: includes/class-wcp-ajax.php:1160
 msgid "Import Now"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1182
+#: includes/class-wcp-ajax.php:1161
 msgid "Step 2, Assign your spreadsheet columns to <b>WP Contacts</b> columns"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1186
+#: includes/class-wcp-ajax.php:1165
 msgid "Total Rows to import"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1192
+#: includes/class-wcp-ajax.php:1171
 msgid "Imported Entry File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1193
+#: includes/class-wcp-ajax.php:1172
 msgid "File Name: "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1218
+#: includes/class-wcp-ajax.php:1197
 msgid "You have not assigned any of your columns, you need to set at least one."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1219
+#: includes/class-wcp-ajax.php:1198
 msgid "Error"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1399
+#: includes/class-wcp-ajax.php:1352
 msgid "Please select at least 1 field for exporting."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1400
+#: includes/class-wcp-ajax.php:1353
 msgid "Select Fields"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1401
+#: includes/class-wcp-ajax.php:1354
 msgid "OK"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1410
+#: includes/class-wcp-ajax.php:1363
 msgid "Select Your MailChimp list to import into"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1411
+#: includes/class-wcp-ajax.php:1364
 msgid "Email Address Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1412
+#: includes/class-wcp-ajax.php:1365
 msgid "First Name Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1413
+#: includes/class-wcp-ajax.php:1366
 msgid "Last Name Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1414
+#: includes/class-wcp-ajax.php:1367
 msgid "Choose A Field"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1415
+#: includes/class-wcp-ajax.php:1368
 msgid "Ready to send to MailChimp, click confirm to subscribe entries to your list."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1416
+#: includes/class-wcp-ajax.php:1369
 msgid "Confirm Submission"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1480
+#: includes/class-wcp-ajax.php:1438
 msgid "Your entries have been submitted to MailChimp, below are the details"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1491
+#: includes/class-wcp-ajax.php:1449
 msgid "Are you sure you wish to remove the following file?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1494
+#: includes/class-wcp-ajax.php:1452
 msgid "Confirm Remove File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1496
-#: includes/class-wcp-ajax.php:2333
+#: includes/class-wcp-ajax.php:1454
+#: includes/class-wcp-ajax.php:2280
 msgid "Confirm"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1507
-#: includes/class-wcp-ajax.php:1610
-#: includes/class-wcp-individual.php:198
+#: includes/class-wcp-ajax.php:1465
+#: includes/class-wcp-ajax.php:1568
+#: includes/class-wcp-individual.php:291
 msgid "Last Modified"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1532
+#: includes/class-wcp-ajax.php:1490
 msgid "Removed Entry File"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1533
+#: includes/class-wcp-ajax.php:1491
 msgid " File:"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1589
-#: includes/class-wcp-rest.php:686
+#: includes/class-wcp-ajax.php:1547
+#: includes/class-wcp-rest.php:682
 msgid "Added Files"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1590
+#: includes/class-wcp-ajax.php:1548
 msgid " New File:"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1618
-#: includes/class-wcp-individual.php:735
+#: includes/class-wcp-ajax.php:1576
+#: includes/class-wcp-individual.php:800
 msgid "Add A Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1620
-#: includes/class-wcp-ajax.php:1676
+#: includes/class-wcp-ajax.php:1578
+#: includes/class-wcp-ajax.php:1634
 msgid "Save Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1645
+#: includes/class-wcp-ajax.php:1603
 msgid "Added a note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1674
+#: includes/class-wcp-ajax.php:1632
 msgid "Edit Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1703
+#: includes/class-wcp-ajax.php:1661
 msgid "Edited existing note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1723
+#: includes/class-wcp-ajax.php:1681
 msgid "Remove Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1724
+#: includes/class-wcp-ajax.php:1682
 msgid "Are you sure you wish to delete this note?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1726
+#: includes/class-wcp-ajax.php:1684
 msgid "Delete Note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1744
+#: includes/class-wcp-ajax.php:1702
 msgid "Removed a note"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:1855
+#: includes/class-wcp-ajax.php:1802
 msgid "Modified Entry Details"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2022
+#: includes/class-wcp-ajax.php:1969
 msgid "Remove All Logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2023
+#: includes/class-wcp-ajax.php:1970
 msgid "Do you really want to remove all logging activity?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2024
+#: includes/class-wcp-ajax.php:1971
 msgid "Remove Logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2031
+#: includes/class-wcp-ajax.php:1978
 msgid "Removed all logs"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2032
+#: includes/class-wcp-ajax.php:1979
 msgid "Cleared all logging entries "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2067
+#: includes/class-wcp-ajax.php:2014
 msgid "New Entry - "
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2075
+#: includes/class-wcp-ajax.php:2022
 msgid "New Entry Created"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2111
+#: includes/class-wcp-ajax.php:2058
 msgid "For"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2303
+#: includes/class-wcp-ajax.php:2250
 msgid "Event Deleted"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2304
+#: includes/class-wcp-ajax.php:2251
 msgid "User has deleted event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2331
+#: includes/class-wcp-ajax.php:2278
 msgid "Add/Edit An Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2334
+#: includes/class-wcp-ajax.php:2281
 msgid "Title"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2335
+#: includes/class-wcp-ajax.php:2282
 msgid "Start Time"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2336
+#: includes/class-wcp-ajax.php:2283
 msgid "End Time"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2337
+#: includes/class-wcp-ajax.php:2284
 msgid "Event Color"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2338
+#: includes/class-wcp-ajax.php:2285
 msgid "Repeat"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2339
+#: includes/class-wcp-ajax.php:2286
 msgid "Repeating Event?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2342
+#: includes/class-wcp-ajax.php:2289
 msgid "Every Day"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2343
+#: includes/class-wcp-ajax.php:2290
 msgid "Every Week"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2344
+#: includes/class-wcp-ajax.php:2291
 msgid "Every Month"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2345
+#: includes/class-wcp-ajax.php:2292
 msgid "Every Year"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2348
+#: includes/class-wcp-ajax.php:2295
 msgid "Notify"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2349
+#: includes/class-wcp-ajax.php:2296
 msgid "Enable Notification?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2350
+#: includes/class-wcp-ajax.php:2297
 msgid "Event Description"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2352
+#: includes/class-wcp-ajax.php:2299
 msgid "Minute(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2353
+#: includes/class-wcp-ajax.php:2300
 msgid "Hour(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2354
+#: includes/class-wcp-ajax.php:2301
 msgid "Day(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2355
+#: includes/class-wcp-ajax.php:2302
 msgid "Week(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2356
+#: includes/class-wcp-ajax.php:2303
 msgid "Month(s)"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2359
+#: includes/class-wcp-ajax.php:2306
 msgid "Who receives notifications?"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2362
+#: includes/class-wcp-ajax.php:2309
 msgid "Before"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2363
+#: includes/class-wcp-ajax.php:2310
 msgid "After"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2397
+#: includes/class-wcp-ajax.php:2344
 msgid "Event start time is not before end time or time is blank."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2401
+#: includes/class-wcp-ajax.php:2348
 msgid "Please add a title."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2443
+#: includes/class-wcp-ajax.php:2390
 msgid "Edited Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2444
+#: includes/class-wcp-ajax.php:2391
 msgid "User has edited the event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2470
+#: includes/class-wcp-ajax.php:2417
 msgid "New Event"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2471
+#: includes/class-wcp-ajax.php:2418
 msgid "User has added a new event with id"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2528
+#: includes/class-wcp-ajax.php:2475
 msgid "Please Log In"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2529
+#: includes/class-wcp-ajax.php:2476
 msgid "Please log in to continue"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2555
+#: includes/class-wcp-ajax.php:2502
 msgid "Wrong username or password."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2557
+#: includes/class-wcp-ajax.php:2504
 msgid "Login successful, redirecting..."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2681
+#: includes/class-wcp-ajax.php:2628
 msgid "You must select a backup to restore."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2688
+#: includes/class-wcp-ajax.php:2635
 msgid "The backup selected is missing required data, please select another"
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2841
+#: includes/class-wcp-ajax.php:2790
 msgid "is invalid."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2847
+#: includes/class-wcp-ajax.php:2796
+#: includes/class-wcp-ajax.php:2803
 msgid "needs a date set."
 msgstr ""
 
-#: includes/class-wcp-ajax.php:2852
+#: includes/class-wcp-ajax.php:2808
 msgid "is required."
 msgstr ""
 
-#: includes/class-wcp-export.php:101
+#: includes/class-wcp-export.php:306
 msgid "Exported Entries"
 msgstr ""
 
-#: includes/class-wcp-export.php:160
+#: includes/class-wcp-export.php:352
 msgid "Image Link"
 msgstr ""
 
-#: includes/class-wcp-export.php:163
+#: includes/class-wcp-export.php:355
 msgid "File Links"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:40
+msgid "Left Side Columns"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:41
+msgid "The columns used on the left side if there are active tiles in it.  If there are no active tiles on one side, the layout will be full width."
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:42
+msgid "Individual Page Layout"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:43
+msgid "Set the Left Column width.  Drag and drop the tiles where you like, disable the ones you don't want to use."
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:44
+msgid "Entry Photo Tile"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:45
+msgid "Entry Files Tile"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:46
+msgid "Entry Fields Tile"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:47
+msgid "Entry Notes Tile"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:48
+msgid "Entry Details Tile"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:49
+msgid "Enabled"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:50
+msgid "Disabled"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:51
+msgid "Left Side"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:52
+msgid "Right Side"
+msgstr ""
+
+#: includes/class-wcp-manage-ind.php:53
+msgid "Bottom"
 msgstr ""
 
 #: includes/class-wcp-metabox.php:18
@@ -1957,158 +2282,147 @@ msgstr ""
 msgid "Select Database To Associate"
 msgstr ""
 
-#: includes/class-wcp-individual.php:33
+#: includes/class-wcp-individual.php:38
+#: includes/class-wcp-individual.php:46
 msgid "You do not have access to this entry"
 msgstr ""
 
-#: includes/class-wcp-individual.php:107
-msgid "Entry Details"
-msgstr ""
-
-#: includes/class-wcp-individual.php:131
-#: includes/class-wcp-individual.php:137
+#: includes/class-wcp-individual.php:220
+#: includes/class-wcp-individual.php:226
 msgid "There are currently no files uploaded."
 msgstr ""
 
-#: includes/class-wcp-individual.php:133
-#: includes/class-wcp-individual.php:136
+#: includes/class-wcp-individual.php:222
+#: includes/class-wcp-individual.php:225
 msgid "Existing Files"
 msgstr ""
 
-#: includes/class-wcp-individual.php:161
+#: includes/class-wcp-individual.php:253
 msgid "Drag or click to upload a jpg, png or gif image file"
 msgstr ""
 
-#: includes/class-wcp-individual.php:162
+#: includes/class-wcp-individual.php:254
 msgid "Set Image"
 msgstr ""
 
-#: includes/class-wcp-individual.php:222
+#: includes/class-wcp-individual.php:315
 msgid "Queued for upload"
 msgstr ""
 
-#: includes/class-wcp-individual.php:223
+#: includes/class-wcp-individual.php:316
 msgid "Add Files"
 msgstr ""
 
-#: includes/class-wcp-individual.php:236
+#: includes/class-wcp-individual.php:337
 msgid "Drag or click to upload a file or multiple files"
 msgstr ""
 
-#: includes/class-wcp-individual.php:648
+#: includes/class-wcp-individual.php:693
 msgid "Save Fields"
 msgstr ""
 
-#: includes/class-wcp-individual.php:664
+#: includes/class-wcp-individual.php:718
 msgid "Notes"
 msgstr ""
 
-#: includes/class-wcp-individual.php:696
+#: includes/class-wcp-individual.php:758
 msgid "Last Updated by"
 msgstr ""
 
-#: includes/class-wcp-front-manage.php:35
+#: includes/class-wcp-front-manage.php:44
 msgid "Fields to display on main view (in order)"
 msgstr ""
 
-#: includes/class-wcp-front-manage.php:36
+#: includes/class-wcp-front-manage.php:45
 msgid "Fields not to display on main view"
 msgstr ""
 
-#: includes/class-wcp-front-manage.php:37
-msgid "Save Sorting"
-msgstr ""
-
-#: includes/class-wcp-front-manage.php:65
-#: includes/class-wcp-front-manage.php:74
+#: includes/class-wcp-front-manage.php:75
+#: includes/class-wcp-front-manage.php:86
 msgid "Files"
 msgstr ""
 
-#: includes/class-wcp-front-manage.php:87
-msgid "Save Filters"
-msgstr ""
-
-#: includes/class-wcp-front-manage.php:88
+#: includes/class-wcp-front-manage.php:94
 msgid "Top Filters shown on front page (in order)"
 msgstr ""
 
-#: includes/class-wcp-front-manage.php:89
+#: includes/class-wcp-front-manage.php:95
 msgid "Top Filters disabled on front page"
 msgstr ""
 
-#: includes/class-wcp-front-manage.php:90
+#: includes/class-wcp-front-manage.php:96
 msgid "Note: You can add more filters by creating dropdown field types.  They will then be available here for selection."
 msgstr ""
 
-#: includes/class-wcp-rest.php:521
+#: includes/class-wcp-rest.php:517
 msgid "No match or no id given"
 msgstr ""
 
-#: includes/class-wcp-rest.php:624
-#: includes/class-wcp-rest.php:653
-#: includes/class-wcp-rest.php:712
+#: includes/class-wcp-rest.php:620
+#: includes/class-wcp-rest.php:649
+#: includes/class-wcp-rest.php:708
 msgid "You must give an existing id"
 msgstr ""
 
-#: includes/class-wcp-rest.php:665
-#: includes/class-wcp-rest.php:724
+#: includes/class-wcp-rest.php:661
+#: includes/class-wcp-rest.php:720
 msgid "Entry ID does not exist, files cannot be uploaded without an existing entry."
 msgstr ""
 
-#: includes/class-wcp-rest.php:687
+#: includes/class-wcp-rest.php:683
 msgid "New File:"
 msgstr ""
 
-#: includes/class-wcp-rest.php:691
+#: includes/class-wcp-rest.php:687
 msgid "File Uploaded"
 msgstr ""
 
-#: includes/class-wcp-rest.php:749
+#: includes/class-wcp-rest.php:745
 msgid "Image uploaded"
 msgstr ""
 
-#: includes/class-wcp-rest.php:777
+#: includes/class-wcp-rest.php:773
 msgid "Incorrect access level"
 msgstr ""
 
-#: includes/class-wcp-rest.php:794
+#: includes/class-wcp-rest.php:790
 msgid "WordPress user does not exist"
 msgstr ""
 
-#: includes/class-wcp-rest.php:823
+#: includes/class-wcp-rest.php:819
 msgid "Permission Set"
 msgstr ""
 
-#: includes/class-wcp-rest.php:1010
+#: includes/class-wcp-rest.php:993
 msgid "No fields set to insert"
 msgstr ""
 
-#: includes/class-wcp-rest.php:1182
+#: includes/class-wcp-rest.php:1115
 msgid "No data supplied."
 msgstr ""
 
-#: includes/class-wcp-rest.php:1186
+#: includes/class-wcp-rest.php:1119
 msgid "No Content-Type supplied."
 msgstr ""
 
-#: includes/class-wcp-rest.php:1190
+#: includes/class-wcp-rest.php:1123
 msgid "No Content-Disposition supplied."
 msgstr ""
 
-#: includes/class-wcp-rest.php:1196
+#: includes/class-wcp-rest.php:1129
 msgid "Invalid Content-Disposition supplied. Content-Disposition needs to be formatted as `attachment; filename=\"image.png\"` or similar."
 msgstr ""
 
-#: includes/class-wcp-rest.php:1205
+#: includes/class-wcp-rest.php:1138
 msgid "Content hash did not match expected."
 msgstr ""
 
-#: includes/class-wcp-rest.php:1219
+#: includes/class-wcp-rest.php:1152
 msgid "Image file type must be of type gif, jpeg, bmp or png."
 msgstr ""
 
-#: includes/class-wcp-rest.php:1228
-#: includes/class-wcp-rest.php:1267
+#: includes/class-wcp-rest.php:1161
+#: includes/class-wcp-rest.php:1200
 msgid "Could not open file handle."
 msgstr ""
 

@@ -118,10 +118,13 @@
 					wp_register_style('fullcalendar', SHWCP_ROOT_URL . '/assets/css/fullcalendar.css');
 					wp_enqueue_style('fullcalendar');
 				}
+				/* not ready yet, need to purchase license as well
 				// introjs for demo site
-				/*
 				$url = $_SERVER['HTTP_HOST'];
-				if ($url == 'demo.sh-themes.com' || $url == 'php56host.com') {
+				if ( ($url == 'demo.sh-themes.com' || $url == 'php56host.com')
+					&& is_user_logged_in() 
+				) {
+
 					wp_register_style('introjs', SHWCP_ROOT_URL . '/assets/css/introjs/introjs.css');
 					wp_enqueue_style( 'introjs');
 					wp_register_style('introjs-theme', SHWCP_ROOT_URL . '/assets/css/introjs/introjs-nassim.css');
@@ -297,13 +300,14 @@
 					SHWCP_PLUGIN_VERSION, $load_footer );
 				wp_enqueue_script( 'wcp-frontend-ajax' );
                 wp_localize_script(  'wcp-frontend-ajax', 'WCP_Ajax', array(
-                    'ajaxurl' => admin_url('admin-ajax.php', $this->scheme),
-                    'nextNonce' => wp_create_nonce( 'myajax-next-nonce' ),
+                    'ajaxurl'       => admin_url('admin-ajax.php', $this->scheme),
+                    'nextNonce'     => wp_create_nonce( 'myajax-next-nonce' ),
 					'contactsColor' => isset($this->first_tab['page_color'])?$this->first_tab['page_color']:'#03a9f4',
-					'fixed_edit' => isset($this->first_tab['fixed_edit'])?$this->first_tab['fixed_edit']: 'false',
-					'postID' => $post->ID,
-					'dateFormat' => $this->date_format_js,
-					'timeFormat' => $this->time_format_js,
+					'fixed_edit'    => isset($this->first_tab['fixed_edit'])?$this->first_tab['fixed_edit']: 'false',
+					'indColumns'    => isset($this->frontend_settings['ind_columns'])?$this->frontend_settings['ind_columns']: '4',
+					'postID'        => $post->ID,
+					'dateFormat'    => $this->date_format_js,
+					'timeFormat'    => $this->time_format_js,
 
 					'datepickerVars'  => array(
 						'closeText'   => __('Close', 'shwcp'),
@@ -414,10 +418,12 @@
 				wp_register_script( 'shwcp-mprogress', SHWCP_ROOT_URL . '/assets/js/mprogress.js', array( 'jquery' ), '1', $load_footer);
 				wp_enqueue_script( 'shwcp-mprogress' );
 
+				/* Not ready yet
 				// introjs for guided tour
-				/*
 				$url = $_SERVER['HTTP_HOST'];
-				if ($url == 'demo.sh-themes.com' || $url == 'php56host.com') {
+				if (($url == 'demo.sh-themes.com' || $url == 'php56host.com') 
+					&& is_user_logged_in()
+				) {
 					wp_register_script( 'introjs', SHWCP_ROOT_URL . '/assets/js/introjs/intro.js', array('shwcp-mprogress' ), '2.4.0', $load_footer);
 					wp_enqueue_script( 'introjs' );
 					wp_register_script( 'introjs-config', SHWCP_ROOT_URL . '/assets/js/introjs/intro-config.js', array('introjs' ), '2.4.0', $load_footer);
@@ -438,6 +444,9 @@
 			}
 			
 			global $wpdb;
+			// custom access role
+			$custom_role = $this->get_custom_role();
+
             // Total lead count
 			$ownleads = '';
             if ($this->current_access == 'ownleads') {
@@ -455,40 +464,44 @@
 
 			$dd_filter = false; // check for Dropdown filters as well
 			foreach($_GET as $key=>$value){
-  				if("extra_column_" == substr($key,0,13)){
+  				if("extra_column_" == substr($key,0,13)
+					|| "l_source" == substr($key,0,8)
+					|| "l_status" == substr($key,0,8)
+					|| "l_type" == substr($key,0,6) 
+				) {
 					$dd_filter = true;
   				}
 			}
 
 			if ( !isset($_GET['wcp']) || $_GET['wcp'] == 'logging') {  // only for main view and logs
 				if( isset($_GET['wcp_search']) 
-					|| isset($_GET['st']) 
-					|| isset($_GET['ty']) 
-					|| isset($_GET['so'])
+					|| isset($_GET['sort'])
+					|| isset($_GET['field'])
 					|| isset($_GET['wcp_search'])
 					|| $dd_filter
 				) {	
 					$home = __('Clear Filters', 'shwcp');
 				}
 			}
-			$main_page = __('All Entries', 'shwcp');
-			$page_front = __('Manage Front Page', 'shwcp');
-			$page_front_arg = add_query_arg( array('wcp' => 'frontsort'), get_permalink() );
-			$page_fields = __('Manage Fields', 'shwcp');
-			$page_fields_arg = add_query_arg( array('wcp' => 'fields'), get_permalink() );
-			$page_sst = __('Sources Types & Status', 'shwcp');
-			$page_sst_arg = add_query_arg( array('wcp' => 'sst'), get_permalink() );
-			$page_entry = __('Individual Entry', 'shwcp');
-			$page_entry_arg = add_query_arg( array('wcp' => 'entry'), get_permalink() );
-			$page_export = __('Import & Export', 'shwcp');
-			$page_export_arg = add_query_arg( array('wcp' => 'ie'), get_permalink() );
-			$page_stats = __('Statistics', 'shwcp');
-			$page_stats_arg = add_query_arg( array('wcp' => 'stats'), get_permalink() );
-			$page_logging = __('Logging', 'shwcp');
+			$main_page        = __('All Entries', 'shwcp');
+			$settings_link    = __('Settings', 'shwcp');
+			$page_front       = __('Manage Front Page', 'shwcp');
+			$page_front_arg   = add_query_arg( array('wcp' => 'frontsort'), get_permalink() );
+			$man_ind          = __('Manage Individual Page', 'shwcp');
+			$man_ind_arg      = add_query_arg( array('wcp' => 'man-ind'), get_permalink() );
+			$page_fields      = __('Manage Fields', 'shwcp');
+			$page_fields_arg  = add_query_arg( array('wcp' => 'fields'), get_permalink() );
+			$page_entry       = __('Individual Entry', 'shwcp');
+			$page_entry_arg   = add_query_arg( array('wcp' => 'entry'), get_permalink() );
+			$page_export      = __('Import & Export', 'shwcp');
+			$page_export_arg  = add_query_arg( array('wcp' => 'ie'), get_permalink() );
+			$page_stats       = __('Statistics', 'shwcp');
+			$page_stats_arg   = add_query_arg( array('wcp' => 'stats'), get_permalink() );
+			$page_logging     = __('Logging', 'shwcp');
 			$page_logging_arg = add_query_arg( array('wcp' => 'logging'), get_permalink() );
-			$page_events = __('Events', 'shwcp');
-			$page_events_arg = add_query_arg( array('wcp' => 'events'), get_permalink() );
-			$permalink = get_permalink();
+			$page_events      = __('Events', 'shwcp');
+			$page_events_arg  = add_query_arg( array('wcp' => 'events'), get_permalink() );
+			$permalink        = get_permalink();
 
 			// Login Form and link variables
 			$login_nonce = wp_nonce_field( 'ajax-login-nonce', 'security', true, false);
@@ -536,28 +549,23 @@ EOC;
 					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-fields.php');
 					$wcp_fields = new wcp_fields();
 					$this->main_section = apply_filters('wcp_edit_fields_filter', $wcp_fields->get_edit_fields());
-				} elseif ('sst' == $this->curr_page) { // Sources Status & Types
-					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-sst-fields.php');
-					$sst_fields = new wcp_sst_fields();
-					$this->main_section = apply_filters('wcp_sst_fields_filter', $sst_fields->get_sst_fields());
+				} elseif ('man-ind' == $this->curr_page) { // Individual Page Management
+					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-manage-ind.php');
+                    $wcp_ind_manage = new wcp_ind_manage();
+                    $this->main_section = apply_filters('wcp_ind_manage_filter', $wcp_ind_manage->manage_individual());
 				} elseif ('entry' == $this->curr_page) { // Individual Lead page
 					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-individual.php');
 					$wcp_individual = new wcp_individual();
 					$this->main_section = apply_filters('wcp_individual_filter', $wcp_individual->get_individual($db));
-					$lead_id = intval($_GET['lead']);
+					$lead_id = intval($_GET['entry']);
 					$bar_tools = $this->top_search($search_select);
 				} elseif ('ie' == $this->curr_page) { // Import Export page
 					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-ie.php');
 					$wcp_ie = new wcp_ie();
 					$this->main_section = apply_filters('wcp_ie_filter', $wcp_ie->import_export());
 				} elseif ('stats' == $this->curr_page) { // Statistics
-					if ($this->current_access == 'ownleads') {  // get the ownleads stats file
-						require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-stats-ownleads.php');
-						$wcp_stats = new wcp_stats_ownleads();
-					} else {
-						require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-stats.php');
-						$wcp_stats = new wcp_stats();
-					}
+					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-stats.php');
+					$wcp_stats = new wcp_stats();
 					$this->main_section = apply_filters('wcp_stats_filter', $wcp_stats->load_statistics());
 				} elseif ('logging' == $this->curr_page) { // Logging
 					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-logging.php');
@@ -612,10 +620,10 @@ EOC;
 				} else {
 					if ($this->curr_page == 'fields') {
 						$bread_single = $page_fields;
-					} elseif ($this->curr_page == 'sst') {
-						$bread_single = $page_sst;
 					} elseif ($this->curr_page == 'frontsort') {
 						$bread_single = $page_front;
+					} elseif ($this->curr_page == 'man-ind') {
+						$bread_single = $man_ind;
 					} elseif ($this->curr_page == 'entry') {
 						$bread_single = $page_entry;
 					} elseif ($this->curr_page == 'ie') {
@@ -643,7 +651,7 @@ EOC;
 			$wcp_links = '';
 			$url = $_SERVER['HTTP_HOST'];
 			$demo_creds = '';
-			if ($url == 'demo.sh-themes.com') {
+			if ($url == 'demo.sh-themes.com' || $url == 'demo.wpcontacts.co/main') {
 				$demo_creds = 'value="demo"';
 			}
 			$user_ID = $this->current_user->ID;
@@ -686,21 +694,66 @@ EOC;
 
 			if ($this->current_access == 'full') {
 				$wcp_links .= <<<EOC
-						<li><a href="$page_front_arg">$page_front <i class="wcp-md md-subject"></i></a></li>
-						<li><a href="$page_fields_arg">$page_fields <i class="wcp-md md-select-all"></i></a></li>
-						<li><a href="$page_sst_arg">$page_sst <i class="wcp-md md-toc"></i></a></li>
+						<li><a href="#" class="wcp-submenu">$settings_link<i class="wcp-md md-dashboard"></i></a>
+						  <ul class="wcp-dropdown">
+						    <li><a href="$page_front_arg">$page_front</a></li>
+						    <li><a href="$page_fields_arg">$page_fields</a></li>
+							<li><a href="$man_ind_arg">$man_ind</a></li>
+						  </ul>
+						</li>
 EOC;
+			/* Custom Access Settings */
+			} elseif ($custom_role['access']) { 
+				if ($custom_role['perms']['manage_front'] == 'yes'
+					|| $custom_role['perms']['manage_fields'] == 'yes'
+					|| $custom_role['perms']['manage_individual'] == 'yes'
+				) {
+					$wcp_links .= <<<EOC
+						<li><a href="#" class="wcp-submenu">$settings_link<i class="wcp-md md-dashboard"></i></a>
+						  <ul class="wcp-dropdown">
+EOC;
+					if ($custom_role['perms']['manage_front'] == 'yes') {
+						$wcp_links .=  '<li><a href="' . $page_front_arg . '">' . $page_front . '</a></li>';
+					}
+					if ($custom_role['perms']['manage_fields'] == 'yes') {
+						$wcp_links .= '<li><a href="' . $page_fields_arg . '">' . $page_fields . '</a></li>';
+					}
+					if ($custom_role['perms']['manage_individual'] == 'yes') {
+						$wcp_links .= '<li><a href="' . $man_ind_arg . '">' . $man_ind . '</a></li>';
+					}
+					$wcp_links .= <<<EOC
+						  </ul>
+						</li>
+EOC;
+				}
 			}
+				
 			if ($this->current_access == 'full'
 				|| $this->current_access == 'ownleads') {
 				$wcp_links .= <<<EOC
 						<li class="statslink"><a href="$page_stats_arg">$page_stats <i class="wcp-md md-trending-up"></i></a></li>
 EOC;
+			/* Custom Access stats */
+			} elseif ($custom_role['access']) {
+				if ($custom_role['perms']['access_statistics'] == 'all'
+					|| $custom_role['perms']['access_statistics'] == 'own'
+				) {
+					$wcp_links .= <<<EOC
+                        <li class="statslink"><a href="$page_stats_arg">$page_stats <i class="wcp-md md-trending-up"></i></a></li>
+EOC;
+				}
 			}
+
 			if ($this->current_access == 'full') {
                 $wcp_links .= <<<EOC
 						<li class="logginglink"><a href="$page_logging_arg">$page_logging <i class="wcp-md md-verified-user"></i></a></li>
 EOC;
+			/* Custom Access Logging */
+			} elseif ($custom_role['access'] && $custom_role['perms']['access_logging'] == 'yes') {
+				$wcp_links .= <<<EOC
+                        <li class="logginglink"><a href="$page_logging_arg">$page_logging <i class="wcp-md md-verified-user"></i></a></li>
+EOC;
+
 			}
 
 			if ($this->can_edit) {
@@ -708,14 +761,34 @@ EOC;
                         <li class="ielink"><a href="$page_export_arg">$page_export <i class="wcp-md md-cloud-download"></i></a></li>
 
 EOC;
-	       	}
-			if (isset($this->first_tab['calendar_events'])
-				&& $this->first_tab['calendar_events'] == 'true'
-			) {	
-				$wcp_links .= <<<EOC
+			/* Custom Access Export Import */
+	       	} elseif ($custom_role['access']) {
+				if ( $custom_role['perms']['access_import'] == 'yes' 
+					|| $custom_role['perms']['access_export'] == 'all'
+					|| $custom_role['perms']['access_export'] == 'own'
+				) {
+					$wcp_links .= <<<EOC
+                        <li class="ielink"><a href="$page_export_arg">$page_export <i class="wcp-md md-cloud-download"></i></a></li>
+
+EOC;
+				}
+			}
+
+			if (isset($this->first_tab['calendar_events'])) {
+				/* Custom Role Access */
+				if ($custom_role['access'] && $custom_role['perms']['access_events'] == 'yes') {
+					$wcp_links .= <<<EOC
+                        <li class="eventslink"><a href="$page_events_arg">$page_events <i class="wcp-md md-event-available"></i></a>
+</li>
+
+EOC;
+
+				} elseif ( !$custom_role['access'] && $this->first_tab['calendar_events'] == 'true') {
+					$wcp_links .= <<<EOC
 						<li class="eventslink"><a href="$page_events_arg">$page_events <i class="wcp-md md-event-available"></i></a></li>
 
 EOC;
+				}
 			}
 
 			/* Custom Links Inclusion */
@@ -822,15 +895,42 @@ EOC;
             }
 
             $top_search .= '</select>'
-                . '<input class="wcp-search-input" placeholder="' . __('Search', 'shwcp') . '" type="search" value="" />'
-                . '</div>';
+                		 . '<input class="wcp-search-input" placeholder="' . __('Search', 'shwcp') . '" type="search" value="" />'
+                		 . '</div>';
+
+			$custom_role = $this->get_custom_role();
             // no access to adding for entry page and people who can't edit 
             if ($this->can_edit
 				&& $this->curr_page != 'entry'
 			) {
-                $top_search .= '<div class="add-holder"><i class="add-lead wcp-white wcp-sm md-add hidden-xs" title="' 
-					. __('Add Entry', 'shwcp') . '"> </i></div>';
-            }
+				$get_params = '';
+				foreach ($_GET as $k => $v) {
+					$get_params .= '<input type="hidden" name="get_params[' . $k . ']" value="' . $v . '" />';
+				}
+				$get_params .= wp_nonce_field( 'wcpexport', 'export-nonce', false, false );
+                $top_search .= '<div class="add-holder"><i class="add-lead wcp-white wcp-sm md-add-circle-outline hidden-xs" '
+							 . 'title="' . __('Add Entry', 'shwcp') . '"> </i></div>'
+							 . '<div class="export-holder"><i class="export-view wcp-white wcp-sm md-file-download hidden-xs" '
+							 . 'title="' . __('Export View', 'shwcp') . '"></i><div class="export-query">'
+							 . $get_params . '</div></div>';
+			/* Custom Roles Top Access */
+            } elseif ($custom_role['access']) {                        
+				if ($custom_role['perms']['entries_add'] == 'yes') {   // Can add entries
+					$top_search .= '<div class="add-holder"><i class="add-lead wcp-white wcp-sm md-add-circle-outline hidden-xs" '
+                                 . 'title="' . __('Add Entry', 'shwcp') . '"> </i></div>';
+				} 
+																	   // Can export all or own, need to filter export for own
+				if ($custom_role['perms']['access_export'] == 'all' || $custom_role['perms']['access_export'] == 'own') {
+					$get_params = '';
+                	foreach ($_GET as $k => $v) {
+                    	$get_params .= '<input type="hidden" name="get_params[' . $k . ']" value="' . $v . '" />';
+                	}
+					$get_params .= wp_nonce_field( 'wcpexport', 'export-nonce', false, false );
+					$top_search .= '<div class="export-holder"><i class="export-view wcp-white wcp-sm md-file-download hidden-xs" '
+                                 . 'title="' . __('Export View', 'shwcp') . '"></i><div class="export-query">'
+                                 . $get_params . '</div></div>';
+				}
+			}
 
             $top_search .= '</div>';
 			return $top_search;

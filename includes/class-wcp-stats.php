@@ -11,29 +11,33 @@
 			global $wpdb;
 			$this->load_db_options(); // load the current tables and options
 
-			// no access to this page for non-admins
+			// no access to this page for non-admins or custom roles without access
             $this->get_the_current_user();
-            if ($this->current_access != 'full' ) {
-                $content = '<p>' . __('You do not have access to this page', 'shwcp');
-                return $content;
+			$custom_role = $this->get_custom_role();
+			if (!$custom_role['access']) {
+            	if ($this->current_access != 'full' && $this->current_access != 'ownleads' ) {
+                	$content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
+                	return $content;
+				}
+            } elseif ($custom_role['access'] ) {
+				if ($custom_role['perms']['access_statistics'] != 'all' && $custom_role['perms']['access_statistics'] != 'own') {
+					$content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
+                    return $content;
+                }
             }
 
-
-			// Get all of the field translated names for the charts from the sort table
-		    $field_names = $wpdb->get_results (
-		    	"select * from $this->table_sort"  
-	        );
-
-			foreach ($field_names as $k => $v) {
-				if ($v->orig_name == 'l_status') {
-					$status_title = $v->translated_name;
-				} elseif ($v->orig_name == 'l_type') {
-					$type_title = $v->translated_name;
-				} elseif ($v->orig_name == 'l_source') {
-					$source_title = $v->translated_name;
-				}
+			$own_entries = '';
+			$current_user = $this->current_user->user_login;
+			if ($this->current_access == 'ownleads') {
+				$own_entries = "and owned_by='$current_user'";
+			} elseif ($custom_role['access'] && $custom_role['perms']['access_statistics'] == 'own') {
+				$own_entries = "and owned_by='$current_user'";
 			}
 
+			// Get all of the field translated names for the charts from the sort table for dropdowns
+		    $dropdowns = $wpdb->get_results (
+		    	"select * from $this->table_sort where field_type=10 order by sort_number asc"  
+	        );
 
 			// monthly total leads - last 12 months
 			$months = array(
@@ -105,6 +109,7 @@
      			DATE_FORMAT(creation_date, '%m') as 'month',
      			COUNT(*) as 'total'
      			FROM $this->table_main WHERE (creation_date) >= CURDATE() - INTERVAL 1 YEAR
+				$own_entries
      			GROUP BY DATE_FORMAT(creation_date, '%Y%m')
 				"
 			);	
@@ -130,100 +135,33 @@
 			$values1 = json_encode($values1);
 
 
-			// Types distribution
-			$type_names = $wpdb->get_results (
-				"select * from $this->table_sst WHERE sst_type=3 order by sst_name asc"         // Get Types
-			);
-
+			// dropdown array
+			$dd_names = array();
+			$dd_entries = array();
 			$i = 1;
-			foreach ($type_names as $row => $type) {
-				$type_count = $wpdb->get_var(
-    				"select count(*) as 'Total' from $this->table_main where l_type='$type->sst_id'"
+			foreach ($dropdowns as $k => $v) {
+				$dd_names[$v->orig_name] = $wpdb->get_results (
+					"select * from $this->table_sst WHERE sst_type_desc='$v->orig_name' order by sst_name asc"
 				);
-				$type_entries[] = array(
-					'value' => $type_count,
-					'label' => $type->sst_name,
-					'color' => $colors[$i],
-					'highlight' => $highlights[$i]
-				);
-				$i++;
-				if ($i > 20) {
-					$i = 1;
-					//break; //exit loop
+				foreach($dd_names[$v->orig_name] as $k2 => $v2) {
+					$dd_count = $wpdb->get_var(
+						"select count(*) as 'Total' 
+						from $this->table_main 
+						where $v->orig_name='$v2->sst_id' $own_entries"
+					);
+					$dd_entries[$v->orig_name][] = array(
+						'value'     => $dd_count,
+						'label'     => $v2->sst_name,
+						'color'     => $colors[$i],
+						'highlight' => $highlights[$i]
+					);
+					$i++;
+					if ($i > 20) {
+						$i = 1;
+					}
 				}
 			}
-			usort( $type_entries, array($this, 'sortByOrder') ); // sort them descending
-			for ($i2=0;$i2 <= 9;$i2++) {             // Limit to 10 results
-                if (!isset($type_entries[$i2])) {
-                    break; // exit
-                }
-                $type_entries_limited[] = $type_entries[$i2];
-            }
-            $type_entries = json_encode($type_entries_limited);
-
-			// Source distribution
-
-			$source_names = $wpdb->get_results (
-                "select * from $this->table_sst WHERE sst_type=1 order by sst_name asc"         // Get Types
-            );
-
-            $i = 1;
-            foreach ($source_names as $row => $source) {
-                $source_count = $wpdb->get_var(
-                    "select count(*) as 'Total' from $this->table_main where l_source='$source->sst_id'"
-                );
-                $source_entries[] = array(
-                    'value' => $source_count,
-                    'label' => $source->sst_name,
-                    'color' => $colors[$i],
-                    'highlight' => $highlights[$i]
-                );
-                $i++;
-                if ($i > 20) {
-					$i = 1;
-                }
-            }
-            usort( $source_entries, array($this, 'sortByOrder') ); // sort them descending
-			for ($i2=0;$i2 <= 9;$i2++) {             // Limit to 10 results
-                if (!isset($source_entries[$i2])) {
-                    break; // exit
-                }
-                $source_entries_limited[] = $source_entries[$i2];
-            }
-            $source_entries = json_encode($source_entries_limited);
-
-
-			// Status distribution
-
-
-            $status_names = $wpdb->get_results (
-                "select * from $this->table_sst WHERE sst_type=2 order by sst_name asc"         // Get Types
-            );
-
-            $i = 1;
-            foreach ($status_names as $row => $status) {
-                $status_count = $wpdb->get_var(
-                    "select count(*) as 'Total' from $this->table_main where l_status='$status->sst_id'"
-                );
-                $status_entries[] = array(
-                    'value' => $status_count,
-                    'label' => $status->sst_name,
-                    'color' => $colors[$i],
-                    'highlight' => $highlights[$i]
-                );
-                $i++;
-                if ($i > 20) {
-					$i = 1;
-                }
-            }
-            usort( $status_entries, array($this, 'sortByOrder') ); // sort them descending
-			for ($i2=0;$i2 <= 9;$i2++) {             // Limit to 10 results
-                if (!isset($status_entries[$i2])) {
-                    break; // exit
-                }
-                $status_entries_limited[] = $status_entries[$i2];
-            }
-            $status_entries = json_encode($status_entries_limited);
+			//print_r($dd_entries);
 
 			// Ownership distribution
 			$owners = $wpdb->get_results (
@@ -238,7 +176,7 @@
 					'highlight' => $highlights[$i]
 				);
 				$i++;
-				if ($i > 10) {
+				if ($i > 25) {
 					break; //exit loop
 				}
 			}
@@ -248,15 +186,15 @@
 
 
 			// Titles
+			$top_ten = __('Top 10', 'shwcp');
+			$distribution = __('Distribution', 'shwcp');
+
 			//Chart 1 title
 			$chart1_title = __('New Entries', 'shwcp');
 			$chart1_daily = __('Daily (1 Month)', 'shwcp');
 			$chart1_weekly = __('Weekly (6 Months)', 'shwcp');
 			$chart1_monthly = __('Monthly (1 Year)', 'shwcp');
-			$chart2_title = __('Top 10', 'shwcp') . ' ' . $type_title . ' ' . __('Distribution', 'shwcp');
-			$chart3_title = __('Top 10', 'shwcp') . ' ' . $source_title . ' ' . __('Distribution', 'shwcp');
-			$chart4_title = __('Top 10', 'shwcp') . ' ' . $status_title . ' ' . __('Distribution', 'shwcp');
-			$chart5_title = __('Entry Ownership Distribution', 'shwcp');
+			$chart2_title = __('Entry Ownership Distribution', 'shwcp');
 
 			$data = <<<EOC
 				<script>
@@ -280,18 +218,31 @@
 								}
 							]
 						};
-
-						// Types chart (doughnut)
-						var data2 = $type_entries;
-
-						// Source chart (doughnut)
-						var data3 = $source_entries;
-
-						// Status chart (doughnut)
-						var data4 = $status_entries;
-
 						// Owner chart
-						var data5 = $owner_entries;
+                        var data2 = $owner_entries;
+
+EOC;
+			$inc = 3;
+			foreach ($dd_entries as $k => $v) {
+				$limited = array();
+				usort( $v, array($this, 'sortByOrder') ); // sort them descending
+            	for ($i2=0;$i2 <= 9;$i2++) {             // Limit to 10 results
+                	if (!isset($v[$i2])) {
+                    	break; // exit
+                	}
+                	$limited[] = $v[$i2];
+            	}
+
+				$encoded_array = json_encode($limited);
+				$data .= <<<EOC
+
+						// $k chart (doughnut)
+						var data$inc = $encoded_array;
+EOC;
+				$inc++;
+			};
+
+			$data .= <<<EOC
 
 						// Total leads chart
 				    	var ctx = $("#monthlies").get(0).getContext("2d");
@@ -300,46 +251,14 @@
 							bezierCurve: true, 
 							responsive: true
 						});
-						// Types chart
-						var ctx2 = $("#type-totals").get(0).getContext("2d");
-						var myNewChart2 = new Chart(ctx2);
-						new Chart(ctx2).Doughnut(data2, {
-							percentageInnerCutout : 10,
-							animationSteps: 100,
-							animationEasing : "easeOutBounce",
-							animateRotate : true,
-							animateScale : false,
-							responsive: true
-						});
-
-						// Source chart
-						var ctx3 = $("#source-totals").get(0).getContext("2d");
-                        var myNewChart3 = new Chart(ctx3);
-                        new Chart(ctx3).Doughnut(data3, {
-                            percentageInnerCutout : 10,
-                            animationSteps: 100,
-                            animationEasing : "easeOutBounce",
-                            animateRotate : true,
-                            animateScale : false,
-                            responsive: true
-                        });
-
-						// Status chart
-						var ctx4 = $("#status-totals").get(0).getContext("2d");
-                        var myNewChart4 = new Chart(ctx4);
-                        new Chart(ctx4).Doughnut(data4, {
-                            percentageInnerCutout : 10,
-                            animationSteps: 100,
-                            animationEasing : "easeOutBounce",
-                            animateRotate : true,
-                            animateScale : false,
-                            responsive: true
-                        });
+EOC;
+			if ($this->current_access == 'full') {
+                    $data .= <<<EOC
 
 						// Owner chart
-						var ctx5 = $("#owner-totals").get(0).getContext("2d");
-						var myNewChart5 = new Chart(ctx5);
-						new Chart(ctx5).PolarArea(data5, {
+						var ctx2 = $("#owner-totals").get(0).getContext("2d");
+						var myNewChart2 = new Chart(ctx2);
+						new Chart(ctx2).PolarArea(data2, {
 							scaleShowLabelBackdrop : true,
 							scaleBackdropColor : "rgba(255,255,255,0.75)",
 							scaleBeginAtZero : true,
@@ -352,7 +271,29 @@
 							animateRotate : true,
 							responsive: true
 						});
+EOC;
+			}
 
+			$inc = 3;
+			foreach ($dd_entries as $k => $v) {
+				$data .= <<<EOC
+						// $k Chart
+                        var ctx$inc = $("#$k").get(0).getContext("2d");
+                        var myNewChart$inc = new Chart(ctx$inc);
+                        new Chart(ctx$inc).Doughnut(data$inc, {
+                            percentageInnerCutout : 10,
+                            animationSteps: 100,
+                            animationEasing : "easeOutBounce",
+                            animateRotate : true,
+                            animateScale : false,
+                            responsive: true
+                        });
+EOC;
+				$inc++;
+			}
+
+
+				$data .= <<<EOC
 
 					});
 
@@ -360,6 +301,10 @@
 
 
 				<div class="row">
+EOC;
+				if ($this->current_access == 'full') {
+                    $data .= <<<EOC
+
                     <div class="col-md-6 no-padding"> 
 						<div class="chart-holder">
 							<h3>$chart1_title</h3>
@@ -375,30 +320,46 @@
                     </div>
                     <div class="col-md-6 no-padding">
 						<div class="chart-holder">
-							<h3>$chart5_title</h3>
+							<h3>$chart2_title</h3>
                         	<canvas id="owner-totals" width="400" height="200"></canvas>
 						</div>
                     </div>
-				</div>
-				<div class="row">
-					<div class="col-md-4 no-padding">
-						<div class="chart-holder">
-                        	<h3>$chart2_title</h3>
-                        	<canvas id="type-totals" width="400" height="200"></canvas>
-						</div>
+EOC;
+				} else {  // ownleads users don't see ownership distribution
+					$data .= <<<EOC
+
+                    <div class="col-md-4 no-padding">
+                        <div class="chart-holder">
+                            <h3>$chart1_title</h3>
+                            <div class="new-lead-view">
+                                  <select class="lead-stats">
+                                    <option value="daily">$chart1_daily</option>
+                                    <option value="weekly">$chart1_weekly</option>
+                                    <option value="monthly" selected="selected">$chart1_monthly</option>
+                                  </select>
+                                 </div>
+                            <canvas id="monthlies" width="400" height="200"></canvas>
+                        </div>
                     </div>
-					<div class="col-md-4 no-padding"> 
-						<div class="chart-holder">
-							<h3>$chart3_title</h3>
-							<canvas id="source-totals" width="400" height="200"></canvas>
-						</div>
-					</div>
+EOC;
+				}
+
+				$data .= <<<EOC
+EOC;
+
+				foreach ($dropdowns as $k => $v) {
+
+					$data .= <<<EOC
 					<div class="col-md-4 no-padding">
 						<div class="chart-holder">
-							<h3>$chart4_title</h3>
-							<canvas id="status-totals" width="400" height="200"></canvas>
+							<h3>$top_ten $v->translated_name $distribution</h3>
+							<canvas id="$v->orig_name" width="400" height="200"></canvas>
 						</div>
 					</div>
+EOC;
+				}
+
+				$data .= <<<EOC
                 </div>
 EOC;
 

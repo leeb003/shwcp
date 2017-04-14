@@ -30,8 +30,13 @@
             $shwcp_upload_url = $this->shwcp_upload_url . $current_db;
 
 			$this->get_the_current_user();  // load method for permissions from parent here
+			$custom_role = $this->get_custom_role();
+			//print_r($custom_role);
 			$ownleads = '';
-			if ($this->current_access == 'ownleads') {
+			if ( ($this->current_access == 'ownleads') 
+				|| ($custom_role['access'] && $custom_role['perms']['entries_view'] == 'own') 
+			) {
+
 				$ownleads = 'AND l.owned_by=\'' . $this->current_user->user_login . '\'';
 			}
 
@@ -89,13 +94,6 @@
 
 			// get sst info for filtering
 			$sst_pre = __('All', 'shwcp');
-			$sst_trans['l_source'] = $wpdb->get_row("select * from $this->table_sort where orig_name='l_source'");
-			$sst_trans['l_status'] = $wpdb->get_row("select * from $this->table_sort where orig_name='l_status'");
-			$sst_trans['l_type']   = $wpdb->get_row("select * from $this->table_sort where orig_name='l_type'");
-
-			$sst_sources = $wpdb->get_results("select * from $this->table_sst where sst_type='1' order by sst_order asc");
-			$sst_status  = $wpdb->get_results("select * from $this->table_sst where sst_type='2' order by sst_order asc");
-			$sst_types   = $wpdb->get_results("select * from $this->table_sst where sst_type='3' order by sst_order asc");
 			$sst_all = $wpdb->get_results("select * from $this->table_sst order by sst_order asc");
 
 			// Searching query
@@ -125,11 +123,7 @@
 
                 if (isset($_GET['q']) && $_GET['q'] != '') {
 				 	// field conditionals
-					if ('l_source' == $field
-						|| 'l_status' == $field
-						|| 'l_type' == $field
-						|| $dropdown_search
-					) {
+					if ($dropdown_search) {
 						$q = $wpdb->esc_like($_GET['q']);
 						$check = $wpdb->get_row(
 							"select * from $this->table_sst where sst_type_desc='$field' and sst_name LIKE '%$q%'"
@@ -213,74 +207,29 @@
 				$order_by = 'order by ' . $field . ' ' . $sort; 
 			} // end sorting section
 
-
-			$so = false;
-            $st = false;
-            $ty = false;
-            $so_filter = '';
-			$so_current = $sst_pre . ' ' . $sst_trans['l_source']->translated_name;
-            $st_filter = '';
-			$st_current = $sst_pre . ' ' . $sst_trans['l_status']->translated_name;
-            $ty_filter = '';
-			$ty_current = $sst_pre . ' ' . $sst_trans['l_type']->translated_name;
-            if (isset($_GET['so'])) {
-                $so = intval($_GET['so']);
-                $so_filter = "AND l.l_source=$so";
-				foreach ($sst_sources as $k => $v) {
-					$v->sst_name = stripslashes($v->sst_name);
-					if ($v->sst_id == $so) {
-						$so_current = '<span class="wcp-primary">' . $v->sst_name . '</span>';
-					}
-				}
-            }
-            if (isset($_GET['st'])) {
-                $st = intval($_GET['st']);
-                $st_filter = "AND l.l_status=$st";
-				foreach ($sst_status as $k => $v) {
-					$v->sst_name = stripslashes($v->sst_name);
-                    if ($v->sst_id == $st) {
-                        $st_current = '<span class="wcp-primary">' . $v->sst_name . '</span>';
-                    }
-                }
-            }
-            if (isset($_GET['ty'])) {
-                $ty = intval($_GET['ty']);
-                $ty_filter = "AND l.l_type=$ty";
-				foreach ($sst_types as $k => $v) {
-					$v->sst_name = stripslashes($v->sst_name);
-                    if ($v->sst_id == $ty) {
-                        $ty_current = '<span class="wcp-primary">' . $v->sst_name . '</span>';
-                    }
-                }
-            }
 			// dropdown filters type 10 fields
 			$dropdowns = array();
 			$dropdown_filter = array();
 			foreach ($filtering as $k => $v) {
-				if ($v->orig_name != 'l_source'
-					&& $v->orig_name != 'l_status'
-					&& $v->orig_name != 'l_type'
-				) {
-					$current = $sst_pre . ' ' . $v->translated_name;
-					$num_value = false;
-                    if (array_key_exists($v->orig_name, $_GET)) {
-                        $num_value = intval($_GET[$v->orig_name]);
-						$dropdown_filter[] = 'AND l.' . $v->orig_name . '=' . $num_value;
-                    }
-					foreach($sst_all as $sst_k => $sst_v) {
-						if ($sst_v->sst_id == $num_value) {
-							$current = '<span class="wcp-primary">' . $sst_v->sst_name . '</span>';
-						}
-						$trans_name = stripslashes($v->translated_name);
-						$default_url = esc_url(remove_query_arg( array($v->orig_name)));
-						$dropdowns[$v->orig_name] = array(
-							'current'       => $current,
-							'trans'         => $trans_name,
-							'sst_name'      => $sst_v->sst_name,
-							'default_url'   => $default_url,
-							'value'         => $num_value
-						);
+				$current = $sst_pre . ' ' . $v->translated_name;
+				$num_value = false;
+                if (array_key_exists($v->orig_name, $_GET)) {
+                    $num_value = intval($_GET[$v->orig_name]);
+					$dropdown_filter[] = 'AND l.' . $v->orig_name . '=' . $num_value;
+                }
+				foreach($sst_all as $sst_k => $sst_v) {
+					if ($sst_v->sst_id == $num_value) {
+						$current = '<span class="wcp-primary">' . $sst_v->sst_name . '</span>';
 					}
+					$trans_name = stripslashes($v->translated_name);
+					$default_url = esc_url(remove_query_arg( array($v->orig_name)));
+					$dropdowns[$v->orig_name] = array(
+						'current'       => $current,
+						'trans'         => $trans_name,
+						'sst_name'      => $sst_v->sst_name,
+						'default_url'   => $default_url,
+						'value'         => $num_value
+					);
 				}
 			}
 			
@@ -289,13 +238,8 @@
 			$lead_count = $wpdb->get_var(
 				"
 					SELECT count(*) as count 
-                    FROM $this->table_main l, $this->table_sst sst1, $this->table_sst sst2, $this->table_sst sst3
-                    WHERE l.l_source = sst1.sst_id
-                    AND l.l_status = sst2.sst_id
-                    AND l.l_type = sst3.sst_id
-                    $so_filter
-                    $st_filter
-                    $ty_filter
+                    FROM $this->table_main l
+                    WHERE 1=1
 					$dropdown_q
                     $ownleads
                     $search
@@ -328,14 +272,9 @@
 
             $leads = $wpdb->get_results(
                 "
-                    SELECT l.*, sst1.sst_name as source, sst2.sst_name as status, sst3.sst_name as type
-                    FROM $this->table_main l, $this->table_sst sst1, $this->table_sst sst2, $this->table_sst sst3
-                    WHERE l.l_source = sst1.sst_id
-                    AND l.l_status = sst2.sst_id
-                    AND l.l_type = sst3.sst_id
-					$so_filter
-					$st_filter
-					$ty_filter
+                    SELECT l.*
+                    FROM $this->table_main l
+                    WHERE 1=1
 					$dropdown_q
 					$ownleads
 					$search
@@ -358,26 +297,20 @@
                 	foreach ($sorting as $sk => $sv) {  // use sorting array to get them in order
                     	foreach ($v as $k2 => $v2) {
                         	if ($k2 == $sv->orig_name) {
-                            	if ($k2 == 'l_source') { $trans = 'source'; }
-                            	elseif ($k2 == 'l_status') { $trans = 'status'; }
-                            	elseif ($k2 == 'l_type') { $trans = 'type'; }
-                            	else { $trans = $k2; }
+								$trans = $k2;
 
                             	$leads_sorted[$k][$sv->translated_name] = $leads[$k]->$trans;
                         	}
                     	}
                 	}
-                	$leads_sorted[$k]['wcp_lead_id'] = $v->id;  // keep track of the id
+                	$leads_sorted[$k]['wcp_lead_id'] = $v->id;    // keep track of the id
+					$leads_sorted[$k]['owned_by_cust'] = $v->owned_by; // keep track of original owned by for custom access
             	}
             	$lead_columns = array_keys($leads_sorted[0]);
             	$page_ind_arg = add_query_arg( array('wcp' => 'entry'), get_permalink() );
 			}
 
 			// Filtering 
-			$so_default = esc_url(remove_query_arg( array('so')));
-			$st_default = esc_url(remove_query_arg( array('st')));
-			$ty_default = esc_url(remove_query_arg( array('ty')));
-
 			$wcp_main = <<<EOC
 
                             <div class="row">
@@ -386,91 +319,33 @@
 EOC;
 
 			foreach ($filtering as $fk => $fv) {
-				if ($fv->orig_name == 'l_source') {
-            		$wcp_main .= <<<EOC
-
-										<li><a href="#">$so_current</a>
-										  <ul>
-											<li><a href="$so_default">$sst_pre {$sst_trans['l_source']->translated_name}</a></li>
-EOC;
-					foreach ($sst_sources as $k => $v) {
-						$v->sst_name = stripslashes($v->sst_name);	
-						$source_link = esc_url(add_query_arg( array('so'=>$v->sst_id)));
-						if ($so && $so==$v->sst_id) {
-							$wcp_main .= '<li><a class="wcp-primary" href="' . $source_link . '">' . $v->sst_name . '</a></li>';
-						} else {
-							$wcp_main .= '<li><a href="' . $source_link . '">' . $v->sst_name . '</a></li>';
-						}
-					}
-					$wcp_main .= '</ul></li>';
-
-				} elseif ($fv->orig_name == 'l_status') {
-					$wcp_main .= <<<EOC
-
-										<li><a href="#">$st_current</a>
-											<ul>
-												<li><a href="$st_default">$sst_pre {$sst_trans['l_status']->translated_name}</a>
-												</li>
-
-EOC;
-					foreach ($sst_status as $k => $v) {
-						$v->sst_name = stripslashes($v->sst_name);
-						$status_link = esc_url(add_query_arg( array('st'=>$v->sst_id)));
-						if ($st && $st==$v->sst_id) {
-							$wcp_main .= '<li><a class="wcp-primary" href="' . $status_link . '">' . $v->sst_name . '</a></li>';
-                		} else {	
-							$wcp_main .= '<li><a href="' . $status_link . '">' . $v->sst_name . '</a></li>';
-						}
-            		}
-					$wcp_main .= '</ul></li>';
-				} elseif ($fv->orig_name == 'l_type') {
-					$wcp_main .= <<<EOC
-
-										<li><a href="#">$ty_current</a>
-											<ul>
-												<li><a href="$ty_default">$sst_pre {$sst_trans['l_type']->translated_name}</a></li>
-
-EOC;
-					foreach ($sst_types as $k => $v) {
-						$v->sst_name = stripslashes($v->sst_name);
-						$types_link = esc_url(add_query_arg( array('ty'=>$v->sst_id)));
-						if ($ty && $ty==$v->sst_id) {
-							$wcp_main .= '<li><a class="wcp-primary" href="' . $types_link . '">' . $v->sst_name . '</a></li>';
-                		} else {
-							$wcp_main .= '<li><a href="' . $types_link . '">' . $v->sst_name . '</a></li>';
-						}
-            		}
-					$wcp_main .= '</ul></li>';
-
-				} else {  // dropdown type 10 fields
-					foreach ($dropdowns as $dk => $dv) {
-						$orig_name = $current = $trans = $default_url = $value = ''; // clear out first just in case
-						if ($fv->orig_name == $dk) {
-							$orig_name = $dk;
-							$current = $dv['current'];
-							$trans = $dv['trans'];
-							$default_url = $dv['default_url'];
-							$value = $dv['value'];
-							$wcp_main .= <<<EOC
+				foreach ($dropdowns as $dk => $dv) {
+					$orig_name = $current = $trans = $default_url = $value = ''; // clear out first just in case
+					if ($fv->orig_name == $dk) {
+						$orig_name = $dk;
+						$current = $dv['current'];
+						$trans = $dv['trans'];
+						$default_url = $dv['default_url'];
+						$value = $dv['value'];
+						$wcp_main .= <<<EOC
                             
                                         <li><a href="#">$current</a>
 											<ul>
 												<li><a href="{$dv['default_url']}">$sst_pre $trans</a></li>
 EOC;
-							foreach ($sst_all as $sst_k => $sst_v) {
-                        		if ($orig_name == $sst_v->sst_type_desc) {
-                            		$sst_v->sst_name = stripslashes($sst_v->sst_name);
-                            		$dd_link = esc_url(add_query_arg( array($orig_name => $sst_v->sst_id)));
-                            		if ($value && $value==$sst_v->sst_id) {
-                                		$wcp_main .= '<li><a class="wcp-primary" href="' . $dd_link . '">' . $sst_v->sst_name 
-											   . '</a></li>';
-                            		} else {
-                                		$wcp_main .= '<li><a href="' . $dd_link . '">' . $sst_v->sst_name . '</a></li>';
-                            		}
-                        		}
-                    		}
-							$wcp_main .= '</ul></li>';
-						}
+						foreach ($sst_all as $sst_k => $sst_v) {
+                       		if ($orig_name == $sst_v->sst_type_desc) {
+                           		$sst_v->sst_name = stripslashes($sst_v->sst_name);
+                           		$dd_link = esc_url(add_query_arg( array($orig_name => $sst_v->sst_id)));
+                           		if ($value && $value==$sst_v->sst_id) {
+                               		$wcp_main .= '<li><a class="wcp-primary" href="' . $dd_link . '">' . $sst_v->sst_name 
+										   . '</a></li>';
+                           		} else {
+                               		$wcp_main .= '<li><a href="' . $dd_link . '">' . $sst_v->sst_name . '</a></li>';
+                           		}
+                       		}
+                   		}
+						$wcp_main .= '</ul></li>';
 					}
 				}
 			}
@@ -482,7 +357,9 @@ EOC;
 			$i = 0;
 		    if (!empty($lead_columns)) {	
 		    	foreach ($lead_columns as $k => $v) {
-                	if ($v == 'wcp_lead_id') {
+                	if ($v == 'wcp_lead_id' 
+						|| $v == 'owned_by_cust' 
+					) {
                     	continue; 
                 	}
                 	$orig_name = $sorting[$i]->orig_name;
@@ -545,6 +422,15 @@ EOC;
 									<span class="wcp-button2 select-all-checked">$select_all_text</span>
 									<span class="wcp-button2 select-all-checked" style="display:none;">$unselect_all_text</span>
 									<span class="wcp-button2 delete-all-checked">$delete_selected_text</span>
+EOC;
+					/* Custom Role Select & Delete access */
+					} elseif ( $custom_role['perms']['entries_delete'] == 'all'
+                    	|| $custom_role['perms']['entries_delete'] == 'own'
+                    ) {
+						$wcp_main .= <<<EOC
+                                    <span class="wcp-button2 select-all-checked">$select_all_text</span>
+                                    <span class="wcp-button2 select-all-checked" style="display:none;">$unselect_all_text</span>
+                                    <span class="wcp-button2 delete-all-checked">$delete_selected_text</span>
 EOC;
 					}
 
@@ -611,9 +497,11 @@ EOC;
 
             //print_r($leads_sorted);
             foreach ($lead_columns as $k => $v) {
-				if ($v == 'wcp_lead_id') {
-					continue;
-				}
+				if ($v == 'wcp_lead_id' 
+                    || $v == 'owned_by_cust'
+                ) {
+                    continue;
+                }
 				$v = stripslashes($v);
 				$orig_name = $sorting[$i]->orig_name;
 
@@ -646,14 +534,23 @@ EOC;
 EOC;
                 $i++;
             }
+			$edit_text = __('Quick Edit', 'shwcp');
 			if ($this->can_edit) { // user can edit leads
-            	$edit_text = __('Quick Edit', 'shwcp');
             	$wcp_main .= <<<EOC
 									<th class='edit-header'>$edit_text</th>
 
 EOC;
+			/* Custom Access can edit all or own - add quick edit header */
+			} elseif ($custom_role['access'] && $custom_role['perms']['entries_edit'] == 'all'
+				|| $custom_role['access'] && $custom_role['perms']['entries_edit'] == 'own') {
+				$wcp_main .= <<<EOC
+                                    <th class='edit-header'>$edit_text</th>
 
+EOC;
 			}
+				
+
+
 			$wcp_main .= <<<EOC
 								</tr>
 EOC;
@@ -662,17 +559,6 @@ EOC;
 			$leads_sorted = apply_filters('wcp_leads_filter', $leads_sorted); // Add filter for just the lead data
             foreach ($leads_sorted as $r => $lead) {
                 $i++;
-/*
-				if ($i > 200) { // Cut large results (like for all searches) to protect the browser from crashing
-					$cut_message = __('<p>Too many results to display them all, try a more specific search.</p>', 'shwcp');
-					$wcp_main .= <<<EOC
-								</table>
-							<div class="cut-results">$cut_message</div>
-EOC;
-					break;
-				}
-*/
-
                 $alt = $i&1;
                 $wcp_main .= <<<EOC
 
@@ -695,7 +581,7 @@ EOC;
                         $small_image = $file_name . '_25x25' . '.' . $file_ext;
                         $thumb = $shwcp_upload_url . '/' . $small_image;
 					} else {   // preset default
-                    	$thumb = SHWCP_ROOT_URL . '/assets/img/default_lead_th.png';
+                    	$thumb = SHWCP_ROOT_URL . '/assets/img/default_entry_th.png';
 					}
                 } else {
                     $parts = explode(".", $lead_row->small_image);
@@ -707,7 +593,7 @@ EOC;
 					$wcp_main .= <<<EOC
 
 									<td class="image-td" style="background: transparent url($thumb) no-repeat 20px center;">
-									<a class="individual-link" href="{$page_ind_arg}&amp;lead={$lead['wcp_lead_id']}"> </a>
+									<a class="individual-link" href="{$page_ind_arg}&amp;entry={$lead['wcp_lead_id']}"> </a>
 									</td>
 
 EOC;
@@ -715,8 +601,10 @@ EOC;
 
                 foreach ($lead as $k => $v) {
 					$v = stripslashes($v);
-                    if ($k == 'wcp_lead_id') {
-                        // skip displaying the id
+					if ($k == 'wcp_lead_id' 
+                        || $k == 'owned_by_cust'
+                    ) {
+						// skip displaying the id
                     } else {
 						// Convert keys and values to valid css classes for the td for tagetting styles
 						$col_num = 'colnum-' . $i2;
@@ -734,6 +622,7 @@ EOC;
 						 * 5 = website address
 						 * 6 = Google map link
 						 * 7 = date time picker - treated as text on front
+						 * 11 = date picker - treated as text on front
 						 * 8 = star rating
 						 * 9 = checkbox
 						 * 10 = dropdown field
@@ -784,7 +673,7 @@ EOC;
                                             }
                                         }
                                     }
-									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;lead=' 
+									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;entry=' 
 											    . $lead['wcp_lead_id'] . '">' . $selected . '</a>';
 
 								} elseif ($sv->field_type == '9') { // checkbox
@@ -794,7 +683,7 @@ EOC;
 									if ($checkbox) {
 										$checked = 'checked="checked"';
 									}
-									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;lead='
+									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;entry='
 												. $lead['wcp_lead_id'] . '">'
 												. '<input type="checkbox" id="' . $k . $lead['wcp_lead_id'] 
 												. '" class="checkbox" ' . $checked . ' ' . $disabled . '/>'
@@ -803,12 +692,12 @@ EOC;
 
 								} elseif ($sv->field_type == '8') { // Star rating
 									$floatv = floatval($v);
-									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;lead='
+									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;entry='
                                                 . $lead['wcp_lead_id'] . '">'
 												. '<div class="rateit" data-rateit-ispreset="true" data-rateit-value="' 
 												. $floatv . '"' . ' data-rateit-readonly="true"></div></a>';
 
-								} elseif ($sv->field_type == '7') { // date time add some extra classes
+								} elseif ($sv->field_type == '7' || $sv->field_type == '11') { // date time add some extra classes
 									$set_time = date_create($v);
 									$date_diff = date_diff($now_time,$set_time);
 									//echo $now . ' ' . $v . ' ';  // testing
@@ -841,13 +730,19 @@ EOC;
 
 									// WP Display format
 									$display_date = '';
-									if ($v != '0000-00-00 00:00:00') {
-										$display_date = date("$this->date_format $this->time_format", strtotime($v));
+									if ($sv->field_type == '7') {
+										if ($v != '0000-00-00 00:00:00') {
+											$display_date = date("$this->date_format $this->time_format", strtotime($v));
+										}
+									} elseif ($sv->field_type == '11') {
+										if ($v != '0000-00-00 00:00:00') {
+                                            $display_date = date("$this->date_format", strtotime($v));
+                                        }
 									}
 
 									
                                     $td_content = '<a class="individual-link ' . $date_class . '" href="' 
-												. $page_ind_arg . '&amp;lead='
+												. $page_ind_arg . '&amp;entry='
                                                 . $lead['wcp_lead_id'] . '">' . $display_date . '</a>';
 
 								} elseif ($sv->field_type == '6') {  // Google map
@@ -890,7 +785,7 @@ EOC;
 											. '<i class="md-call"></i> ' . $v . '</a>';
 									}
 								} elseif ($sv->field_type == '2') { // Text area
-									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;lead=' 
+									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;entry=' 
 										        . $lead['wcp_lead_id'] . '">' . $v . '</a>';
 								} else { // all other fields
 									if ($sv->orig_name == 'creation_date'
@@ -899,13 +794,13 @@ EOC;
                                     	$v = date("$this->date_format $this->time_format", strtotime($v));
 									}
 
-									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;lead=' 
+									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;entry=' 
 											    . $lead['wcp_lead_id'] . '">' . $v . '</a>';
 								}
 							}
 						}
 						if ($td_content == '') {  // if for some reason no match...
-							$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;lead=' 
+							$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;entry=' 
 								        . $lead['wcp_lead_id'] . '">' . $v . '</a>';
 						}
 
@@ -933,7 +828,50 @@ EOC;
 										</span>
 									</td>
 EOC;
+				/* Custom Role */
+				} elseif ($custom_role['access']) {
+					// print_r($lead);
+					if ( $custom_role['perms']['entries_edit'] == 'all'
+						|| $custom_role['perms']['entries_edit'] == 'own'
+						|| $custom_role['perms']['entries_delete'] == 'all'
+						|| $custom_role['perms']['entries_delete'] == 'own'
+					) {
+						$wcp_main .= <<<EOC
+							        <td class='edit-td'>
+EOC;
+
+					
+						if ( ($custom_role['perms']['entries_edit'] == 'all')
+							|| ($custom_role['perms']['entries_edit'] == 'own' &&
+								$this->current_user->user_login == $lead['owned_by_cust'])
+						) {
+							$wcp_main .= <<<EOC
+                                        <span class='wcp-lead lead-id-{$lead['wcp_lead_id']}'>
+                                            <i class='wcp-sm md-create'> </i>
+                                        </span>
+EOC;
+						}
+						if ( ($custom_role['perms']['entries_delete'] == 'all')
+                            || ($custom_role['perms']['entries_delete'] == 'own' &&
+                                $this->current_user->user_login == $lead['owned_by_cust'])
+                        ) {
+							$wcp_main .= <<<EOC
+                                        <span class='delete-lead'>
+                                            <i class='wcp-red wcp-sm md-remove-circle-outline'></i>
+                                        </span>
+                                        <span class="delete-all-selected">
+                                            <input id="wcp-delete-all-{$lead['wcp_lead_id']}"
+                                                class="delete-all delete-{$lead['wcp_lead_id']}" type="checkbox" />
+                                            <label for="wcp-delete-all-{$lead['wcp_lead_id']}"> </label>
+                                        </span>
+EOC;
+						}
+							$wcp_main .= <<<EOC
+                                    </td>
+EOC;
+					}
 				}
+
 				$wcp_main .= <<<EOC
 
 								</tr>

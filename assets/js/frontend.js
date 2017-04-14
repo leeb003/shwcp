@@ -230,6 +230,12 @@ jQuery(function ($) {  // use $ for jQuery
     	});
 	};
 
+	// Submenu display
+	$('.drawer-menu').on('click', '.wcp-submenu', function() {
+		$(this).closest('li').find('.wcp-dropdown').slideToggle();
+		return false;
+	});
+
 	if ($('.wcp-table').length) {
 		// responsive table layouts - main
 		var headertext = [],

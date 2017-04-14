@@ -125,6 +125,11 @@
           transition: opacity 0.1s ease-out;
   /* border: 5px double #0787AF; */
 }
+@media (min-width: 767px) {
+    .introjs-tooltip {
+		width: 600px;
+    }
+}
 
 .introjs-tooltiptext {
     margin-left: -10px;

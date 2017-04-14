@@ -122,8 +122,19 @@
 
 				// Manage Own can or can't change ownership
 				$response['access'] = $this->current_access;
-				$response['can_change_ownership'] = isset($this->second_tab['own_leads_change_owner']) 
-					? $this->second_tab['own_leads_change_owner'] : 'no';
+				$custom_role = $this->get_custom_role();
+				$response['can_change_ownership'] = 'no';
+				if ( ( !$custom_role['access'] && $this->current_access == 'ownleads' && $can_change_ownership == 'no')
+                    || ( $custom_role['access'] && $custom_role['perms']['entries_ownership'] == 'no' )
+                ) {
+					$response['can_change_ownership'] = 'no';
+				} elseif (( !$custom_role['access'] && $this->current_access == 'ownleads' && $can_change_ownership == 'yes')
+					|| ( $custom_role['access'] && $custom_role['perms']['entries_ownership'] == 'yes' )
+                ) {
+					$response['can_change_ownership'] = 'yes';
+				}
+				//$response['can_change_ownership'] = isset($this->second_tab['own_leads_change_owner']) 
+				//	? $this->second_tab['own_leads_change_owner'] : 'no';
 
 
 				if ('new' == $lead_id) {  // new lead check
@@ -192,6 +203,15 @@
                                     }
 									$v = $display_date;
 								}
+							} elseif ($v2->field_type == '11') {
+								if ($v) {
+                                    // WP Display format
+                                    $display_date = '';
+                                    if ($v != '0000-00-00 00:00:00') {
+                                        $display_date = date("$this->date_format", strtotime($v));
+                                    }
+                                    $v = $display_date;
+                                }
 							}
 							$translated[$k]['value'] = $v;
 							$translated[$k]['trans'] = stripslashes($v2->translated_name);
@@ -266,7 +286,7 @@
                         	$small_image = $file_name . '_25x25' . '.' . $file_ext;
                         	$thumb = $shwcp_upload_url . '/' . $small_image;
                     	} else {   // preset default
-                        	$thumb = SHWCP_ROOT_URL . '/assets/img/default_lead_th.png';
+                        	$thumb = SHWCP_ROOT_URL . '/assets/img/default_entry_th.png';
                     	}
 						$response['default_thumb'] = $thumb;
 
@@ -286,14 +306,15 @@
 									$new_datetime = $orig_datetime->format('Y-m-d H:i:s');
 									$field_vals[$k2] = $new_datetime;
 								}
+							} elseif ($k2 == $v->orig_name && $v->field_type == '11') {
+								$orig_datetime = DateTime::createFromFormat("$this->date_format", $v2);
+                                if ($orig_datetime) {
+                                    $new_datetime = $orig_datetime->format('Y-m-d');
+                                    $field_vals[$k2] = $new_datetime;
+                                }
 							}
 						}
 					}
-
-					// select value names - for sending back
-					$l_source = sanitize_text_field($_POST['l_source']);
-					$l_status = sanitize_text_field($_POST['l_status']);
-					$l_type = sanitize_text_field($_POST['l_type']);
 
 					$format = array();
 					$where_format = array("%d");
@@ -308,14 +329,7 @@
 
 					// set the formats
 					foreach ($field_vals as $f => $v) {
-						if ($f == 'l_source'
-							|| $f == 'l_status'
-							|| $f == 'l_type'
-					   	) {
-							$format[] = '%d';
-						} else {
-							$format[] = '%s';
-						}
+						$format[] = '%s';
 					}
 				
 					if ($new) {   	// New Lead
@@ -382,21 +396,17 @@
 						foreach ($field_vals as $k2 => $v2) {
 							$v2 = is_array($v2) ? $v2 : stripslashes($v2);
 							if ($k2 == $v->orig_name && $v->sort_active == '1') {
-								if ($v->orig_name == 'l_source') {
-									$output_fields[$k2] = $l_source;
-								} elseif ( $v->orig_name == 'l_status') {
-									$output_fields[$k2] = $l_status;
-								} elseif ( $v->orig_name == 'l_type') {
-									$output_fields[$k2] = $l_type;
-								} elseif ( $v->orig_name == 'updated_by') {
+								if ( $v->orig_name == 'updated_by') {
 									$output_fields[$k2] = $updated_by;  // translated value
-
 								} elseif ( $v->orig_name == 'updated_date'
 									|| $v->orig_name == 'creation_date'
 									|| $v->field_type == '7'
 								) {
 									$display_date = date("$this->date_format $this->time_format", strtotime($v2));
 									$output_fields[$k2] = $display_date;
+								} elseif ($v->field_type == '11') {  // Date only field type
+									$display_date = date("$this->date_format", strtotime($v2));
+                                    $output_fields[$k2] = $display_date;
 							 	} elseif ( $v->field_type == '10') { // dropdown fields , send back translated value
                                     foreach ($dropdown_fields as $k3 => $v3) {
                                         if ($k3 == $v2) { 
@@ -503,6 +513,51 @@
 
 				$response['lead_id'] = $lead_id;
 
+			// Frontend Exporting
+			} elseif (isset($_POST['export_view']) && $_POST['export_view'] == 'true') {
+				$response['title']          = __('Export Current View', 'shwcp');
+				$response['cancel_button']  = __('Cancel', 'shwcp');
+				$response['confirm_button'] = __('Export', 'shwcp');
+				$response['export_url'] = admin_url() . 'admin-post.php';
+				$response['csv_text'] = __('CSV', 'shwcp');
+				$response['excel_text'] = __('Excel', 'shwcp');
+				$response['format_text'] = __('Choose a format', 'shwcp');
+				$response['all_text'] = __('All Fields', 'shwcp');
+
+				$export_fields = $wpdb->get_results("SELECT * from $this->table_sort order by sort_ind_number asc");
+				$field_choices = '';
+
+            	$field_choices .= '<div class="col-md-4 col-sm-6">';
+            	$fields_total = count($export_fields) + 2;
+            	$cut = ceil($fields_total / 3);
+            	$i = 1;
+				$i2 = 1;
+            	foreach ($export_fields as $k => $v) {
+					if ($v->field_type != 99
+                    	&& $v->orig_name != 'lead_files'
+                	) {
+                    	$field_choices .= '<p><input type="checkbox" id="' . $v->orig_name
+                         . '" class="export-field" name="fields[' . $v->orig_name . ']" />'
+                         . '<label for="' . $v->orig_name . '">' . stripslashes($v->translated_name) . '</label></p>';
+                    	$i++;
+						$i2++;
+                	}
+
+                	if ($i == $cut) {
+                    	$field_choices .= '</div><div class="col-md-4 col-sm-6">' . "\n";
+                    	$i = 1;
+					}
+				}
+
+				$field_choices .= '<p><input type="checkbox" id="photo-links" class="export-field" name="fields[photo-links]" />'
+                     . '<label for="photo-links">' . __('Links to Photos', 'shwcp') . '</label></p>'
+                     . '<p><input type="checkbox" id="file-links" class="export-field" name="fields[file-links]" />'
+                     . '<label for="file-links">' . __('Links to Files', 'shwcp') . '</label></p>'
+					 . '</div>';
+
+				$response['field_choices'] = $field_choices;
+
+
 			// Frontend Sorting
             } elseif (isset($_POST['frontend_sort']) && $_POST['frontend_sort'] == 'true') { 
 
@@ -566,6 +621,26 @@
                         array('%s','%s','%d','%d','%d','%d','%d','%d','%d')
                     );
                 }
+				// fields that are not options for frontend display but we want to leave alone (e.g. group titles)
+				foreach ($previous as $k => $v) {
+					if ($v->field_type == 99) {
+						$wpdb->insert(
+							$this->table_sort,
+							array(
+								'orig_name'           => $v->orig_name,
+								'translated_name'     => $v->translated_name,
+								'sort_number'         => 0,
+								'sort_active'         => 0,
+								'sort_ind_number'     => $v->sort_ind_number,
+								'field_type'          => $v->field_type,
+								'required_input'      => $v->required_input,
+								'front_filter_active' => $v->front_filter_active,
+								'front_filter_sort'   => $v->front_filter_sort
+							),
+							array('%s','%s','%d','%d','%d','%d','%d','%d','%d')
+						);
+					}
+				}
 				$event = __('Changed Frontend Sorting', 'shwcp');
                 $detail = __('Modified Sort Results', 'shwcp');
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
@@ -706,7 +781,7 @@
 				foreach ($_POST['fieldlist'] as $k => $v) {
 					if ($v['action'] == 'add') { 
 
-						if ($v['field_type'] == '7') {  // Date picker, date time type
+						if ($v['field_type'] == '7' || $v['field_type'] == '11') {  // Date picker, date time type
 							$field_type = "datetime NOT NULL DEFAULT '000-00-00 00:00:00'";
 
 						} elseif ($v['field_type'] == '10') { // Dropdown, integer for mapping to ssts
@@ -803,10 +878,7 @@
 							'updated_date', 
 							'created_by', 
 							'updated_by', 
-							'owned_by', 
-							'l_source', 
-							'l_status', 
-							'l_type'
+							'owned_by'
 						); 
 
 						if (!in_array($v['orig_name'], $dont_change) ) {
@@ -823,7 +895,7 @@
 								$response['last_field_type'] = $last_field_type;
                             	$response['orig_name'] = $v['orig_name'];
 						
-								if ($v['field_type'] == '7') {  // changed to date time type
+								if ($v['field_type'] == '7' || $v['field_type'] == '11') {  // changed to date, date time type
                             		$field_type = "datetime NOT NULL DEFAULT '000-00-00 00:00:00'";
 									$wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
 									if ($last_field_type == '10') { // need to remove from sst
@@ -834,6 +906,12 @@
 								) {  // changed from date time to varchar
                             		$field_type = "text NOT NULL";
 									$wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
+
+								} elseif ( $last_field_type == '11' 
+                                    && $v['field_type'] != '10' 
+                                ) {  // changed from date time to varchar
+                                    $field_type = "text NOT NULL";
+                                    $wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
 
                         		} elseif ( $last_field_type == '10' ) { // changed from dropdown to something else, delete sst
 									$field_type = "text NOT NULL";
@@ -878,7 +956,7 @@
 						foreach($last_sorting as $k2 => $v2) {
 							if ( $v['orig_name'] == $v2->orig_name ) {
 								$sort_active         = $v2->sort_active;
-								$sort_front          = $v2->sort_number;
+								$sort_number         = $v2->sort_number;
 								$front_filter_active = $v2->front_filter_active;
 								$front_filter_sort   = $v2->front_filter_sort;
 							}
@@ -907,173 +985,74 @@
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
 				$response['message'] = 'managing fields';
 				$response['new_fields'] = $new_fields;
-			// Save SST Page	
-			} elseif (isset($_POST['sst_fields']) && $_POST['sst_fields'] == 'true') {  
-				global $wpdb;
-				$source = $_POST['source'];
-				$status = $_POST['status'];
-				$type = $_POST['type'];
-				$new_entries = array();
-				// get the defaults to assign removed sst leads associated to
-				$default_source = $wpdb->get_row("SELECT * FROM $this->table_sst where sst_type=1 AND sst_default=1");
-				$default_status = $wpdb->get_row("SELECT * FROM $this->table_sst where sst_type=2 AND sst_default=1"); 
-				$default_type   = $wpdb->get_row("SELECT * FROM $this->table_sst where sst_type=3 AND sst_default=1");
-				$i = 0;
-				foreach ($source as $k => $v) {
-					if ($v['remove'] == 'true') {
-						if (is_numeric($v['id'])) {
-							$wpdb->delete($this->table_sst, array( 'sst_id' => $v['id'] ), array('%d') );
-							// update leads to default
-							$wpdb->update(
-								$this->table_main,
-								array(
-									'l_source' => $default_source->sst_id
-								),
-								array(
-									'l_source' => $v['id']
-								),
-								array( '%d' ),
-								array( '%d' )
-							);
 
-						}
+			// Manage Individual page
+			// Saving original settings to main_settings, and new frontend settings to frontend_settings
+			} elseif (isset($_POST['manage_individual']) && $_POST['manage_individual'] == 'true') {
+				$columns = intval($_POST['columns']);
+				$tiles = $_POST['tiles'];
+				$frontend = array();
+				$frontend['ind_columns'] = $columns;
+				$main_settings     = 'shwcp_main_settings' . $current_db;
+				$frontend_settings = 'shwcp_frontend_settings' . $current_db;
 
-					} else if ($v['id'] == 'new') { 
-						// new entry
-						$wpdb->insert(
-							$this->table_sst,
-							array(
-								'sst_name' => $v['name'],
-								'sst_type_desc' => 'l_source',
-								'sst_type' => '1',
-								'sst_order' => $k
-							), 
-							array( '%s','%s','%d','%d' )
-						);
-						$insert_id = $wpdb->insert_id;
-						$new_entries[$i]['unique'] = $v['unique'];
-						$new_entries[$i]['id'] = $insert_id;
-						$i++;
-					} else {
-						// update source
-						$wpdb->update(
-							$this->table_sst,
-							array(
-								'sst_name' => $v['name'],
-								'sst_order' => $k
-							),
-							array( 'sst_id' => $v['id'] ),
-							array( '%s', '%d' ),
-							array( '%d' )
-						);
+				$individual_layout = array();
+				$i = 1;
+				foreach ($tiles as $k => $v) {
+					// position
+					if ($v['side'] == 'keep-left') {
+						$side = 'left_side';
+					} elseif ($v['side'] == 'keep-right') {
+						$side = 'right_side';
+					} elseif ($v['side'] == 'keep-bottom') {
+						$side = 'bottom_row';
 					}
+
+					// layout
+                    $individual_layout[$i] = array(
+                        'tile' => $v['tile'],
+                        'pos'  => $side
+					);
+					$frontend['individual_layout'] = $individual_layout;
+
+					// enabled or disabled
+					if ($v['tile'] == 'photo_tile') {  // entry photo
+						if ($v['status'] == 'disabled') {
+							$this->first_tab['contact_image'] = 'false';
+						} else {
+							$this->first_tab['contact_image'] = 'true';
+						}
+					} elseif ( $v['tile'] == 'files_tile') {
+						if ($v['status'] == 'disabled') {
+							$this->first_tab['contact_upload'] = 'false';
+						} else {
+							$this->first_tab['contact_upload'] = 'true';
+						}
+					} elseif ( $v['tile'] == 'fields_tile') {
+						if ($v['status'] == 'disabled') {
+							$frontend['fields_enabled'] = 'false';
+						} else {
+							$frontend['fields_enabled'] = 'true';
+						}
+					} elseif ( $v['tile'] == 'notes_tile') {
+						if ($v['status'] == 'disabled') {
+							$frontend['notes_enabled'] = 'false';
+						} else {
+							$frontend['notes_enabled'] = 'true';
+						}
+					} elseif ( $v['tile'] == 'details_tile') {
+						if ($v['status'] == 'disabled') {
+							$frontend['details_enabled'] = 'false';
+						} else {
+							$frontend['details_enabled'] = 'true';
+						}
+					}
+					$i++;
 				}
-				foreach ($status as $k => $v) {
-					if ($v['remove'] == 'true') {
-						if (is_numeric($v['id'])) {
-                        	$wpdb->delete($this->table_sst, array( 'sst_id' => $v['id'] ), array('%d') );
-							// update leads to default
-                            $wpdb->update(
-                                $this->table_main,
-                                array(
-                                    'l_status' => $default_status->sst_id
-                                ),
-                                array(
-                                    'l_status' => $v['id']
-                                ),
-                                array( '%d' ),
-                                array( '%d' )
-                            );
-						}
 
-                    } else if ($v['id'] == 'new') {
-                        // new entry
-                        $wpdb->insert(
-                            $this->table_sst,
-                            array(
-                                'sst_name' => $v['name'],
-                                'sst_type_desc' => 'l_status',
-                                'sst_type' => '2',
-                                'sst_order' => $k
-                            ),
-                            array( '%s','%s','%d','%d' )
-                        );
-						$insert_id = $wpdb->insert_id;
-                        $new_entries[$i]['unique'] = $v['unique'];
-                        $new_entries[$i]['id'] = $insert_id;
-                        $i++;
-
-                    } else {
-                        // update status
-                        $wpdb->update(
-                            $this->table_sst,
-                            array(
-                                'sst_name' => $v['name'],
-                                'sst_order' => $k
-                            ),
-                            array( 'sst_id' => $v['id'] ),
-                            array( '%s', '%d' ),
-                            array( '%d' )
-                        );
-                    }
-                }
-				foreach ($type as $k => $v) {
-					if ($v['remove'] == 'true') {
-						if (is_numeric($v['id'])) {
-                        	$wpdb->delete($this->table_sst, array( 'sst_id' => $v['id'] ), array('%d') );
-							// update leads to default
-                            $wpdb->update(
-                                $this->table_main,
-                                array(
-                                    'l_type' => $default_type->sst_id
-                                ),
-                                array(
-                                    'l_type' => $v['id']
-                                ),
-                                array( '%d' ),
-                                array( '%d' )
-                            );
-						}
-
-                    } else if ($v['id'] == 'new') {
-                        // new entry
-                        $wpdb->insert(
-                            $this->table_sst,
-                            array(
-                                'sst_name' => $v['name'],
-                                'sst_type_desc' => 'l_type',
-                                'sst_type' => '3',
-                                'sst_order' => $k
-                            ),
-                            array( '%s','%s','%d','%d' )
-                        );
-						$insert_id = $wpdb->insert_id;
-                        $new_entries[$i]['unique'] = $v['unique'];
-                        $new_entries[$i]['id'] = $insert_id;
-                        $i++;
-
-                    } else {
-                        // update type
-                        $wpdb->update(
-                            $this->table_sst,
-                            array(
-                                'sst_name' => $v['name'],
-                                'sst_order' => $k
-                            ),
-                            array( 'sst_id' => $v['id'] ),
-                            array( '%s', '%d' ),
-                            array( '%d' )
-                        );
-                    }
-                }
-
-				$event = __('Modified SST', 'shwcp');
-                $detail = __('Modified Sources, Status, and Types', 'shwcp');
-                $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
-
-				//$response['source'] = $source;
-				$response['new_entries'] = $new_entries;
-				$response['message'] = 'hello';
+				update_option($main_settings, $this->first_tab);
+				update_option($frontend_settings, $frontend);
+				$response['saved'] = 'true';
 
 			// handle small image upload	
 			} elseif (isset($_POST['upload_small_image']) && $_POST['upload_small_image'] == 'true' ) {
@@ -1296,10 +1275,6 @@
 						}
 						// This is where we import the chunk to the database and clear the array
 						//print_r($column_map);
-						// get the default source status and type in case they aren't uploading these
-						$default_source = $wpdb->get_row("SELECT * FROM $this->table_sst where sst_type=1 AND sst_default=1");
-                		$default_status = $wpdb->get_row("SELECT * FROM $this->table_sst where sst_type=2 AND sst_default=1");
-                		$default_type   = $wpdb->get_row("SELECT * FROM $this->table_sst where sst_type=3 AND sst_default=1");
 						$sorting        = $wpdb->get_results ("SELECT * from $this->table_sort");
 
 						// build our insert statement
@@ -1307,50 +1282,35 @@
 							$insert_array = array();
 							// need to update sst each time in case new ones are added
 							$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
-							// defaults for sst if not set, will override if they are in the loops below
-							$insert_array['l_source'] = $default_source->sst_id;
-							$insert_array['l_status'] = $default_status->sst_id;
-							$insert_array['l_type']   = $default_type->sst_id;
 
 							foreach ($data as $k => $v) {
 								$v = trim($v);
-								if ($k == 'l_source') {        // Source
-									if ($v != '') {
-										$insert_array['l_source'] = $this->sst_update_db($v, $sst,'l_source', 1);
+								//check for datetime column
+								$field_type = 'na';
+                           		foreach($sorting as $k2 => $v2) {
+                               		if ( $k == $v2->orig_name ) {
+                                   		$field_type = $v2->field_type;
 									}
-								
-								} elseif ($k == 'l_status') {  // Status
-									if ($v != '') {
-										$insert_array['l_status'] = $this->sst_update_db($v, $sst,'l_status', 2);
-									}
-				
-								} elseif ($k == 'l_type') {    // Type
-									if ($v != '') {
-										$insert_array['l_type'] = $this->sst_update_db($v, $sst,'l_type', 3);
-									}
-								} else {                        // All other custom and string entries
-									//check for datetime column
-									$field_type = 'na';
-                            		foreach($sorting as $k2 => $v2) {
-                                		if ( $k == $v2->orig_name ) {
-                                    		$field_type = $v2->field_type;
-										}
-                                	}
-									if ($field_type == '7') { // datetime field and we need to try and convert
-										$timestamp = strtotime($v);
-										$datetime_format = date("Y-m-d H:i:s", $timestamp);
-										$insert_array[$k] = $datetime_format;
+                               	}
+								if ($field_type == '7') { // datetime field and we need to try and convert
+									$timestamp = strtotime($v);
+									$datetime_format = date("Y-m-d H:i:s", $timestamp);
+									$insert_array[$k] = $datetime_format;
 
-									} elseif ($field_type == '10') { // dropdown type field need id or create
-										$sst_type = $wpdb->get_var(
-											"SELECT sst_type FROM $this->table_sst where sst_type_desc='$k' limit 1"
-										);
-										$real_value = $this->sst_update_db($v, $sst, $k, $sst_type);
-										$insert_array[$k] = $real_value;
-	
-									} else {  // all other varchar fields
-										$insert_array[$k] = $v;
-									}
+								} elseif ($field_type == '11') { // date only field try and convert
+									$timestamp = strtotime($v);
+                                    $date_format = date("Y-m-d", $timestamp);
+                                    $insert_array[$k] = $date_format;
+
+								} elseif ($field_type == '10') { // dropdown type field need id or create
+									$sst_type = $wpdb->get_var(
+										"SELECT sst_type FROM $this->table_sst where sst_type_desc='$k' limit 1"
+									);
+									$real_value = $this->sst_update_db($v, $sst, $k, $sst_type);
+									$insert_array[$k] = $real_value;
+
+								} else {  // all other varchar fields
+									$insert_array[$k] = $v;
 								}
 							}
 							$insert_array['created_by']    = $this->current_user->data->user_login;
@@ -1363,14 +1323,7 @@
 							// set the formats
 							//print_r($insert_array);
                 			foreach ($insert_array as $f => $v) {
-                    			if ($f == 'l_source'
-                        			|| $f == 'l_status'
-                        			|| $f == 'l_type'
-                       			) {
-                        			$format[] = '%d';
-                    			} else {
-                        			$format[] = '%s';
-                    			}
+                        		$format[] = '%s';
                 			}
 
                     		$wpdb->insert(
@@ -1449,10 +1402,15 @@
 				require_once SHWCP_ROOT_PATH . '/includes/mail-chimp/MailChimp.php';
                 $MailChimp = new MailChimp($api_key);
 				$owner_only = '';
-				if ($this->current_access == 'ownleads') {
-                    $user_login = $this->current_user->user_login;
-                    $owner_only = "and owned_by='$user_login'";
-                }
+				$user_login = $this->current_user->user_login;
+				$custom_role = $this->get_custom_role();
+
+				if ( !$custom_role['access'] && $this->current_access == 'ownleads') {
+					$owner_only = "and owned_by='$user_login'";
+            	} elseif ($custom_role['access'] && $custom_role['perms']['access_export'] == 'own') {
+					$owner_only = "and owned_by='$user_login'";
+            	}
+
 				// get all fields where email is not blank (<>)
 				$firstname = '';
 				$lastname = '';
@@ -1777,11 +1735,6 @@
 
                 } else {  // continue
 
-                	// select value names - for sending back
-                	$l_source = sanitize_text_field($_POST['l_source']);
-                	$l_status = sanitize_text_field($_POST['l_status']);
-                	$l_type = sanitize_text_field($_POST['l_type']);
-
                 	$format = array();
                 	$where_format = array("%d");
 
@@ -1798,20 +1751,20 @@
                                 	$new_datetime = $orig_datetime->format('Y-m-d H:i:s');
                                 	$field_vals[$k2] = $new_datetime;
 								}
-                            }
+                            } elseif ($k2 == $v->orig_name && $v->field_type == '11') {
+								$orig_datetime = DateTime::createFromFormat("$this->date_format", $v2);
+                                if ($orig_datetime) {
+                                    $new_datetime = $orig_datetime->format('Y-m-d');
+                                    $field_vals[$k2] = $new_datetime;
+                                }
+							}
+							
                         }
                     }
 
                 	// set the formats
                 	foreach ($field_vals as $f => $v) {
-                    	if ($f == 'l_source'
-                        	|| $f == 'l_status'
-                        	|| $f == 'l_type'
-                       	) {
-                        	$format[] = '%d';
-                    	} else {
-                        	$format[] = '%s';
-                    	}
+                       	$format[] = '%s';
                 	}
 
                 	$wpdb->update(
@@ -1835,13 +1788,7 @@
                 	foreach ($sorting as $k => $v) {
                     	foreach ($field_vals as $k2 => $v2) {
                         	if ($k2 == $v->orig_name && $v->sort_active == '1') {
-                            	if ($v->orig_name == 'l_source') {
-                                	$output_fields[$k2] = $l_source;
-                            	} elseif ( $v->orig_name == 'l_status') {
-                                	$output_fields[$k2] = $l_status;
-                            	} elseif ( $v->orig_name == 'l_type') {
-                                	$output_fields[$k2] = $l_type;
-                            	} elseif ( $v->orig_name == 'updated_by') {
+                            	if ( $v->orig_name == 'updated_by') {
                                 	$output_fields[$k2] = $updated_by;  // translated value
 								} elseif ( $v->orig_name == 'updated_date') {
 									$output_fields['updated_date_formatted'] = 
@@ -2819,9 +2766,11 @@
                 // 4 email address
                 // 5 website address
                 // 6 google map address
-                // 7 date picker
+                // 7 datetime picker
                 // 8 rating
                 // 9 checkbox
+				// 10 dropdown
+				// 11 date only picker
                 // 99 group title
 			$field_checks = array();
             $field_checks['required_not_set'] = false;
@@ -2841,12 +2790,19 @@
                             $field_checks['required_msg'] = $v->translated_name . ' ' . __('is invalid.', 'shwcp');
 							$field_checks['required_not_set'] = true;
                         } elseif ($v->field_type == '7') {
-                        // check date
+                        // check datetime
 							if ($v2 == ''|| $v2 == '0000-00-00 00:00:00' ) {
                             	$field_checks['required'] = 'true';
                             	$field_checks['required_msg'] = $v->translated_name . ' ' . __('needs a date set.', 'shwcp');
 								$field_checks['required_not_set'] = true;
 							}
+						} elseif ($v->field_type == '11') {
+                        // check date
+                            if ($v2 == ''|| $v2 == '0000-00-00 00:00:00' ) {
+                                $field_checks['required'] = 'true';
+                                $field_checks['required_msg'] = $v->translated_name . ' ' . __('needs a date set.', 'shwcp');
+                                $field_checks['required_not_set'] = true;
+                            }
                         } elseif ($v2 == '') { // generic empty check
                             $field_checks['required'] = 'true';
                             $field_checks['required_msg'] = $v->translated_name . ' ' . __('is required.', 'shwcp');
@@ -2922,20 +2878,7 @@
             }
 
             foreach ($translated as $k => $v) {
-                if ('l_source' == $k          // set sst to names
-                    || 'l_status' == $k
-                    || 'l_type' == $k
-                ) {
-                    foreach($sst as $k2 => $v2) {
-                        $v2->sst_name = stripslashes($v2->sst_name);
-                        $selected = '';
-                        if ($k == $v2->sst_type_desc) {   // matching sst's
-                            if ($v['value'] == $v2->sst_id) { // selected
-                                $translated[$k]['value'] = $v2->sst_name;
-                            }
-                        }
-                    }
-                } elseif ( 'id' == $k ) { // insert the notes on id match
+                if ( 'id' == $k ) { // insert the notes on id match
                     $notes = $wpdb->get_results (
                         " 
                         SELECT notes.*, user.user_login
@@ -2964,7 +2907,7 @@
                                 foreach($sst as $k2 => $v2) {
                                     if ($k == $v2->sst_type_desc) {   // matching sst's
                                         if ($v['value'] == $v2->sst_id) { // selected
-                                            $translated[$k]['value'] = $v2->sst_name;
+                                            $translated[$k]['value'] = stripslashes($v2->sst_name);
                                         }
                                     }
                                 }

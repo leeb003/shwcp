@@ -85,53 +85,6 @@
             	// remove any fields that shouldn't change
             	unset($wpdatafinal['id']);
 
-            	// get the sst's if the name doesn't match assign to default
-
-            	/* Source */
-            	if (!isset($wpdatafinal['l_source'])) {
-                	$wpdatafinal['l_source'] = 'Not Set';
-            	}
-            	$source = $wpdb->get_var("
-                	SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                	" where sst_name='{$wpdatafinal['l_source']}' and sst_type=1
-                	");
-            	if (!$source) {
-                	$source = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
-                	" where sst_type=1 AND sst_default=1"
-                	);
-            	}
-            	$wpdatafinal['l_source'] = $source; // Overwrite with id
-            	/* Status */
-            	if (!isset($wpdatafinal['l_status'])) {
-                	$wpdatafinal['l_status'] = 'Not Set';
-            	}
-
-            	$status = $wpdb->get_var("
-                	SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                	" where sst_name='{$wpdatafinal['l_status']}' and sst_type=2
-                	");
-            	if (!$status) {
-                	$status = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                	" where sst_type=2 AND sst_default=1"
-                	);
-            	}
-            	$wpdatafinal['l_status'] = $status;
-
-            	/* Type */
-            	if (!isset($wpdatafinal['l_type'])) {
-                	$wpdatafinal['l_type'] = 'Not Set';
-            	}
-            	$type = $wpdb->get_var("
-                	SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                	" where sst_name='{$wpdatafinal['l_type']}' and sst_type=3
-                	");
-            	if (!$type) {
-                	$type = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                	" where sst_type=3 AND sst_default=1"
-                	);
-            	}
-            	$wpdatafinal['l_type'] = $type;
-
 				/* Dropdown Check */
 				$sorting = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SORT . $db);
 				$sst = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SST . $db);
@@ -152,14 +105,7 @@
 
             	// Prepare insert
             	foreach ($wpdatafinal as $f => $v) {
-                	if ($f == 'l_source'
-                  	|| $f == 'l_status'
-                  	|| $f == 'l_type'
-                	) {
-                    	$format[] = '%d';
-                	} else {
-                    	$format[] = '%s';
-                	}
+                   	$format[] = '%s';
             	}
 
             	$wpdb->insert(
@@ -304,53 +250,6 @@
 					// remove any fields that shouldn't be changed
 					unset($wpdatafinal['id']);
 
-					// get the sst's if the name doesn't match assign to default
-
-                	/* Source */
-                	if (!isset($wpdatafinal['l_source'])) {
-                    	$wpdatafinal['l_source'] = 'Not Set';
-                	}
-                	$source = $wpdb->get_var("
-                    	SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                    	" where sst_name='{$wpdatafinal['l_source']}' and sst_type=1
-                    	");
-                	if (!$source) {
-                    	$source = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                    	" where sst_type=1 AND sst_default=1"
-                    	);
-                	}
-                	$wpdatafinal['l_source'] = $source; // Overwrite with id
-                	/* Status */
-                	if (!isset($wpdatafinal['l_status'])) {
-                    	$wpdatafinal['l_status'] = 'Not Set';
-                	}
-
-                	$status = $wpdb->get_var("
-                    	SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                    	" where sst_name='{$wpdatafinal['l_status']}' and sst_type=2
-                    	");
-                	if (!$status) {
-                    	$status = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                    	" where sst_type=2 AND sst_default=1"
-                    	);
-                	}
-                	$wpdatafinal['l_status'] = $status;
-
-                	/* Type */
-                	if (!isset($wpdatafinal['l_type'])) {
-                    	$wpdatafinal['l_type'] = 'Not Set';
-                	}
-                	$type = $wpdb->get_var("
-                    	SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                    	" where sst_name='{$wpdatafinal['l_type']}' and sst_type=3
-                    	");
-                	if (!$type) {
-                    	$type = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                    	" where sst_type=3 AND sst_default=1"
-                    	);
-                	}
-                	$wpdatafinal['l_type'] = $type;
-
 					//echo "Fields to insert \n\n";
 					//print_r($wpdatafinal);
 
@@ -374,14 +273,7 @@
 
 					// Prepare insert
                 	foreach ($wpdatafinal as $f => $v) {
-                    	if ($f == 'l_source'
-                    	|| $f == 'l_status'
-                    	|| $f == 'l_type'
-                    	) {
-                        	$format[] = '%d';
-                    	} else {
-                        	$format[] = '%s';
-                    	}
+                       	$format[] = '%s';
                 	}
 
                 	$wpdb->insert(
@@ -460,53 +352,6 @@
                     // remove any fields that shouldn't be changed
                     unset($wpdatafinal['id']);
 
-                    // get the sst's if the name doesn't match assign to default
-
-                    /* Source */
-                    if (!isset($wpdatafinal['l_source'])) {
-                        $wpdatafinal['l_source'] = 'Not Set';
-                    }
-                    $source = $wpdb->get_var("
-                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
-                        " where sst_name='{$wpdatafinal['l_source']}' and sst_type=1
-                        ");
-                    if (!$source) {
-                        $source = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
-                        " where sst_type=1 AND sst_default=1"
-                        );
-                    }
-                    $wpdatafinal['l_source'] = $source; // Overwrite with id
-                    /* Status */
-                    if (!isset($wpdatafinal['l_status'])) {
-                        $wpdatafinal['l_status'] = 'Not Set';
-                    }
-
-                    $status = $wpdb->get_var("
-                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
-                        " where sst_name='{$wpdatafinal['l_status']}' and sst_type=2
-                        ");
-                    if (!$status) {
-                        $status = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
-                        " where sst_type=2 AND sst_default=1"
-                        );
-                    }
-                    $wpdatafinal['l_status'] = $status;
-
-                    /* Type */
-                    if (!isset($wpdatafinal['l_type'])) {
-                        $wpdatafinal['l_type'] = 'Not Set';
-                    }
-                    $type = $wpdb->get_var("
-                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
-                        " where sst_name='{$wpdatafinal['l_type']}' and sst_type=3
-                        ");
-                    if (!$type) {
-                        $type = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db .
-                        " where sst_type=3 AND sst_default=1"
-                        );
-                    }
-                    $wpdatafinal['l_type'] = $type;
-
                     //echo "Fields to insert \n\n";
                     //print_r($wpdatafinal);
 
@@ -530,14 +375,7 @@
 
                     // Prepare insert
                     foreach ($wpdatafinal as $f => $v) {
-                        if ($f == 'l_source'
-                        || $f == 'l_status'
-                        || $f == 'l_type'
-                        ) {
-                            $format[] = '%d';
-                        } else {
-                            $format[] = '%s';
-                        }
+                        $format[] = '%s';
                     }
 
                     $wpdb->insert(
@@ -635,53 +473,6 @@
                     // remove any fields that shouldn't be changed
                     unset($wpdatafinal['id']);
 
-					// get the sst's if the name doesn't match assign to default
-
-                    /* Source */
-                    if (!isset($wpdatafinal['l_source'])) {
-                        $wpdatafinal['l_source'] = 'Not Set';
-                    }
-                    $source = $wpdb->get_var("
-                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                        " where sst_name='{$wpdatafinal['l_source']}' and sst_type=1
-                        ");
-                    if (!$source) {
-                        $source = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                        " where sst_type=1 AND sst_default=1"
-                        );
-                    }
-                    $wpdatafinal['l_source'] = $source; // Overwrite with id
-                    /* Status */
-                    if (!isset($wpdatafinal['l_status'])) {
-                        $wpdatafinal['l_status'] = 'Not Set';
-                    }
-
-                    $status = $wpdb->get_var("
-                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                        " where sst_name='{$wpdatafinal['l_status']}' and sst_type=2
-                        ");
-                    if (!$status) {
-                        $status = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                        " where sst_type=2 AND sst_default=1"
-                        );
-                    }
-                    $wpdatafinal['l_status'] = $status;
-
-                    /* Type */
-                    if (!isset($wpdatafinal['l_type'])) {
-                        $wpdatafinal['l_type'] = 'Not Set';
-                    }
-                    $type = $wpdb->get_var("
-                        SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                        " where sst_name='{$wpdatafinal['l_type']}' and sst_type=3
-                        ");
-                    if (!$type) {
-                        $type = $wpdb->get_var("SELECT sst_id FROM " . $wpdb->prefix . SHWCP_SST . $db . 
-                        " where sst_type=3 AND sst_default=1"
-                        );
-                    }
-                    $wpdatafinal['l_type'] = $type;
-
                     //echo "Fields to insert \n\n";
                     //print_r($wpdatafinal);
 
@@ -705,14 +496,7 @@
 
 					// Prepare insert
                     foreach ($wpdatafinal as $f => $v) {
-                        if ($f == 'l_source'
-                        || $f == 'l_status'
-                        || $f == 'l_type'
-                        ) {
-                            $format[] = '%d';
-                        } else {
-                            $format[] = '%s';
-                        }
+                        $format[] = '%s';
                     }
 
                     $wpdb->insert(
@@ -751,8 +535,7 @@
         }
 
 		/*
-         * Update the database if needed with new sst otherwise return existing
-         * otherwise, return the existing id
+         * Update the database if needed with new sst otherwise return existing id
          */
         public function sst_update_checkdb($value, $sst, $choice, $sst_type, $db) {
             global $wpdb;

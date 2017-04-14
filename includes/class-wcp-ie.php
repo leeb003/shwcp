@@ -19,29 +19,58 @@
             global $wpdb;
 			$this->load_db_options(); // load the current tables and options
 
-			// no access to this page for non-admins
+			// no access to this page for non-admins, or custom access without export / import
             $this->get_the_current_user();
-            if (!$this->can_edit) {
-                $content = '<p>' . __('You do not have access to this page', 'shwcp') . '</p>';
+			$custom_role = $this->get_custom_role();
+            if (!$custom_role['access'] && !$this->can_edit) {
+                $content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
                 return $content;
-            }
+            } elseif ( $custom_role['access'] ) {
+				if ($custom_role['perms']['access_export'] != 'all'
+					&& $custom_role['perms']['access_export'] != 'own'
+					&& $custom_role['perms']['access_import'] != 'yes'
+				) {
+					$content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
+				    return $content;
+				}
+			}
 
 			// Import
 			$content = '<div class="wcp-tabs">'
-					 . '<ul class="tab-select">'
-					 . '<li><a href="#import-container"><i class="md-call-made"></i><span class="tab-label">' 
-					 	. __('Import Entries', 'shwcp') . '</span></a></li>'
-					 . '<li><a href="#export-container"><i class="md-call-received"></i><span class="tab-label">' 
-					 	. __('Export Entries', 'shwcp') . '</span></a></li>';
+					 . '<ul class="tab-select">';
+			if ($custom_role['access'] && $custom_role['perms']['access_import'] == 'yes') {
+					 $content .= '<li><a href="#import-container"><i class="md-call-made"></i><span class="tab-label">' 
+					 		   . __('Import Entries', 'shwcp') . '</span></a></li>';
+			} elseif (!$custom_role['access']) {
+					$content .= '<li><a href="#import-container"><i class="md-call-made"></i><span class="tab-label">'
+						      . __('Import Entries', 'shwcp') . '</span></a></li>';
+			}
+			
+			if ($custom_role['access']) {
+				if ($custom_role['perms']['access_export'] == 'own'
+					|| $custom_role['perms']['access_export'] == 'all'
+				) {
+					 $content .= '<li><a href="#export-container"><i class="md-call-received"></i><span class="tab-label">' 
+					 		   . __('Export Entries', 'shwcp') . '</span></a></li>';
+				}
+			} elseif (!$custom_role['access']) {
+				$content .= '<li><a href="#export-container"><i class="md-call-received"></i><span class="tab-label">'
+                          . __('Export Entries', 'shwcp') . '</span></a></li>';
+			}
 
 			if (isset($this->first_tab['mailchimp_api']) && $this->first_tab['mailchimp_api'] == 'true') {
 					 $content .= '<li><a href="#sync-mc-container"><i class="md-autorenew"></i><span class="tab-label">'
 					    . __('Sync To MailChimp', 'shwcp') . '</span></a></li>';
 			}
 
-			$content .= '</ul>'
-				
-					 . '<div class="import-container" id="import-container">'
+			$content .= '</ul>';
+
+
+			if ( ($custom_role['access'] && $custom_role['perms']['access_import'] == 'yes') 
+				|| !$custom_role['access']
+			) {
+
+				$content .= '<div class="import-container" id="import-container">'
 					 . '<h3>' . __('Import Entries', 'shwcp') .  '</h3>'
 					 . '<ol>'
 					 . '<li>' . __('Accepted file types are csv, xls, and xlsx.', 'shwcp') . '</li>'
@@ -63,11 +92,16 @@
 					 . '<div class="success-message">' 
 					 . __('Entries have been imported, you can view and further edit them on the main page', 'shwcp') 
 					 . '</div><!-- import-container -->';
+			}
 
 
 			// Export
-			$filter_fields = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_ind_number asc"); 
-			$content .= '<div class="export-container" id="export-container">'
+			if ( ($custom_role['access'] && $custom_role['perms']['access_export'] == 'own')
+              	|| ($custom_role['access'] && $custom_role['perms']['access_export'] == 'all')
+				|| (!$custom_role['access'])
+            ) { 
+				$filter_fields = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_ind_number asc"); 
+				$content .= '<div class="export-container" id="export-container">'
 					  . '<h3>' . __('Export Entries', 'shwcp') . '</h3>'
 					  . '<p>' . __('Export All Rows, ID Range, or Filter Export', 'shwcp') . '</p>'
 					  . '<form action="' . admin_url() . 'admin-post.php" class="export-form" method="post">'
@@ -94,10 +128,10 @@
 					   . '<div class="row filter-select filter-entry"><div class="col-md-4">'
 					  . '<div class="input-field"><label for="filter-sel">' . __('Select Field', 'shwcp') . '</label>'
 					  . '&nbsp;&nbsp;&nbsp;<select class="filter-sel input-select" name="filter-sel[]">';
-			foreach ($filter_fields as $k => $v) {
-				$content .= '<option value="' . $v->orig_name . '">' . $v->translated_name . '</option>';
-			}
-			$content .= '</select>'
+				foreach ($filter_fields as $k => $v) {
+					$content .= '<option value="' . $v->orig_name . '">' . $v->translated_name . '</option>';
+				}
+				$content .= '</select>'
 					  . '</div></div>'
 					  . '<div class="col-md-4">'
 					  . '<div class="input-field"><label for="filter-val">' . __('Filter', 'shwcp') . '</label>'
@@ -112,31 +146,31 @@
 					  . '<label for="checkall">' . __('Check / Uncheck All', 'shwcp') . '</label></p><hr>';
 
 
-			$export_fields = $wpdb->get_results("SELECT * from $this->table_sort order by sort_ind_number asc");
+				$export_fields = $wpdb->get_results("SELECT * from $this->table_sort order by sort_ind_number asc");
 
-			$content .= '<div class="row"><div class="col-md-4 col-sm-6">';
-			$fields_total = count($export_fields) + 2;
-			$cut = ceil($fields_total / 3);
-			$i = 1;
-			foreach ($export_fields as $k => $v) {
-				if ($v->field_type != 99 
-					&& $v->orig_name != 'lead_files'
-				) {
-					$content .= '<p><input type="checkbox" id="' . $v->orig_name 
+				$content .= '<div class="row"><div class="col-md-4 col-sm-6">';
+				$fields_total = count($export_fields) + 2;
+				$cut = ceil($fields_total / 3);
+				$i = 1;
+				foreach ($export_fields as $k => $v) {
+					if ($v->field_type != 99 
+						&& $v->orig_name != 'lead_files'
+					) {
+						$content .= '<p><input type="checkbox" id="' . $v->orig_name 
 						 . '" class="export-field" name="fields[' . $v->orig_name . ']" />' 
 						 . '<label for="' . $v->orig_name . '">' . stripslashes($v->translated_name) . '</label></p>';
-					$i++;
-				}
+						$i++;
+					}
 
-				if ($i == $cut) {
-					$content .= '</div><div class="col-md-4 col-sm-6">' . "\n";
-					$i = 1;
+					if ($i == $cut) {
+						$content .= '</div><div class="col-md-4 col-sm-6">' . "\n";
+						$i = 1;
+					}
 				}
-			}
-			global $post;
-			$postID = $post->ID;
+				global $post;
+				$postID = $post->ID;
 
-			$content .= '<p><input type="checkbox" id="photo-links" class="export-field" name="fields[photo-links]" />' 
+				$content .= '<p><input type="checkbox" id="photo-links" class="export-field" name="fields[photo-links]" />' 
 					 . '<label for="photo-links">' . __('Links to Photos', 'shwcp') . '</label></p>'
 					 . '<p><input type="checkbox" id="file-links" class="export-field" name="fields[file-links]" />' 
 					 . '<label for="file-links">' . __('Links to Files', 'shwcp') . '</label></p>'
@@ -150,11 +184,12 @@
 				     . '<input type="hidden" name="action" value="wcpexport">'
 					 . '<input type="hidden" name="postID" value="' . $postID . '">';
 
-			$content .= wp_nonce_field( 'wcpexport', 'export-nonce', false, false );
+				$content .= wp_nonce_field( 'wcpexport', 'export-nonce', false, false );
 
-			$content .= '<p><span class="wcp-button submit-export">' . __('Submit', 'shwcp') . '</span></p>'
+				$content .= '<p><span class="wcp-button submit-export">' . __('Submit', 'shwcp') . '</span></p>'
 					 . '</div></div></form>'
 					 . '</div><!-- export-container -->';
+			}
 
 
 			// MailChimp syncronize

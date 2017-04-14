@@ -32,6 +32,23 @@ management.
 
 == Changelog ==
 
+= 3.0.6 = 
+* New feature! Dynamic permissions
+* SST migrated to dropdowns, all can be managed under Field Management section
+* New feature! Individual page layout management
+* New feature! Dynamic statistics match dropdowns created
+* Reorganized field edit page to match field capabilities
+* Initial default settings saved on install for quick access
+* Export "current view" added to front page for easily exporting filtered views
+* Date only field type added
+* Print css added to individual page for better printing
+
+= 3.0.5 = 
+* Dynamic filters on front page, now you can use dropdowns for filtering as well
+* Filtering exports capability now included
+* File preview on front page capability added
+* UI enhancements
+
 = 3.0.4 =
 * API Action hooks small fix to send all fields and not just front page ones
 * on insert and update

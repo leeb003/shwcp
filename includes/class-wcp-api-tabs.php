@@ -161,17 +161,18 @@ class SHWCP_API_Tabs {
 			'contact_image' => 'true', 
 			'contact_image_url' => '',
 			'contact_image_id' => '',
-			'contact_upload' => 'true'
+			'contact_upload' => 'true',
 		), $this->first_tab );
 
 		// set current user default to full permissions
 		$current_user = get_current_user_id();
 		$this->permission_settings = array_merge( array(
-			'advanced_option' => 'Advanced value',
+			'advanced_option'        => 'Advanced value',
 			'own_leads_change_owner' => 'yes',
-			'permission_settings' => array (
-				"$current_user"=> 'full'
-			)
+			'permission_settings'    => array (
+				"$current_user" => 'full'
+			),
+			'custom_roles'           => array ()
 		), $this->permission_settings );
 
 		$this->info_settings = array_merge( array(
@@ -311,9 +312,11 @@ class SHWCP_API_Tabs {
 		
 		register_setting( $this->permission_settings_key_db, $this->permission_settings_key_db );
 		add_settings_section( 'section_permission', __('Set Users Access to WP Contacts', 'shwcp'), array( &$this, 'section_permission_desc' ), $this->permission_settings_key_db );
-		add_settings_field( 'manage_own_owner', __('Manage Own Leads Ownership Change', 'shwcp'), array( &$this, 'field_manage_own_owner' ), $this->permission_settings_key_db, 'section_permission' );
+		add_settings_field( 'manage_own_owner', __('Manage Own Entries Ownership Change', 'shwcp'), array( &$this, 'field_manage_own_owner' ), $this->permission_settings_key_db, 'section_permission' );
 
 		add_settings_field( 'user_permission', __('Users', 'shwcp'), array( &$this, 'field_user_permission' ), $this->permission_settings_key_db, 'section_permission' );
+
+		add_settings_field( 'custom_roles', __('Custom Access Roles', 'shwcp'), array( &$this, 'field_custom_roles' ), $this->permission_settings_key_db, 'section_permission' );
 	}
 
 	/*
@@ -356,7 +359,7 @@ class SHWCP_API_Tabs {
 	 * with add_settings_section
 	 */
 	function section_general_desc() { echo __('Set up WP Contacts general settings on this tab.', 'shwcp'); }
-	function section_permission_desc() { echo __('Set up WP Contacts Users and access to the frontend.  You will have Full Access by default, but you must save this screen initially. Keep in mind if you have public accessible set to true in the Main Settings, all logged in users will also be able to view leads.', 'shwcp'); }
+	function section_permission_desc() { echo __('Set up WP Contacts Users and access to the frontend.  You will have Full Access by default. Keep in mind if you have public accessible set to true in the Main Settings, all logged in users will also be able to view entries.', 'shwcp'); }
 	function section_site_desc() { echo __('Note that these server settings will affect the size, amount, and time taken allowed for uploads and scripts.  Be aware of this as it will affect the size of uploads and time allowed for processing imports etc.  <br />These PHP settings may need to be adjusted on your server according to your requirements.', 'shwcp');
 	echo '<br /><br /><u>' . __('You are running version', 'shwcp') . ' <b>' . SHWCP_PLUGIN_VERSION . '</b> ' . __('of WP Contacts', 'shwcp') . '</u><br /><p>' . __('Have a question? Take a look at our', 'shwcp') . ' <a href="http://docs.sh-themes.com/category/plugins/wp-contacts/" target="_blank">' . __('Online Documentation', 'shwcp') . '</p>';
 	}
@@ -844,7 +847,7 @@ class SHWCP_API_Tabs {
 	/* Permissions Tab Fields */
 
 	/*
-	 * Users with Manage Own Leads Only can or can't change ownership
+	 * Users with Manage Own Entries Only can or can't change ownership
 	 */
 	function field_manage_own_owner() {
 		?>
@@ -855,7 +858,7 @@ class SHWCP_API_Tabs {
 			<?php echo __('Yes', 'shwcp'); ?></option>
         </select>
         <p>
-            <?php echo __("Allow <b>Manage Own Leads</b> users to change lead ownership (hand leads off to other users) ?","shwcp");?>
+            <?php echo __("Allow <b>Manage Own Entries</b> users to change entry ownership (hand entries off to other users) ?","shwcp");?>
         </p>
         <?php
 	}
@@ -864,41 +867,390 @@ class SHWCP_API_Tabs {
 	 * User Permissions field callback
 	 */
 	 function field_user_permission() {
-			$users = get_users();
-			$access_levels = array(
-				'none'     => __('No Access', 'shwcp'),
-				'readonly' => __('Read Only', 'shwcp'),
-				'ownleads' => __('Manage Own Leads', 'shwcp'),
-				'full'     => __('Full Access', 'shwcp')
-			);
-			//print_r($users);
-			?>
+		$users = get_users();
+		$access_levels = array(
+			'none'     => __('No Access', 'shwcp'),
+			'readonly' => __('Read Only', 'shwcp'),
+			'ownleads' => __('Manage Own Entries', 'shwcp'),
+			'full'     => __('Full Access', 'shwcp')
+		);
+		// add on any custom roles
+		$custom_roles = isset($this->permission_settings['custom_roles']) ? $this->permission_settings['custom_roles'] : array();
+		foreach ($custom_roles as $k => $role) {
+			$access_levels[$role['unique']] = $role['name'];
+		}
+		//print_r($users);
+		?>
 			<table class="wcp_users">
 				<tr>
 					<th><?php echo __('WP Username', 'shwcp');?></th><th><?php echo __('Access', 'shwcp');?></th>
 				</tr>
-			<?php
-			$i = 0;
-			foreach ($users as $user) { 
-				$user_perm = isset($this->permission_settings['permission_settings'][$user->ID]) ? $this->permission_settings['permission_settings'][$user->ID] : 'none';
-				$i++;
-				?>
+		<?php
+		$i = 0;
+		foreach ($users as $user) { 
+			$user_perm = isset($this->permission_settings['permission_settings'][$user->ID]) ? $this->permission_settings['permission_settings'][$user->ID] : 'none';
+			$i++;
+		?>
 				<tr class="row<?php echo $i&1;?>">
 					<td><?php echo $user->user_login; ?> </td>
 					<td><select class="permission-level permission-level-<?php echo $user->ID;?>" 
 		name="<?php echo $this->permission_settings_key_db;?>[permission_settings][<?php echo $user->ID; ?>]">
-				<?php 
-				foreach ($access_levels as $av => $an) {
-				?>
+			<?php 
+			foreach ($access_levels as $av => $an) {
+			?>
 							<option value="<?php echo $av;?>" <?php selected ($user_perm, $av);?>><?php echo $an;?></option>
-				<?php } ?>
+			<?php } ?>
 						</select>
 					</td>
 				</tr>
-			<?php } ?>
+		<?php } ?>
 			</table>
-
 	 <?php }
+
+	/*
+	 * Custom Roles field callback
+	 */
+	function field_custom_roles() {
+	//print_r($this->permission_settings['custom_roles']);
+	?>	
+		<p><button class="button-primary wcp-custom-role"><?php echo __('Add New Role', 'shwcp'); ?></button></p>
+		<p><?php echo __('Before removing any custom roles, make sure none of your users are assigned to it.', 'shwcp');?></p>
+		<p><?php echo __('Some features must be enabled in main settings (e.g. file uploads, entry photos, events.) before access is available.', 'shwcp');?></p>
+		<table class="wcp-user-roles">
+
+		<?php
+		// insert any existing roles
+			if (isset($this->permission_settings['custom_roles'])
+            && is_array($this->permission_settings['custom_roles'])
+        ) {
+				$inc = 0;
+            	foreach ($this->permission_settings['custom_roles'] as $k => $v) { 
+					$inc++;	
+				?>
+					<tr class="cust-role-row row-<?php echo $inc;?>">
+					  <td class="role-name">	
+						<p class="role-title"><?php echo __('Unique Role Name', 'shwcp');?></p>
+						<input class="wcp-cust-role" 
+						name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][name]" 
+						placeholder="<?php echo __('Role Name', 'shwcp');?>" value="<?php echo $v['name'];?>" />
+
+						<input class="wcp-cust-unique hide-me" 
+                        name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][unique]" 
+                        value="<?php echo $v['unique'];?>" />
+					  </td>
+
+					  <td class="role-access">
+					  	<?php /** This table is the same as the hidden one below only with options filled for saved entries **/ ?>
+						<table class="wcp-table-access-options">
+                		  <tr>
+                    		<td class="option-name entries_add">
+                        	  <p class="role-title"><?php echo __('Add Entries', 'shwcp'); ?></p>
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_add]" 
+							  value="yes" <?php checked($v['entries_add'], 'yes');?>><?php echo __('Yes', 'shwcp');?> 
+							  <br />
+                        	  <input type="radio" 
+							  name="shwcp_permissions[custom_roles][<?php echo $inc;?>][entries_add]" 
+							  value="no" <?php checked($v['entries_add'], 'no');?>><?php echo __('No', 'shwcp');?> 
+							  <br />
+                    		</td>
+                    		<td class="option-name entries_delete">
+                        	  <p class="role-title"><?php echo __('Delete Entries', 'shwcp'); ?></p>
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_delete]" 
+							  value="all" <?php checked($v['entries_delete'], 'all');?>>
+							  <?php echo __('Delete Any Entries', 'shwcp');?><br />
+
+                        	  <input type="radio" name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_delete]" 
+							  value="own" <?php checked($v['entries_delete'], 'own');?>>
+							  <?php echo __('Delete Own Entries', 'shwcp');?><br />
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_delete]" 
+							  value="none" <?php checked($v['entries_delete'], 'none');?>><?php echo __('None', 'shwcp');?><br />
+                    		</td>
+                    		<td class="option-name entries_view">
+                        	  <p class="role-title"><?php echo __('View Entries', 'shwcp'); ?></p>
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_view]" 							  value="all" <?php checked($v['entries_view'], 'all');?>>
+							  <?php echo __('View All Entries', 'shwcp');?><br />
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_view]" 							  value="own" <?php checked($v['entries_view'], 'own');?>>
+							  <?php echo __('View Own Entries', 'shwcp');?><br />
+                    	    </td>
+                		  </tr>
+                		  <tr>
+						  	<td class="option-name entries_edit">
+                              <p class="role-title"><?php echo __('Edit Entries', 'shwcp'); ?></p>
+                              <input type="radio" 
+                              name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_edit]"
+                              value="all" class="entries_edit_option"
+							  <?php checked($v['entries_edit'], 'all');?>><?php echo __('Edit Any Entries', 'shwcp');?>
+                              <br />
+                              <input type="radio" 
+                              name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_edit]"
+                              value="own" class="entries_edit_option"
+							  <?php checked($v['entries_edit'], 'own');?>><?php echo __('Edit Own Entries', 'shwcp');?>
+                              <br />
+                              <input type="radio" 
+                              name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_edit]"
+                              value="none" class="entries_edit_option"
+							  <?php checked($v['entries_edit'], 'none');?>><?php echo __('None', 'shwcp');?>
+                              <br />
+                            </td>
+							<td class="option-name entries_ownership">
+                              <p class="role-title"><?php echo __('Change Entry Ownership', 'shwcp'); ?></p>
+                              <input type="radio" 
+                              name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_ownership]"
+                              value="yes" <?php checked($v['entries_ownership'], 'yes');?>><?php echo __('Can Change', 'shwcp');?>
+                              <br />
+                              <input type="radio" 
+                              name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_ownership]"
+                              value="no" <?php checked($v['entries_ownership'], 'no');?>><?php echo __('Cannot Change', 'shwcp');?>
+                              <br />
+                            </td>
+                    	    <td class="option-name manage_entry_files">
+                        	  <p class="role-title"><?php echo __('Manage Entry Files', 'shwcp'); ?></p>
+                        	
+							  <input type="radio" 
+						      name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_entry_files]" 
+							  value="yes" <?php checked($v['manage_entry_files'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_entry_files]" 
+							  value="no" <?php checked($v['manage_entry_files'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+                    	    </td>
+                    	    <td class="option-name manage_entry_photo">
+                        	  <p class="role-title"><?php echo __('Manage Entry Photo', 'shwcp'); ?></p>
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_entry_photo]" 
+							  value="yes" <?php checked($v['manage_entry_photo'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_entry_photo]" 
+							  value="no" <?php checked($v['manage_entry_photo'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+                    	    </td>
+                		  </tr>
+                		  <tr>
+                    	    <td class="option-name manage_front">
+                        	  <p class="role-title"><?php echo __('Manage Settings - Front Page', 'shwcp'); ?></p>
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_front]" 
+							  value="yes" <?php checked($v['manage_front'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_front]" 
+							  value="no" <?php checked($v['manage_front'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+                    	    </td>
+                    	    <td class="option-name manage_fields">
+                              <p class="role-title"><?php echo __('Manage Settings - Fields', 'shwcp'); ?></p>
+                              <input type="radio" 
+						      name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_fields]" 
+						      value="yes" <?php checked($v['manage_fields'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
+
+                              <input type="radio" 
+						      name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_fields]" 
+						      value="no" <?php checked($v['manage_fields'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+                    	    </td>
+                    	    <td class="option-name manage_individual">
+                              <p class="role-title"><?php echo __('Manage Settings - Individual Page', 'shwcp'); ?></p>
+
+                              <input type="radio" 
+						      name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_individual]" 
+						      value="yes" <?php checked($v['manage_individual'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
+
+                              <input type="radio" 
+						      name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][manage_individual]"
+						      value="no" <?php checked($v['manage_individual'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+                    	    </td>
+                	  	  </tr>
+                	      <tr>
+                    	    <td class="option-name access_statistics">
+                              <p class="role-title"><?php echo __('View Statistics', 'shwcp'); ?></p>
+
+                              <input type="radio" 
+						      name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_statistics]" 
+						      value="all" <?php checked($v['access_statistics'], 'all');?>>
+						      <?php echo __('View All Statistics', 'shwcp');?><br />
+
+                              <input type="radio" 
+						      name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_statistics]" 
+						      value="own" <?php checked($v['access_statistics'], 'own');?>>
+						      <?php echo __('View Own Statistics', 'shwcp');?><br />
+
+                              <input type="radio" 
+						      name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_statistics]" 
+						      value="none" <?php checked($v['access_statistics'], 'none');?>><?php echo __('None', 'shwcp');?><br />
+                    	    </td>
+                            <td class="option-name access_logging">
+                        	  <p class="role-title"><?php echo __('View Logs', 'shwcp'); ?></p>
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_logging]" 
+						      value="yes" <?php checked($v['access_logging'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_logging]" 
+							  value="no" <?php checked($v['access_logging'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+                    	    </td>
+                    		<td></td>
+                		  </tr>
+                		  <tr>
+                    		<td class="option-name access_import">
+                        	  <p class="role-title"><?php echo __('Import Entries', 'shwcp'); ?></p>
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_import]" 
+							  value="yes" <?php checked($v['access_import'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_import]" 
+							  value="no" <?php checked($v['access_import'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+                    		</td>
+                    		<td class="option-name access_export">
+                        	  <p class="role-title"><?php echo __('Export Entries', 'shwcp'); ?></p>
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_export]" 
+							  value="all" <?php checked($v['access_export'], 'all');?>><?php echo __('Export All', 'shwcp');?><br />
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_export]" 
+							  value="own" <?php checked($v['access_export'], 'own');?>><?php echo __('Export Own', 'shwcp');?><br />
+
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_export]" 
+							  value="none" <?php checked($v['access_export'], 'none');?>><?php echo __('None', 'shwcp');?><br />
+                    		</td>
+                    		<td class="option-name access_events">
+                        	  <p class="role-title"><?php echo __('Access Events Calendar (If Enabled)', 'shwcp'); ?></p>
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_events]" 
+							  value="yes" <?php checked($v['access_events'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
+	
+                        	  <input type="radio" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_events]" 
+							  value="no" <?php checked($v['access_events'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+                    		</td>
+                		  </tr>
+            			</table>
+
+
+					  </td>
+
+					  <td class="remove-cust">
+						<div class="remove-cont">
+						  <div class="remove-button" title="<?php echo __('Remove This Role', 'shwcp');?>">
+							<i class="md-clear"></i>
+						  </div>
+						</div>
+					  </td>
+					</tr>
+				<?php
+				}
+			}
+
+		?>
+		</table>
+		<div class="wcp-role-name hide-me"><?php echo __('Role Name', 'shwcp'); ?></div>
+		<div class="wcp-role-label hide-me"><?php echo __('Unique Role Name', 'shwcp'); ?></div>
+		<div class="remove-role-text hide-me"><?php echo __('Remove This Role', 'shwcp'); ?></div>
+		<div class="wcp-permissions-option hide-me"><?php echo $this->permission_settings_key . $this->db;?></div>
+		<div class="wcp-access-options hide-me"><!--Hidden template -->
+			<table class="wcp-table-access-options">
+				<tr>
+					<td class="option-name entries_add">
+                        <p class="role-title"><?php echo __('Add Entries', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td> 
+                    <td class="option-name entries_delete">
+                        <p class="role-title"><?php echo __('Delete Entries', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="all"><?php echo __('Delete Any Entries', 'shwcp');?><br />
+                        <input type="radio" name="" value="own"><?php echo __('Delete Own Entries', 'shwcp');?><br />
+                        <input type="radio" name="" value="none" checked="checked"><?php echo __('None', 'shwcp');?><br />
+                    </td> 
+					<td class="option-name entries_view">
+                        <p class="role-title"><?php echo __('View Entries', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="all"><?php echo __('View All Entries', 'shwcp');?><br />
+                        <input type="radio" name="" value="own" checked="checked"><?php echo __('View Own Entries', 'shwcp');?><br />
+                    </td>
+				</tr>
+				<tr>
+					<td class="option-name entries_edit">
+                    	<p class="role-title"><?php echo __('Edit Entries', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="all" class="entries_edit_option"><?php echo __('Edit Any Entries', 'shwcp');?><br />
+                        <input type="radio" name="" value="own" class="entries_edit_option"><?php echo __('Edit Own Entries', 'shwcp');?><br />
+                        <input type="radio" name="" value="none" class="entries_edit_option" checked="checked"><?php echo __('None', 'shwcp');?><br />
+                    </td>
+                    <td class="option-name entries_ownership wcp-disabled">
+                        <p class="role-title"><?php echo __('Change Entry Ownership', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes" disabled="disabled"><?php echo __('Can Change', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" disabled="disabled" checked="checked"><?php echo __('Cannot Change', 'shwcp');?><br />
+                    </td>
+					<td class="option-name manage_entry_files wcp-disabled">
+                        <p class="role-title"><?php echo __('Manage Entry Files', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes" disabled="disabled"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" disabled="disabled" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td>   
+                    <td class="option-name manage_entry_photo wcp-disabled">
+                        <p class="role-title"><?php echo __('Manage Entry Photo', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes" disabled="disabled"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" disabled="disabled" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td> 
+				</tr>
+				<tr>
+					<td class="option-name manage_front">
+						<p class="role-title"><?php echo __('Manage Settings - Front Page', 'shwcp'); ?></p>
+						<input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+						<input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td>	
+					<td class="option-name manage_fields">
+                        <p class="role-title"><?php echo __('Manage Settings - Fields', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td> 
+					<td class="option-name manage_individual">
+                        <p class="role-title"><?php echo __('Manage Settings - Individual Page', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td> 
+				</tr>
+			 	<tr>
+                    <td class="option-name access_statistics">
+                        <p class="role-title"><?php echo __('View Statistics', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="all"><?php echo __('View All Statistics', 'shwcp');?><br />
+						<input type="radio" name="" value="own"><?php echo __('View Own Statistics', 'shwcp');?><br />
+                        <input type="radio" name="" value="none" checked="checked"><?php echo __('None', 'shwcp');?><br />
+                    </td>   
+                    <td class="option-name access_logging">
+                        <p class="role-title"><?php echo __('View Logs', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td> 
+					<td></td>
+				</tr>
+				<tr>
+                    <td class="option-name access_import">
+                        <p class="role-title"><?php echo __('Import Entries', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td> 
+					<td class="option-name access_export">
+                        <p class="role-title"><?php echo __('Export Entries', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="all"><?php echo __('Export All', 'shwcp');?><br />
+						<input type="radio" name="" value="own"><?php echo __('Export Own', 'shwcp');?><br />
+                        <input type="radio" name="" value="none" checked="checked"><?php echo __('None', 'shwcp');?><br />
+                    </td> 
+					<td class="option-name access_events">
+                        <p class="role-title"><?php echo __('Access Events Calendar (If Enabled)', 'shwcp'); ?></p>
+                        <input type="radio" name="" value="yes"><?php echo __('Yes', 'shwcp');?><br />
+                        <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
+                    </td> 
+                </tr>
+			</table>
+		</div>
+	
+
+	<?php }
 
 	/*
 	 * Site information field callback
@@ -910,13 +1262,13 @@ class SHWCP_API_Tabs {
 				<th<?php __('Variable', 'shwcp'); ?></th>
 				<th><?php __('Value', 'shwcp'); ?></th>
 			</tr>
-			<tr><td><?php echo __('PHP version running', 'shwcp');?></td><td><?php echo phpversion(); ?></td></tr>
-			<tr><td>post_max_size</td><td><?php echo ini_get('post_max_size'); ?></td></tr>
-		 	<tr><td>memory_limit</td><td><?php echo ini_get('memory_limit'); ?></td> </tr>
-			<tr><td>upload_max_filesize</td><td><?php echo ini_get('upload_max_filesize'); ?></td></tr>
-			<tr><td>max_execution_time</td><td><?php echo ini_get('max_execution_time'); ?></td></tr>
-			<tr><td>max_file_uploads</td><td><?php echo ini_get('max_file_uploads'); ?></td></tr>
-			<tr><td>max_input_vars</td><td><?php echo ini_get('max_input_vars'); ?></td></tr>
+			<tr class="row1"><td><?php echo __('PHP version running', 'shwcp');?></td><td><?php echo phpversion(); ?></td></tr>
+			<tr class="row0"><td>post_max_size</td><td><?php echo ini_get('post_max_size'); ?></td></tr>
+		 	<tr class="row1"><td>memory_limit</td><td><?php echo ini_get('memory_limit'); ?></td> </tr>
+			<tr class="row0"><td>upload_max_filesize</td><td><?php echo ini_get('upload_max_filesize'); ?></td></tr>
+			<tr class="row1"><td>max_execution_time</td><td><?php echo ini_get('max_execution_time'); ?></td></tr>
+			<tr class="row0"><td>max_file_uploads</td><td><?php echo ini_get('max_file_uploads'); ?></td></tr>
+			<tr class="row1"><td>max_input_vars</td><td><?php echo ini_get('max_input_vars'); ?></td></tr>
 		</table>
 	<?php }
 

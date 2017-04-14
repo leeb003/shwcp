@@ -109,9 +109,34 @@ class db_updater {
                		);
 				}
 
+				/**************** 3.0.6 ***************/
+                // Modifying source, status and type to dropdowns
+                $wpdb->update(
+                    $sort_table,
+                    array( 'field_type' => 10 ),
+                    array( 'orig_name' => 'l_source' ),
+                    array( '%d' ),
+                    array( '%s' )
+                );
+                $wpdb->update(
+                    $sort_table,
+                    array( 'field_type' => 10 ),
+                    array( 'orig_name' => 'l_status' ),
+                    array( '%d' ),
+                    array( '%s' )
+                );
+                $wpdb->update(
+                    $sort_table,
+                    array( 'field_type' => 10 ),
+                    array( 'orig_name' => 'l_type' ),
+                    array( '%d' ),
+                    array( '%s' )
+                );
+
         	}	
 		}	/* End Sort Table Changes */
 
+		
 		/* Notes Table Changes */
 
 		/* Add date_updated and updater to notes - since 2.0.0 we added note editing */

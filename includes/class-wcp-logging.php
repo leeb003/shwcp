@@ -40,14 +40,22 @@
          */
         public function log_entries() {
             global $wpdb;
-			// no access to this page for non-admins
+			// no access to this page for non-admins or custom role with no logging access
 			$this->load_db_options(); // load the current tables and options
 			$this->get_the_current_user();
+			$custom_role = $this->get_custom_role();
 			//echo $this->current_access;
-            if ($this->current_access != 'full') {
+            if ($this->current_access != 'full'
+				&& !$custom_role['access']
+			) {
                 $content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
                 return $content;
-            }
+            } elseif ($custom_role['access'] 
+            	&& $custom_role['perms']['access_logging'] != 'yes'
+        	) { 
+            	$content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
+            	return $content;
+        	}
 
 			$paging_div = '';
 			$field = '';

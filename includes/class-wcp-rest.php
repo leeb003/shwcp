@@ -355,11 +355,7 @@
 
 			$entries = $wpdb->get_results( $wpdb->prepare (
 				"
-					SELECT l.*, sst1.sst_name as source, sst2.sst_name as status, sst3.sst_name as type
-					FROM $this->table_main l, $this->table_sst sst1, $this->table_sst sst2, $this->table_sst sst3
-					WHERE l.l_source = sst1.sst_id
-					AND l.l_status = sst2.sst_id
-					AND l.l_type = sst3.sst_id
+					SELECT l.* FROM $this->table_main l
 					$order_by
 				",
 				$vars
@@ -880,20 +876,7 @@
 			}
 
 			foreach ($translated as $k => $v) {
-				if ('l_source' == $k		  // set sst to names
-					|| 'l_status' == $k
-					|| 'l_type' == $k
-				) {
-					foreach($sst as $k2 => $v2) {
-						$v2->sst_name = stripslashes($v2->sst_name);
-						$selected = '';
-						if ($k == $v2->sst_type_desc) {   // matching sst's
-							if ($v['value'] == $v2->sst_id) { // selected
-								$translated[$k]['value'] = $v2->sst_name;
-							}
-						}
-					}
-				} elseif ( 'id' == $k ) { // insert the notes on id match
+				if ( 'id' == $k ) { // insert the notes on id match
 					$notes = $wpdb->get_results (
 						" 
 						SELECT notes.*, user.user_login
@@ -1051,49 +1034,6 @@
 			unset($wpdatafinal['small_image']);
 			unset($wpdatafinal['lead_files']);
 
-
-			// get the sst's if the name doesn't match assign to default
-			// get sst defaults
-			foreach ($sst as $k => $v) {
-				if ($v->sst_type == 1 && $v->sst_default == 1) { $default_source = $v->sst_id;
-				} elseif ($v->sst_type == 2 && $v->sst_default == 1) { $default_status = $v->sst_id;
-				} elseif ($v->sst_type == 3 && $v->sst_default == 1) { $default_type = $v->sst_id; }
-			}
-			
-			
-			/* Source */
-			$trimmed_source = isset($wpdatafinal['l_source']) ? trim($wpdatafinal['l_source']) : '';
-			if (!isset($wpdatafinal['l_source']) || empty($trimmed_source) ) {
-				if ($method != 'update') { 
-					$wpdatafinal['l_source'] = $default_source;
-				}
-			} else {
-				$value = $this->sst_update_checkdb($wpdatafinal['l_source'], $sst, 'l_source', 1, $this->table_sst);
-				$wpdatafinal['l_source'] = $value;
-			}
-
-			/* Status */
-			$trimmed_status = isset($wpdatafinal['l_status']) ? trim($wpdatafinal['l_status']) : '';
-			if (!isset($wpdatafinal['l_status']) || empty($trimmed_status) ) {
-				if ($method != 'update') {
-					$wpdatafinal['l_status'] = $default_status;
-				}
-			} else {
-				$value = $this->sst_update_checkdb($wpdatafinal['l_status'], $sst, 'l_status', 2, $this->table_sst);
-				$wpdatafinal['l_status'] = $value;
-			}
-
-			/* Type */
-			$trimmed_type = isset($wpdatafinal['l_type']) ? trim($wpdatafinal['l_type']) : '';
-			if (!isset($wpdatafinal['l_type']) || empty($trimmed_type) ) {
-				if ($method != 'update') {
-					$wpdatafinal['l_type'] = $default_type;
-				}
-			} else {
-				$value = $this->sst_update_checkdb($wpdatafinal['l_type'], $sst, 'l_type', 3, $this->table_sst);
-				$wpdatafinal['l_type'] = $value;
-			}
-   
 			/* Dropdown Check */
 			foreach ($wpdatafinal as $f => $v) {
 				foreach ($sorting as $k2 => $v2) {
@@ -1112,14 +1052,7 @@
 
 			// Prepare insert
 			foreach ($wpdatafinal as $f => $v) {
-				if ($f == 'l_source'
-				|| $f == 'l_status'
-				|| $f == 'l_type'
-				) {
-					$format[] = '%d';
-				} else {
-					$format[] = '%s';
-				}
+				$format[] = '%s';
 			}
 
 			if ($method == 'update') {	// update

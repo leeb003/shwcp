@@ -16,9 +16,11 @@
 			// no access to this page for non-admins
 			$this->load_db_options(); // load the current tables and options
 			$this->get_the_current_user();
+			$custom_role = $this->get_custom_role();
 			//echo $this->current_access;
-            //if ($this->current_access != 'full') {
-			if (!$this->can_access ) {  // general access to the leads
+			if ( (!$custom_role['access'] && !$this->can_access )
+				|| ($custom_role['access'] && $custom_role['perms']['access_events'] == 'no')		
+			) {  // general access to the leads
                 $content = '<span class="no-access">' . __('You do not have access to this page', 'shwcp') . '</span>';
                 return $content;
             }
