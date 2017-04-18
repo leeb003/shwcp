@@ -298,7 +298,15 @@ EOC;
 
 EOC;
 
-					if ($this->can_edit) {
+					if ( ( !$custom_role['access'] && $this->can_edit )
+                		|| ( $custom_role['access'] && $custom_role['perms']['entries_edit'] == 'all'
+                    		&& $custom_role['perms']['manage_entry_files'] == 'yes'
+              			)
+                		|| ( $custom_role['access'] && $custom_role['perms']['entries_edit'] == 'own'
+                    		&& $lead_vals_pre->owned_by == $this->current_user->user_login
+                    		&& $custom_role['perms']['manage_entry_files'] == 'yes'
+                		)
+            		) {
 						$files_section .= <<<EOC
 															<i class="wcp-red wcp-md md-remove-circle-outline remove-existing-file"> </i>
 
