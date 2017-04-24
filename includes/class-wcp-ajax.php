@@ -913,7 +913,8 @@
                                     $field_type = "text NOT NULL";
                                     $wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
 
-                        		} elseif ( $last_field_type == '10' ) { // changed from dropdown to something else, delete sst
+								// changed from dropdown to something else, delete sst and remove front filtering
+                        		} elseif ( $last_field_type == '10' ) { 
 									$field_type = "text NOT NULL";
                                     $wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
 									$wpdb->delete($this->table_sst, array( 'sst_type_desc' => $v['orig_name'] ), array('%s') );
@@ -961,6 +962,12 @@
 								$front_filter_sort   = $v2->front_filter_sort;
 							}
 						}
+						// Dropdown removed, reset front_filter_active and front_filter_sort
+						if ($last_field_type != $v['field_type'] && $last_field_type == '10') {
+							$front_filter_active = 0;
+							$front_filter_sort = 0;
+						}
+
 						$wpdb->insert(
                             $this->table_sort,
                             array(

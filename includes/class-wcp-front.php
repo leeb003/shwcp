@@ -651,7 +651,7 @@ EOC;
 			$wcp_links = '';
 			$url = $_SERVER['HTTP_HOST'];
 			$demo_creds = '';
-			if ($url == 'demo.sh-themes.com' || $url == 'demo.wpcontacts.co/main') {
+			if ($url == 'demo.sh-themes.com' || $url == 'demo.wpcontacts.co') {
 				$demo_creds = 'value="demo"';
 			}
 			$user_ID = $this->current_user->ID;

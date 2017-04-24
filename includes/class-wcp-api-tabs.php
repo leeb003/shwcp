@@ -81,11 +81,11 @@ class SHWCP_API_Tabs {
 		$this->db_actions_key_db           = $this->db_actions_key . $db;
 
 		global $wpdb;
-        $this->table_main     = $wpdb->prefix . SHWCP_LEADS;
-        $this->table_sst      = $wpdb->prefix . SHWCP_SST;
-        $this->table_log      = $wpdb->prefix . SHWCP_LOG;
-        $this->table_sort     = $wpdb->prefix . SHWCP_SORT;
-        $this->table_notes    = $wpdb->prefix . SHWCP_NOTES;
+        $this->table_main     = $wpdb->prefix . SHWCP_LEADS . $db;
+        $this->table_sst      = $wpdb->prefix . SHWCP_SST . $db;
+        $this->table_log      = $wpdb->prefix . SHWCP_LOG . $db;
+        $this->table_sort     = $wpdb->prefix . SHWCP_SORT . $db;
+        $this->table_notes    = $wpdb->prefix . SHWCP_NOTES . $db;
 
 		add_action( 'init', array( &$this, 'load_settings' ) );
 		add_action( 'admin_init', array( &$this, 'register_first_tab' ) );
@@ -361,7 +361,7 @@ class SHWCP_API_Tabs {
 	function section_general_desc() { echo __('Set up WP Contacts general settings on this tab.', 'shwcp'); }
 	function section_permission_desc() { echo __('Set up WP Contacts Users and access to the frontend.  You will have Full Access by default. Keep in mind if you have public accessible set to true in the Main Settings, all logged in users will also be able to view entries.', 'shwcp'); }
 	function section_site_desc() { echo __('Note that these server settings will affect the size, amount, and time taken allowed for uploads and scripts.  Be aware of this as it will affect the size of uploads and time allowed for processing imports etc.  <br />These PHP settings may need to be adjusted on your server according to your requirements.', 'shwcp');
-	echo '<br /><br /><u>' . __('You are running version', 'shwcp') . ' <b>' . SHWCP_PLUGIN_VERSION . '</b> ' . __('of WP Contacts', 'shwcp') . '</u><br /><p>' . __('Have a question? Take a look at our', 'shwcp') . ' <a href="http://docs.sh-themes.com/category/plugins/wp-contacts/" target="_blank">' . __('Online Documentation', 'shwcp') . '</p>';
+	echo '<br /><br /><u>' . __('You are running version', 'shwcp') . ' <b>' . SHWCP_PLUGIN_VERSION . '</b> ' . __('of WP Contacts', 'shwcp') . '</u><br /><p>' . __('Have a question? Take a look at our', 'shwcp') . ' <a href="http://docs.wpcontacts.co/xdocs/wp-contacts/" target="_blank">' . __('Online Documentation', 'shwcp') . '</p>';
 	}
 	function section_db_desc() { echo __('This section allows you to perform various actions on your database.  Pay attention to what you are doing as changes here will affect what you have in your database!', 'shwcp'); }
 	

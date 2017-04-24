@@ -54,7 +54,7 @@
 			);
 			$filtering = $wpdb->get_results(
                 "
-                    SELECT * from $this->table_sort where front_filter_active=1 order by front_filter_sort
+                    SELECT * from $this->table_sort where field_type=10 and front_filter_active=1 order by front_filter_sort
                 "
             );
 
