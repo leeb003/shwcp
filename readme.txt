@@ -42,6 +42,7 @@ management.
 * Export "current view" added to front page for easily exporting filtered views
 * Date only field type added
 * Print css added to individual page for better printing
+* Contact Form 7 file upload mapping to WP Contacts now available
 * Be sure to make a backup before updating just in case!
 
 = 3.0.5 = 
