@@ -20,6 +20,7 @@
         	$submission = WPCF7_Submission::get_instance();  // new method for retrieving the post vars
         	if ( $submission ) {
             	$posted_data = $submission->get_posted_data();
+				$uploaded_files = $submission->uploaded_files();
         	}
         	//print_r($posted_data);
 			global $wpdb;
@@ -115,6 +116,51 @@
             	);
 
             	//print_r($wpdatafinal);
+
+				// Get any uploaded files if enabled
+				if (isset($posted_data['wpcontact_uploads']) && $posted_data['wpcontact_uploads'] == 'yes') {
+					$insert_id = $wpdb->insert_id;
+					if (isset($uploaded_files) && !empty($uploaded_files)) {
+						// upload directory & url
+            			$upload_dir = wp_upload_dir();
+            			$shwcp_upload = $upload_dir['basedir'] . '/shwcp' . $db;
+            			$shwcp_upload_url = $upload_dir['baseurl'] . '/shwcp' . $db;
+						$lead_dir = $shwcp_upload . '/' . $insert_id . '-files';
+						if ( !file_exists($lead_dir) ) {
+                        	wp_mkdir_p($lead_dir);
+                    	}    
+						foreach ($uploaded_files as $k => $file) {
+							$file_parts = pathinfo($file);
+							$file_name = $file_parts['filename'] . '.' . $file_parts['extension'];
+							copy($file, $lead_dir . '/' . $file_name);
+						}
+
+						// get file info in directory and update db (ignore dot files and dir)
+                    	$files = preg_grep('/^([^.])/', scandir($lead_dir));
+                    	// get sizes and dates
+                    	$files_info = array();
+                    	$i = 0;
+                    	$files_added = '';
+                    	foreach ($files as $k => $v) {
+                        	$files_info[$i]['name'] = $v;
+                        	$files_info[$i]['size'] = size_format(filesize($lead_dir . '/' . $v));
+                        	$files_info[$i]['date'] = date("m-d-Y H:i:s", filemtime($lead_dir . '/' . $v));
+							$i++;
+						}
+
+						$files_info_ser = serialize($files_info);
+                   		$wpdb->update(
+                       		$wpdb->prefix . SHWCP_LEADS . $db,
+                       		array( 'lead_files' => $files_info_ser ),
+                       		array( 'id' => $insert_id ),
+                       		array( '%s' ),
+                       		array( '%d' )
+                   		);
+
+						//print_r($uploaded_files);
+					}
+				}
+
         	}
 
         	//return $posted_data;
@@ -138,6 +184,7 @@
         	$wp_mappings = array();
         	$wp_data = array();
 			$wp_database = '';
+			$wpcontact_uploads = '';
         	foreach ($content as $entry) {  // Get data
             	$entry = trim($entry);
             	if (preg_match("/^wpfieldmap/i", $entry)) { // field map entry 
@@ -147,6 +194,8 @@
 				} else if (preg_match("/^wpdatabasemap/i", $entry)) { // Database mapping
 					$mapper = explode("=", $entry);
 					$wp_database = $mapper[1];
+				} else if (preg_match("/^wpcontact_uploads/i", $entry)) { // Enable uploads
+					$wpcontact_uploads = "yes";
             	} else if (!empty($entry)) {
                 	$mapper = explode("=", $entry);
                 	$wp_data[$mapper[0]] = $mapper[1];
@@ -166,6 +215,10 @@
 			if ($wp_database) {
                 $html .= '<input type="hidden" name="wpdatabasemap" value="' . $wp_database . '" />';
             }
+
+			if ($wpcontact_uploads == "yes") {
+				$html .= '<input type="hidden" name="wpcontact_uploads", value="yes" />';
+			}
 
         	$html .= '<input type="hidden" name="wpcontacts" value="yes" />';
 
