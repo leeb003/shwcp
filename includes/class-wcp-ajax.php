@@ -129,7 +129,8 @@
                 ) {
 					$response['can_change_ownership'] = 'no';
 				} elseif (( !$custom_role['access'] && $this->current_access == 'ownleads' && $can_change_ownership == 'yes')
-					|| ( $custom_role['access'] && $custom_role['perms']['entries_ownership'] == 'yes' )
+                    || ( !$custom_role['access'] && $this->current_access == 'full' )
+                    || ( $custom_role['access'] && $custom_role['perms']['entries_ownership'] == 'yes' )
                 ) {
 					$response['can_change_ownership'] = 'yes';
 				}

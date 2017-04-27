@@ -42,6 +42,7 @@ management.
 * Export "current view" added to front page for easily exporting filtered views
 * Date only field type added
 * Print css added to individual page for better printing
+* Be sure to make a backup before updating just in case!
 
 = 3.0.5 = 
 * Dynamic filters on front page, now you can use dropdowns for filtering as well
