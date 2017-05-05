@@ -424,14 +424,16 @@ EOC;
 									<span class="wcp-button2 delete-all-checked">$delete_selected_text</span>
 EOC;
 					/* Custom Role Select & Delete access */
-					} elseif ( $custom_role['perms']['entries_delete'] == 'all'
-                    	|| $custom_role['perms']['entries_delete'] == 'own'
-                    ) {
-						$wcp_main .= <<<EOC
+					} elseif (isset($custom_role['perms'])) {
+						if ( $custom_role['perms']['entries_delete'] == 'all'
+                    		|| $custom_role['perms']['entries_delete'] == 'own'
+                    	) {
+							$wcp_main .= <<<EOC
                                     <span class="wcp-button2 select-all-checked">$select_all_text</span>
                                     <span class="wcp-button2 select-all-checked" style="display:none;">$unselect_all_text</span>
                                     <span class="wcp-button2 delete-all-checked">$delete_selected_text</span>
 EOC;
+						}
 					}
 
 					$wcp_main .= <<<EOC

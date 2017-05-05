@@ -31,6 +31,9 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 3.0.7 = 
+* Bug fix for read only users viewing individual entries
+* Bug fix for undefined warning on front view for custom roles
 
 = 3.0.6 = 
 * New feature! Dynamic permissions

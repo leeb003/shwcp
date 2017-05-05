@@ -370,7 +370,7 @@ EOC;
 
 		
 		// Read only, non edit display
-		if ( ( !$custom_role['access'] && $this->current_access == 'read_only')
+		if ( ( !$custom_role['access'] && $this->current_access == 'readonly')
 			|| (!$custom_role['access'] && $this->can_access == 'true' && !is_user_logged_in() )
 			|| ($custom_role['access'] && $custom_role['perms']['entries_edit'] == 'none')
 			|| ($custom_role['access'] 
