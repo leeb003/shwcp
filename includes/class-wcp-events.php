@@ -33,6 +33,7 @@
 			$delete_alert = __('Click delete again if you are sure you want to remove this event.', 'shwcp');
 			$can_edit = ($this->can_edit) ? 'canedit' : 'none';
 			$current_access = $this->current_access;
+			$custom_event_access = isset($custom_role['perms']['access_events']) ? $custom_role['perms']['access_events'] : 'na';
 			$events = <<<EOT
 				<div class="row">
 					<div class="col-md-12">
@@ -46,6 +47,7 @@
 				<div class="delete-alert" style="display:none;">$delete_alert</div>
 				<div class="can-edit" style="display:none;">$can_edit</div>
 				<div class="current-access" style="display:none;">$current_access</div>
+				<div class="custom-addedit" style="display:none;">$custom_event_access</div>
 EOT;
 
             return $events;

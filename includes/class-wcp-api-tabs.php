@@ -1121,14 +1121,22 @@ class SHWCP_API_Tabs {
 							  value="none" <?php checked($v['access_export'], 'none');?>><?php echo __('None', 'shwcp');?><br />
                     		</td>
                     		<td class="option-name access_events">
-                        	  <p class="role-title"><?php echo __('Access Events Calendar (If Enabled)', 'shwcp'); ?></p>
+                        	  <p class="role-title"><?php echo __('Events (If Enabled)', 'shwcp'); ?></p>
+
+							  <input type="radio" 
+                              name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_events]" 
+                              value="no" <?php checked($v['access_events'], 'no');?>><?php echo __('No', 'shwcp');?>
+							  <br />
+
                         	  <input type="radio" 
 							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_events]" 
-							  value="yes" <?php checked($v['access_events'], 'yes');?>><?php echo __('Yes', 'shwcp');?><br />
-	
-                        	  <input type="radio" 
-							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_events]" 
-							  value="no" <?php checked($v['access_events'], 'no');?>><?php echo __('No', 'shwcp');?><br />
+							  value="yes" <?php checked($v['access_events'], 'yes');?>><?php echo __('View only', 'shwcp');?>
+							  <br />
+
+							  <input type="radio" 
+                              name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][access_events]" 
+                              value="addedit" <?php checked($v['access_events'], 'addedit');?>><?php echo __('Add & Edit', 'shwcp');?>
+							  <br />
                     		</td>
                 		  </tr>
             			</table>

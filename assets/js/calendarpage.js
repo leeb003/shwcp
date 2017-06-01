@@ -68,14 +68,15 @@ jQuery(function ($) {  // use $ for jQuery
 				var entryText = $(document).find('.entry-text').text();
 				var canEdit = $(document).find('.can-edit').text();
 				var currentAccess = $(document).find('.current-access').text();
+				var customAddEdit = $(document).find('.custom-addedit').text();
 
 				var buttons = '';
 				if (event.class == 'lead-link') {
 					buttons = '<button type="button" onclick="location.href=\'' + event.url 
 						+ '\';" class="btn btn-primary lead-link">' + entryText + '</button>';
 				} else if (event.class == 'modal-link') {
-					if (canEdit != 'none'
-					   && event.editEvent == 'yes'
+					if ( (canEdit != 'none' && event.editEvent == 'yes')
+						|| (currentAccess.match('Custom-') && customAddEdit == 'addedit') 
 					) {
 						buttons =  '<button type="button" class="btn btn-default existing delete-event event-' 
 							+ event.url + '">' + deleteText + '</button>'

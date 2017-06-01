@@ -581,7 +581,9 @@ EOC;
 					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-events.php');
 					$wcp_events = new wcp_events();
 					$this->main_section = apply_filters('wcp_events_filter', $wcp_events->show_events());
-					if ($this->can_edit) {
+					if ( ($this->can_edit) 
+						|| ($custom_role['access'] && $custom_role['perms']['access_events'] == 'addedit')		
+					) {
 						$bar_tools = '<div class="bar-tools">'
 								. '<i class="add-edit-event wcp-white wcp-sm md-add" title="' . __('Add New Event', 'shwcp')
 								. '"> </i></div>';
@@ -776,7 +778,9 @@ EOC;
 
 			if (isset($this->first_tab['calendar_events'])) {
 				/* Custom Role Access */
-				if ($custom_role['access'] && $custom_role['perms']['access_events'] == 'yes') {
+				if ( ($custom_role['access'] && $custom_role['perms']['access_events'] == 'yes') 
+					|| ($custom_role['access'] && $custom_role['perms']['access_events'] == 'addedit')
+				) {
 					$wcp_links .= <<<EOC
                         <li class="eventslink"><a href="$page_events_arg">$page_events <i class="wcp-md md-event-available"></i></a>
 </li>

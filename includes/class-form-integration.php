@@ -168,12 +168,14 @@
 		
 	    public function wpcf7_add_shortcode_wpcontacts() {
         	if (defined('WPCF7_VERSION')) {  // just to make sure
-				wpcf7_add_form_tag('wpcontacts',
-					array($this, 'wpcf7_wpcontacts_shortcode_handler'), true);
-				/* Deprecated cf7 v4.6
-            	wpcf7_add_shortcode('wpcontacts', 
-					array($this, 'wpcf7_wpcontacts_shortcode_handler'), true);
-				*/
+				if (version_compare(WPCF7_VERSION, '4.6', '>=')) {
+					wpcf7_add_form_tag('wpcontacts',
+						array($this, 'wpcf7_wpcontacts_shortcode_handler'), true);
+				} else {
+					/* Deprecated cf7 v4.6 */
+            		wpcf7_add_shortcode('wpcontacts', 
+						array($this, 'wpcf7_wpcontacts_shortcode_handler'), true);
+				}
         	}
     	}
 
