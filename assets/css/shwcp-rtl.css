@@ -1,0 +1,134 @@
+.wcp-breadcrumb {
+    float: right;
+	margin-right: 60px;
+	margin-left: auto;
+}
+.pure-toggle-label[data-toggle-label="left"] {
+	right: 15px;
+}
+
+.login-link {
+	float: left;
+}
+.bar-tools {
+	float: left;
+}
+
+.pure-drawer {
+	right: 0;
+	left: auto;
+}
+
+[data-effect="pure-effect-slide"] .pure-drawer[data-position="left"] {
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+}
+
+.drawer-menu {
+	padding-left: 40px;
+	padding-right: auto;
+}
+.drawer-menu li i {
+	float: left;
+}
+.sst-bar, .lead-count, .sst-select {
+	float: right;
+}
+.lead-count {
+	text-align: left;
+	padding-left: 40px;
+	padding-right: auto;
+}
+
+.input-select-styled::after, .lead-stats-styled::after {
+	left: 10px;
+	right: auto;
+}
+
+.wcp-table tr.header-row th, .fixed-edits tr.header-row th {
+	text-align: right;
+}
+
+.edit-td [type="checkbox"] + label::before, .wcp-container [type="checkbox"] + label::before, .wcp-modal [type="checkbox"] + label::before {
+	right: 0;
+	left: auto;
+}
+.edit-td [type="checkbox"]:not(:checked), [type="checkbox"]:checked, .wcp-container [type="checkbox"]:not(:checked), [type="checkbox"]:checked, .wcp-modal [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+	left: auto;
+    right: -9999px;
+}
+.edit-td [type="checkbox"] + label, .wcp-container [type="checkbox"] + label, .wcp-modal [type="checkbox"] + label {
+	padding-left: auto;
+	padding-right: 35px;
+}
+.edit-td [type="checkbox"]:checked + label::before, .wcp-container [type="checkbox"]:checked + label::before, .wcp-modal [type="checkbox"]:checked + label::before {
+	right: 10px;
+	left: auto;
+}
+th:first-child, td:first-child {
+	padding-left: auto;
+	padding-right: auto;
+}
+.wcp-select-styled::after {
+	right: auto;
+	left: 10px;
+}
+.wcp-search input.wcp-search-input, .log-search input.log-search-input {
+    padding-left: auto;
+    padding-right: 35px;
+}
+/* Modals */
+.close {
+	float: left;
+}
+
+/* Fields Edit */
+.wcp-group {
+	float: right;
+}
+.wcp-fielddiv {
+	float: right;
+}
+i.remove-field, i.no-remove-field {
+	right: auto;
+	left: 80px;
+}
+.wcp-fielddiv .field-options-holder {
+	right: auto;
+	left: 50px;
+}
+.wcp-fielddiv i.md-sort {
+	left: 20px;
+	right: auto;
+}
+.field-options-title {
+	left: 90px;
+	right: auto;
+	text-align: left;
+}
+.field-actions {
+	float: right;
+}
+i.remove-option {
+	left:40px;
+	right: auto;
+}
+i.option-sort {
+	left: 10px;
+	right: auto;
+}
+.options-div h4 i {
+    float: left;
+    margin-left: 40px;
+	margin-right :auto;
+}
+/* Stats */
+.new-lead-view {
+	right: auto;
+	left: 20px;
+}
+.new-lead-view .lead-stats-styled::after {
+	left: 0px;
+	right: auto;
+}
+

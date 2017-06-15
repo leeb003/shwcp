@@ -137,6 +137,12 @@
 					admin_url('admin-ajax.php', $this->scheme)
 						.'?action=dynamic_css&postid=' . $post->ID, 'wcp-frontend', SHWCP_PLUGIN_VERSION );
 				wp_enqueue_style('dynamic-css');
+
+				// rtl support
+				if (is_rtl()) {
+					wp_register_style('shwcp-rtl', SHWCP_ROOT_URL . '/assets/css/shwcp-rtl.css');
+					wp_enqueue_style('shwcp-rtl');
+				}
             }
         } // End enqueue_styles ()
 
@@ -639,7 +645,11 @@ EOC;
 					} else {
 						$bread_single = __('Unknown', 'shwcp');
 					}
-					$breadcrumbs = $breadcrumbs . ' > ' . ucfirst($bread_single);
+					if (is_rtl()) {
+						$breadcrumbs = ucfirst($bread_single) . ' < ' . $breadcrumbs;
+					} else {
+						$breadcrumbs = $breadcrumbs . ' > ' . ucfirst($bread_single);
+					}
 				}
 			}
 			if (isset($wcp_settings['logo_attachment_url']) && $wcp_settings['logo_attachment_url'] != '') {
