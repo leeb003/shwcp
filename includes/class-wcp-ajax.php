@@ -2026,7 +2026,7 @@
 						$matches[$inc]['color'] = $contacts_color;
 						$matches[$inc]['textcolor'] = '#ffffff';
 						$matches[$inc]['class'] = 'lead-link';
-						$matches[$inc]['url'] = $page_ind_arg . '&lead=' . $entry->id;
+						$matches[$inc]['url'] = $page_ind_arg . '&entry=' . $entry->id;
 						$matches[$inc]['description'] = __('New Entry Created') 
 							. ' ' . stripslashes($entry->first_name . ' ' . $entry->last_name);
 						$matches[$inc]['edit_event'] = 'na';
@@ -2062,7 +2062,7 @@
                     		$matches[$inc]['color'] = $this->colors[$color];
                     		$matches[$inc]['textcolor'] = '#ffffff';
 							$matches[$inc]['class'] = 'lead-link';
-                    		$matches[$inc]['url'] = $page_ind_arg . '&lead=' . $entry->id;
+                    		$matches[$inc]['url'] = $page_ind_arg . '&entry=' . $entry->id;
 							$matches[$inc]['description'] = stripslashes($trans_name) . ' ' . __('For', 'shwcp') . ' ' 
 								. stripslashes($entry->first_name . ' ' . $entry->last_name);
 							$matches[$inc]['edit_event'] = 'na';
