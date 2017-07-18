@@ -19,6 +19,8 @@
 			global $wpdb;
 			global $wp;
 			$current_db = '';
+			$dropdown_sort_set = false; // used to determine if a dropdown sort has been set to change the query
+			$orig_field = ''; //  used for dropdown sorting
 			$saved_db = $this->load_db_options();  // load database and options
             if ($saved_db
                 && $saved_db != 'default'
@@ -180,8 +182,19 @@
                         		}
                     		}
                 		}
+						$orig_field = $field;
                 		$field = 'l.' . $field;
                 		$order_by = 'order by ' . $field . ' ' . $sort;
+
+						// Check for dropdown to change search
+                		foreach ($sst_all as $k => $v) {
+                    		if ($orig_field == $v->sst_type_desc) {
+                        		$dropdown_sort_set = true;
+                    		}
+                		}
+                		if ($dropdown_sort_set) {
+                    		$order_by = 'order by sst.sst_name' . ' ' . $sort;
+                		}
 
 					}  // end sort search results
 
@@ -189,7 +202,6 @@
 				}
 
 			} else if (isset($_GET['sort'])) {  // Sorting query
-
 				if ('asc' == $_GET['sort']) {
 					$sort = 'ASC';
 				} else {
@@ -203,8 +215,18 @@
 						}
 					}
 				}
+				$orig_field = $field;
 				$field = 'l.' . $field;
 				$order_by = 'order by ' . $field . ' ' . $sort; 
+				// Check for dropdown to change search
+                foreach ($sst_all as $k => $v) {
+                    if ($orig_field == $v->sst_type_desc) {
+                        $dropdown_sort_set = true;
+                    }
+                }
+				if ($dropdown_sort_set) {
+					$order_by = 'order by sst.sst_name' . ' ' . $sort;
+				}
 			} // end sorting section
 
 			// dropdown filters type 10 fields
@@ -235,8 +257,22 @@
 			
 			$dropdown_q = implode(' ', $dropdown_filter);			
 			// Total lead count for pagination & display
-			$lead_count = $wpdb->get_var(
-				"
+			if ($dropdown_sort_set) {  // we need to include the sst table for correct sorting and count
+                $lead_count = $wpdb->get_var(
+                    "
+                    SELECT count(*) as count
+                    FROM $this->table_main l, $this->table_sst sst
+                    WHERE 1=1
+                    AND l.$orig_field = sst.sst_id
+                    $dropdown_q
+                    $ownleads
+                    $search
+                    $order_by
+                    "
+                );
+            } else {
+				$lead_count = $wpdb->get_var(
+					"
 					SELECT count(*) as count 
                     FROM $this->table_main l
                     WHERE 1=1
@@ -244,8 +280,9 @@
                     $ownleads
                     $search
                     $order_by
-				");
-
+					"
+				);
+			}
 
             // Pagination & sorting vars
             $paginate = $this->first_tab['page_page']; // pagination set?
@@ -270,8 +307,22 @@
                 $paging_div = $wcp_paging->getDiv();
            	}
 
-            $leads = $wpdb->get_results(
-                "
+			if ($dropdown_sort_set) {  // we need to include the sst table for correct sorting
+				$leads = $wpdb->get_results( 
+					"
+					SELECT l.*, sst.*
+					FROM $this->table_main l, $this->table_sst sst
+					WHERE 1=1
+					AND l.$orig_field = sst.sst_id
+					$dropdown_q
+					$ownleads
+					$search
+					$order_by
+					"
+				);
+			} else {
+            	$leads = $wpdb->get_results(
+                	"
                     SELECT l.*
                     FROM $this->table_main l
                     WHERE 1=1
@@ -279,8 +330,9 @@
 					$ownleads
 					$search
                     $order_by
-                "
-            );
+                	"
+            	);
+			}
 
 			//print_r($leads);
 
