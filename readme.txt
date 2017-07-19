@@ -31,6 +31,13 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+
+= 3.0.9 = 
+* Bug fix dropdown sort ordering on frontpage *
+
+= 3.0.8 =
+* Added RTL CSS file for RTL language support *
+
 = 3.0.7 = 
 * Bug fix for read only users viewing individual entries
 * Bug fix for undefined warning on front view for custom roles
