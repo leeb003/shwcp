@@ -32,6 +32,11 @@ management.
 
 == Changelog ==
 
+= 3.1.0 =
+* Bug fix choice selection for form integrations when selection exists for
+* other dropdown
+* Contact Form 7 version 4.8 update fix tag array to object check
+
 = 3.0.9 = 
 * Bug fix dropdown sort ordering on frontpage *
 

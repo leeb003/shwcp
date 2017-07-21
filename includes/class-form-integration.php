@@ -74,7 +74,7 @@
                     	}
                 	}
             	}
-            	// print_r($wpdatafinal);
+            	print_r($wpdatafinal);
             	if (empty($wpdatafinal)) {  // if they haven't set any valid fields, we don't want it
                 	return;
             	}
@@ -180,7 +180,11 @@
     	}
 
     	public function wpcf7_wpcontacts_shortcode_handler($tag) {
-        	if (!is_array($tag)) return '';
+			if (version_compare(WPCF7_VERSION, '4.8', '>=')) {    // CF7 switched from array to object form tag in 4.8
+				if (!is_object($tag)) return '';
+			} else {
+        		if (!is_array($tag)) return '';
+			}
         	$content = trim($tag['content']);
         	$content = preg_split('/\n/', $content);
         	$wp_mappings = array();
@@ -596,7 +600,7 @@
             global $wpdb;
             $exists = false;
             foreach ($sst as $sst_row => $sst_data) {
-                if ($value == $sst_data->sst_name) {
+                if ($value == $sst_data->sst_name && $sst_type == $sst_data->sst_type) {
                     $exists = true;
                     return $sst_data->sst_id;
                 }
