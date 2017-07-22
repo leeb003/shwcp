@@ -74,7 +74,7 @@
                     	}
                 	}
             	}
-            	print_r($wpdatafinal);
+            	//print_r($wpdatafinal);
             	if (empty($wpdatafinal)) {  // if they haven't set any valid fields, we don't want it
                 	return;
             	}
