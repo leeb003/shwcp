@@ -32,6 +32,10 @@ management.
 
 == Changelog ==
 
+= 3.1.1 = 
+* Bug fix for add new entries permission where radio allowed both being
+* checked and not saving to db
+
 = 3.1.0 =
 * Bug fix choice selection for form integrations when selection exists for
 * other dropdown

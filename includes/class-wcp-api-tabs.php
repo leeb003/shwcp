@@ -950,7 +950,7 @@ class SHWCP_API_Tabs {
 							  value="yes" <?php checked($v['entries_add'], 'yes');?>><?php echo __('Yes', 'shwcp');?> 
 							  <br />
                         	  <input type="radio" 
-							  name="shwcp_permissions[custom_roles][<?php echo $inc;?>][entries_add]" 
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][entries_add]" 
 							  value="no" <?php checked($v['entries_add'], 'no');?>><?php echo __('No', 'shwcp');?> 
 							  <br />
                     		</td>
