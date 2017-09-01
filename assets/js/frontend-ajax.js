@@ -847,10 +847,12 @@ jQuery(function ($) {  // use $ for jQuery
 	});
 
 	// Update individual management settings
-	var updateIndividual = function(columns='') {
-		if (!columns) {
-			var columns= $(document).find('.left-col-width').slider("option", "value");
-		}
+	var updateIndividual = function(columns) {
+		var getColumns= $(document).find('.left-col-width').slider("option", "value");
+		columns = columns || getColumns;
+		//if (!columns) {
+		//	var columns= $(document).find('.left-col-width').slider("option", "value");
+		//}
 		var tiles = {};
 		var inc = 1;
 		$('.ind-tile').each( function() {

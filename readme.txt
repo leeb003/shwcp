@@ -31,6 +31,8 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 3.1.2 =
+* Bug fix for ie 11 with javascript error thrown for no matching parenthesis
 
 = 3.1.1 = 
 * Bug fix for add new entries permission where radio allowed both being
