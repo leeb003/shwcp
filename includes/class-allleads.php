@@ -462,7 +462,11 @@ EOC;
             if ($this->can_edit
             ) {
                 $wcp_main .= '<li><i class="add-lead wcp-md md-add" title="' . __('Add Entry', 'shwcp') . '"> </i></li>';
-            }
+            } elseif (isset($custom_role['perms'])) {
+            	if ( $custom_role['perms']['entries_add'] == 'yes' ) {
+					$wcp_main .= '<li><i class="add-lead wcp-md md-add" title="' . __('Add Entry', 'shwcp') . '"> </i></li>';
+				}
+			}
 		
 			$wcp_main .= <<<EOC
 									</ul>

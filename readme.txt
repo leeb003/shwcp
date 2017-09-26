@@ -31,6 +31,9 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 3.1.3 = 
+* Bug fix for custom roles small screens adding entries
+
 = 3.1.2 =
 * Bug fix for ie 11 with javascript error thrown for no matching parenthesis
 
