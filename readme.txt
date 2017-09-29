@@ -31,6 +31,9 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 3.1.4 =
+* Greek language file added - Thanks to George Konstantinidis!
+
 = 3.1.3 = 
 * Bug fix for custom roles small screens adding entries
 
