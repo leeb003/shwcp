@@ -578,18 +578,20 @@
 			$options_table = $wpdb->prefix . 'options';
             $option_entry = 'shwcp_main_settings';
             $dbs = $wpdb->get_results("SELECT * FROM $options_table WHERE `option_name` LIKE '%$option_entry%'");
-            $databases = array();
             $db_number = '';
+			//print_r($dbs);
             foreach ($dbs as $k => $option) {
-                $db_options = get_option($option->option_name);
-                $database_name = $db_options['database_name'];
+				$db_values = unserialize($option->option_value);
+				//print_r($db_values);
+				$database_name = $db_values['database_name'];
                 if ($database_name == $name) {
-					if ($option_entry != $k) { // Only non-default dbs need remove underscore and have db number 
+					if ($option_entry != $option->option_name) { //Only non-default dbs need remove underscore, have db number 
                     	$remove_name = '/^' . $option_entry . '_/';  // Just get the database number
                     	$db_number = preg_replace($remove_name, '', $option->option_name);
 					}
                 }
             }
+			//echo "DB = " . $database_name . " db # = " . $db_number;
             return $db_number;
         }
 

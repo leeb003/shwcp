@@ -31,6 +31,10 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 3.1.5 =
+* Fixed bug where database ordering for form integration was not sending
+* results to the correct database when non-default used.
+
 = 3.1.4 =
 * Greek language file added - Thanks to George Konstantinidis!
 
