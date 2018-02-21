@@ -287,8 +287,20 @@
 		 * user capabilities (admin) install_plugins
 		 */
 		public function shwcp_permission_callback() {
-			return current_user_can('install_plugins'); 
-		}
+			// check for fastcgi redirect header instead of normal authorization for modphp
+            // which is handled in the else statement - note that the .htaccess will probably need
+            // RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+            // right under the RewriteEngine On statement
+            if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+                list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) =
+                    explode(':', base64_decode(substr($_SERVER['REDIRECT_HTTP_AUTHORIZATION'], 6)));
+                $user = get_user_by('login', $_SERVER['PHP_AUTH_USER']);
+                //print_r($user);
+                return user_can( $user, 'install_plugins');
+            } else {
+                return current_user_can('install_plugins');
+            }
+        }
 
 		/**
 		 * Route Callback Verify auth (me endpoint)
