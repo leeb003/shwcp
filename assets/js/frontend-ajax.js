@@ -340,7 +340,7 @@ jQuery(function ($) {  // use $ for jQuery
 				} else {
 					var imageTD = '';
 				}
-				var individualLink = '?wcp_page=ind&lead=' + response.lead_id;
+				var individualLink = '?wcp=entry&entry=' + response.lead_id;
 				var editTD = '<span class="wcp-lead lead-id-' + response.lead_id + '">'
 						   + '<i class="wcp-sm md-create"> </i>'
 						   + '</span> '
