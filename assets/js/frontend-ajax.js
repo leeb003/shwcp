@@ -249,7 +249,7 @@ jQuery(function ($) {  // use $ for jQuery
 						+ response.cancel_button + '</button>'
                    		+ '<button type="button" class="btn btn-primary wcp-save-lead">' + response.save_button + '</button>';
         	$('.wcp-modal').find('.modal-footer').html(footer);
-        	$('.wcp-modal').modal();
+        	$('.wcp-modal').modal({backdrop: 'static', keyboard: false});
 			selectFieldGenerate();
 
 			$('.date-choice').datetimepicker({
