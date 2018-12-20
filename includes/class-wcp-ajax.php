@@ -1386,7 +1386,7 @@
 					}
 
 					$response['selected_list'] = $list;
-					$response['lists'] = $MailChimp->get('lists');
+					$response['lists'] = $MailChimp->get('lists', ['count' => '200']);
 					$fields = array();
 					$sorting = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_ind_number asc");
 					foreach ($sorting as $k => $v) {
