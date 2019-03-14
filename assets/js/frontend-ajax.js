@@ -773,6 +773,77 @@ jQuery(function ($) {  // use $ for jQuery
         });
         return false;
     };
+	
+    // Duplicate all selected verify
+    $(document).on('click', '.duplicate-all-checked', function() {
+        var checked = false;
+        $('input.delete-all').each( function() {
+            if ($(this).is(':checked')) {
+                checked = 'yes';
+            }
+        });
+        if (checked) {
+            $.post(WCP_Ajax.ajaxurl, {
+                // wp ajax action
+                action: 'ajax-wcpfrontend',
+                // vars
+                duplicate_all_checked: 'true',
+                nextNonce : WCP_Ajax.nextNonce,
+                postID : WCP_Ajax.postID
+
+            }, function(response) {
+                var modalBody = '<div class="wcp-edit-lead row"><div class="col-md-12"><p>' + response.msg + '</p></div></div>';
+                $('.wcp-modal').find('.modal-dialog').addClass('modal-lg');
+
+                $('.wcp-modal').find('.modal-title').html(response.title);
+                $('.wcp-modal').find('.modal-body').html(modalBody);
+                var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">'
+                        + response.cancel + '</button>'
+                        + '<button type="button" class="btn btn-primary duplicate-all-confirm">' + response.confirm + '</button>';
+                $('.wcp-modal').find('.modal-footer').html(footer);
+                $('.wcp-modal').modal();
+            });
+        }
+        return false;
+    });
+
+	// Actually duplicate multiple entries
+    $(document).on('click', '.duplicate-all-confirm', function() {
+        var duplicateEntries = {};
+        var i = 1;
+        if ($('.fixed-edits').length) {
+            var checkBoxes = $('.fixed-edits input.delete-all');
+        } else {
+            var checkBoxes = $('input.delete-all');
+        }
+        $(checkBoxes).each( function() {
+            if ($(this).is(':checked')) {
+                var entryID= $(this).attr('class').split(' ')[1].split('-')[1];
+                duplicateEntries[i] = entryID;
+                i++;
+            }
+        });
+        if(duplicateEntries) {
+            $.post(WCP_Ajax.ajaxurl, {
+                // wp ajax action
+                action: 'ajax-wcpfrontend',
+                // vars
+                duplicate_all_confirm: 'true',
+                duplicate_entries : duplicateEntries,
+                nextNonce : WCP_Ajax.nextNonce,
+                postID : WCP_Ajax.postID
+
+            }, function(response) {
+                $('.wcp-modal').modal('hide');
+
+                window.location.href = location.href;
+
+            });
+        }
+        return false;
+    });
+
+
 
 	/* End Front Sorting */
 

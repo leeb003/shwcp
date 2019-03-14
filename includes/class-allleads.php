@@ -342,6 +342,7 @@
 			$select_all_text = __('Check All', 'shwcp');
 			$unselect_all_text = __('Uncheck All', 'shwcp');
 			$delete_selected_text = __('Delete Checked', 'shwcp');
+			$duplicate_selected_text = __('Duplicate Checked', 'shwcp');
 			$search_text = __('Search', 'shwcp');
 
 			if ($leads) {
@@ -477,6 +478,7 @@ EOC;
 						$wcp_main .= <<<EOC
 									<span class="wcp-button2 select-all-checked">$select_all_text</span>
 									<span class="wcp-button2 select-all-checked" style="display:none;">$unselect_all_text</span>
+									<span class="wcp-button2 duplicate-all-checked">$duplicate_selected_text</span>
 									<span class="wcp-button2 delete-all-checked">$delete_selected_text</span>
 EOC;
 					/* Custom Role Select & Delete access */
@@ -487,6 +489,7 @@ EOC;
 							$wcp_main .= <<<EOC
                                     <span class="wcp-button2 select-all-checked">$select_all_text</span>
                                     <span class="wcp-button2 select-all-checked" style="display:none;">$unselect_all_text</span>
+									<span class="wcp-button2 duplicate-all-checked">$duplicate_selected_text</span>
                                     <span class="wcp-button2 delete-all-checked">$delete_selected_text</span>
 EOC;
 						}

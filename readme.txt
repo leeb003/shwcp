@@ -31,6 +31,11 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+
+= 3.1.7 = 
+* Added duplicate entries functionality to frontend
+* PHP Notification fixes
+
 = 3.1.6 = 
 * Fixed bug when adding new entry could not go directly to entry to edit
 * Changed add/edit modal to disallow outside clicks when open

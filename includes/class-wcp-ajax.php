@@ -241,6 +241,153 @@
 				$response['save_button'] = __('Save', 'shwcp');
 				$response['cancel_button'] = __('Cancel', 'shwcp');
 
+			// Open Confirm box to duplicate the Entries
+            }
+            elseif (isset($_POST['duplicate_all_checked']) && $_POST['duplicate_all_checked'] == 'true') {
+                $response['title'] = __('Duplicating Multiple Entries', 'shwcp');
+                $response['msg'] = __('You are about to duplicate multiple entries, are you sure?', 'shwcp');
+                $response['confirm'] = __('Confirm Duplicate', 'shwcp');
+                $response['cancel'] = __('Cancel', 'shwcp');
+
+			// Duplicate the Confirmed Leads
+            }
+            elseif (isset($_POST['duplicate_all_confirm']) && $_POST['duplicate_all_confirm'] == 'true') {
+
+                $duplicate_entries = $_POST['duplicate_entries'];
+
+                $column_name = $wpdb->get_results("DESCRIBE $this->table_main");
+                $columns=[];
+                foreach($column_name as $name){
+                    if( $name->Field!="id" ){
+                        $columns[]=$name->Field;
+                    }
+                }
+                $sorting = $wpdb->get_results (
+                    "
+                        SELECT * from $this->table_sort order by sort_number asc
+                    "
+                );
+
+                foreach( $duplicate_entries as $id) {
+
+                    $columns_to_copy =  implode(",", $columns);
+                    // get entry info before deletion
+
+
+                    $duplicate_fields = $wpdb->query( $wpdb->prepare(
+                            "
+                            INSERT INTO $this->table_main ($columns_to_copy)
+                            SELECT $columns_to_copy FROM $this->table_main l
+                            WHERE l.id = %d;
+                            ",
+                            $id
+                        ));
+
+                    $lead_id =  $wpdb->insert_id;
+
+                    $duplicate_values = $wpdb->get_row( $wpdb->prepare(
+                                "
+                                SELECT l.*
+                                FROM $this->table_main l
+                                WHERE l.id = %d;
+                                ",
+                                $lead_id
+                            ));
+                    $new = true;
+                    $response['new'] = 'true';
+                    $response['contact_image_used'] = 'true';
+
+
+                    if (isset($duplicate_values->small_image) && $duplicate_values->small_image !='' ) {
+                        // Settings Default
+                        $name_arr = explode("-", $duplicate_values->small_image);
+                        $name_end_arr = explode(".", $duplicate_values->small_image);
+                        $image_ext = end($name_end_arr);
+                        $image_name = $lead_id ."-small_image.".$image_ext;
+                        $image_thumb_name = $lead_id ."-small_image_th.".$image_ext;
+                        $image_update = false;
+                        if(
+                            copy($shwcp_upload. '/' . $duplicate_values->small_image , $shwcp_upload. '/' . $image_name)
+                            && copy($shwcp_upload. '/' . $id .'-small_image_th.'.$image_ext , $shwcp_upload. '/' . $image_thumb_name)
+                        ){
+                            $field_vals['small_image'] = $image_name;
+                        }
+                        $thumb = $shwcp_upload. '/' . $id .'-small_image_th.'.$image_ext;
+                    }else{
+                        $thumb = SHWCP_ROOT_URL . '/assets/img/default_entry_th.png';
+                    }
+                    $response['default_thumb'] = $thumb;
+
+                    if (isset($duplicate_values->lead_files) && $duplicate_values->lead_files !='' ) {
+                        // Settings Default
+
+                        $src_folder = $shwcp_upload ."/".$id ."-files";
+                        $dir = opendir($src_folder);
+                        $destination_folder = $shwcp_upload ."/".$lead_id ."-files";
+                        @mkdir($destination_folder);
+                        while(false !== ( $file = readdir($dir)) ) {
+                            if (( $file != '.' ) && ( $file != '..' )) {
+                                copy($src_folder . '/' . $file,$destination_folder . '/' . $file);
+                            }
+                        }
+                        closedir($dir);
+                    }
+
+                    $format = array();
+                    $where_format = array("%d");
+                    // add updated info
+
+
+                    $field_vals['creation_date'] = current_time( 'mysql' );
+                    $field_vals['created_by'] = $this->current_user->data->user_login;
+
+                    $field_vals['updated_date'] = current_time( 'mysql' );
+                    $field_vals['updated_by'] = $this->current_user->data->user_login;
+
+                    // set the formats
+                    foreach ($field_vals as $f => $v) {
+                        $format[] = '%s';
+                    }
+
+                    $wpdb->update(
+                            $this->table_main,
+                            $field_vals,
+                            array( 'id' => $lead_id ),
+                            $format,
+                            $where_format
+                        );
+
+
+
+                    $sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
+                    $environment = array(
+                        'user_login' => $this->current_user->user_login,
+                        'db_number'  => get_post_meta($postID, 'wcp_db_select', true),
+                        'db_name'    => $this->first_tab['database_name'],
+                        'settings'   => $this->first_tab,
+                    );
+                    $output_fields = $wpdb->get_row( $wpdb->prepare(
+                                "
+                                SELECT l.*
+                                FROM $this->table_main l
+                                WHERE l.id = %d;
+                                ",
+                                $lead_id
+                            ));
+                    if ($new) {
+                        $event = __('Added Entry', 'shwcp');
+                        // new entry translate fields and action hook
+                        $translated_fields = $this->shwcp_return_entry($output_fields, $lead_id, $sorting, $sst);
+                        do_action('wcp_add_entry_action', $translated_fields, $environment);
+                    }
+                    // strip off lead_files for logging
+
+                    $detail = __('Duplicated Entry ID', 'shwcp') . ' ' . $id . ' ' .__('To New Entry ID', 'shwcp') . ' ' . $lead_id ;
+                    //~ . __(' Fields-> ', 'shwcp') . $output_string;
+                    $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+
+                }
+                $response['duplicate'] = "true";
 
 			// Save Lead
 			} elseif (isset($_POST['save_lead']) && $_POST['save_lead'] == 'true') {  // save the lead updates
