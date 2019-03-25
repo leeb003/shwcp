@@ -1753,4 +1753,4 @@ EOC;
 };
 
 // Initialize the plugin
-add_action( 'plugins_loaded', create_function( '', '$settings_api_tabs_shwcp = new SHWCP_API_Tabs;' ) );
+add_action( 'plugins_loaded', function() {$settings_api_tabs_shwcp = new SHWCP_API_Tabs;} );

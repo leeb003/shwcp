@@ -1,7 +1,7 @@
 jQuery(function ($) {  // use $ for jQuery
     "use strict";
 
-	/* Meta Box hide / show */
+	/* Meta Box hide / show  pre-gutenberg 5.0 */
     $(document).ready(function() {
         if ($('#page_template').length) {
             var selected = $('#page_template option:selected').val();
@@ -14,7 +14,7 @@ jQuery(function ($) {  // use $ for jQuery
         }
     });
 
-	/* On change Meta Box hide / show */
+	/* On change Meta Box hide / show  pre-gutenberg 5.0 */
 	$(document).on('change', '#page_template', function() {
 		var selected = $('#page_template option:selected').val();
         //alert(selected);
@@ -24,5 +24,4 @@ jQuery(function ($) {  // use $ for jQuery
             $(document).find('#wcp_db_options').hide();
         }
 	});
-
 });

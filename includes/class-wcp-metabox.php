@@ -15,10 +15,16 @@
 		}
 
 		public function db_selection() {
-			add_meta_box("wcp_db_options", __( 'WP Contacts Database Selection', 'shwcp' ),
-            array(&$this, "wcp_custom_box"), "page", "side", "core");
-
+			add_meta_box(
+				"wcp_db_options", 
+				__( 'WP Contacts Database Selection', 'shwcp' ),
+            	array(&$this, "wcp_custom_box"), 
+				"page", 
+				"side", 
+				"core", 
+			);
     	}
+			
 
 		public function wcp_custom_box() {
 			global $wpdb;
