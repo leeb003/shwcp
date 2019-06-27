@@ -32,6 +32,9 @@ management.
 
 == Changelog ==
 
+= 3.1.8 = 
+* Added detail logging on Entry detail modification, something we've overlooked in the past
+
 = 3.1.7 = 
 * Added duplicate entries functionality to frontend
 * PHP Notification fixes
