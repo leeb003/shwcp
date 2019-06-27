@@ -1954,9 +1954,9 @@
                         	}
                     	}
                 	}
-					$event = __('Modified Entry Details', 'shwcp');
-                	$detail = __('Entry ID ', 'shwcp') . $lead_id;
-                	$wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+					//$event = __('Modified Entry Details', 'shwcp');
+                	//$detail = __('Entry ID ', 'shwcp') . $lead_id;
+                	//$wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
 					$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
 					$environment = array(
                         'user_login' => $this->current_user->user_login,
@@ -1967,6 +1967,20 @@
                     // update entry translate fields and action hook
                     $translated_fields = $this->shwcp_return_entry($output_fields, $lead_id, $sorting, $sst);
                     do_action('wcp_update_entry_action', $translated_fields, $environment);
+
+					// strip off lead_files for logging
+                    $logging_fields = array();
+                    foreach($output_fields as $k => $v) {
+                        if ($k != 'lead_files') {
+                            $logging_fields[$k] = $v;
+                        }
+                    }
+                    $output_string = implode(', ', $logging_fields);	
+					$event = __('Modified Entry Details', 'shwcp');
+                    //$detail = __('Entry ID ', 'shwcp') . $lead_id;
+					$detail = __('Entry ID', 'shwcp') . ' ' . $lead_id . __(' Fields-> ', 'shwcp') . $output_string;
+                    $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+		
 
 					$response['lead_id'] = $lead_id;
 					$response['field_vals'] = array_merge($output_fields, $field_vals);
