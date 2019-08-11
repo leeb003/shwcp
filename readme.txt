@@ -32,6 +32,11 @@ management.
 
 == Changelog ==
 
+= 3.1.9 =
+* Added update entries functionality to spreadsheet imports to allow data with an ID column to update existing
+* entries with the same id instead of importing new ones
+* Fixed php 7.2+ null count warning message
+
 = 3.1.8 = 
 * Added detail logging on Entry detail modification, something we've overlooked in the past
 

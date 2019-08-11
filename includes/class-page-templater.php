@@ -34,6 +34,10 @@ class SHWCPPageTemplater {
 	 * Initializes the plugin by setting filters and administration functions.
 	 */
 	private function __construct() {
+        global $pages;
+        if (!$pages) {   // Fix for php v7.2+ where pages is being set to null and we need it to be an array or we get a warning
+            $pages = array(); 
+        }
 
 		$this->templates = array();
 

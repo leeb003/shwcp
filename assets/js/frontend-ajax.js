@@ -1540,38 +1540,44 @@ jQuery(function ($) {  // use $ for jQuery
             return false;
         }
 
-		var totalRows = response.totalRows;
+		var totalRows = response.totalRows - 1; // Subract the header row
 		var totalRowText = response.totalRowText;
 		var topColumns = response.topColumns;
 		var output = '<h3>' + response.step + '</h3><br /><br />'
 				   + '<div class="row">';
 		$.each(topColumns[0], function(k,v) {
-			output += '<div class="imp-col col-lg-4 col-md-4 col-sm-6">'
+			if ( v == 'ID' || v == 'id') {
+				output += '<div class="imp-col hidden">' +
+						  '<input type="hidden" class="db-column" id="column' + k + '" value="ID"></div>'; // do not display
+			} else {
+				output += '<div class="imp-col col-lg-4 col-md-4 col-sm-6">'
 					+ '<div class="input-field">'
 					+ '<label for="column' + k + '">' + v + '</label>'
 					+ '<select class="db-column input-select" id="column' + k + '">'
 					+ '<option value="not-assigned">' + response.none + '</option>';
 
-			$.each(response.fields, function(k, v) {
-				if (v.orig_name != 'id'
-					&& v.orig_name != 'creation_date'
-					&& v.orig_name != 'updated_date'
-					&& v.orig_name != 'created_by'
-					&& v.orig_name != 'updated_by'
-					&& v.orig_name != 'owned_by'
-				) {   // Don't add id's or special fields to selection
-					output += '<option value="' + v.orig_name + '">' + v.translated_name + '</option>';
-				}
-			});
+				$.each(response.fields, function(k, v) {
+					if (v.orig_name != 'id'
+						&& v.orig_name != 'creation_date'
+						&& v.orig_name != 'updated_date'
+						&& v.orig_name != 'created_by'
+						&& v.orig_name != 'updated_by'
+						&& v.orig_name != 'owned_by'
+					) {   // Don't add id's or special fields to selection
+						output += '<option value="' + v.orig_name + '">' + v.translated_name + '</option>';
+					}
+				});
+				output += '</select></div></div>';
+			}
 			
-			output += '</select></div></div>';
 		});
 		output += '</div><div class="import-summary"><span class="total-rows">' + totalRows + '</span>'
 			 	 + ' ' + totalRowText + '</div><div class="wcp-button step2-import">' + response.continue + '</div>'
 				 + '<div class="progress"><div class="progress-container"> &nbsp;</div>'
 				 + ' <span class="progress-percent"></span></div>'
 				 + ' <span class="complete-text">' + response.completeText + '</span>'
-				 + ' <span class="new-file-loc">' + response.new_file + '</span>';
+				 + ' <span class="new-file-loc">' + response.new_file + '</span>'
+				 + ' <span class="update-entries">' + response.update_entries + '</span>';
 		
 		var importDiv = $('.import-container');
 		$(importDiv).html(output);
@@ -1592,6 +1598,7 @@ jQuery(function ($) {  // use $ for jQuery
 	$(document).on('click', '.step2-import', function() {
 		// updates progress bar with results
 		var newFileLoc = $('.new-file-loc').text();
+		var updateEntries = $('.update-entries').text();
 		var fieldMap = {}; 
 		var inc = 0;
         $('.imp-col').each( function() {
@@ -1618,7 +1625,7 @@ jQuery(function ($) {  // use $ for jQuery
 			url: WCP_Ajax.ajaxurl,
 			cache: false,
 			data: {action: 'ajax-wcpfrontend', import_step3: 'true', nextNonce: WCP_Ajax.nextNonce, postID: WCP_Ajax.postID,
-				   fieldMap: fieldMap, totalRows: totalRows, new_file_loc: newFileLoc},
+				   fieldMap: fieldMap, totalRows: totalRows, new_file_loc: newFileLoc, update_entries: updateEntries},
 
 			// handler
     		xhr: function () {

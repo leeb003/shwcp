@@ -1304,6 +1304,18 @@
 					$topRow = 1; // Get the first row only for the columns
 					$topColumns = $worksheet->rangeToArray('A' . $topRow . ':' . $worksheet->getHighestColumn() . $topRow);
 
+					//Check for id for updating entries
+					$update_entries = 0;
+					$step_note = '';
+					foreach ($topColumns[0] as $k => $v) {
+						if ( $v == 'ID' || $v == 'id' ) {
+							$update_entries = 1;
+							$step_note = '<p class="isa-warning">' 
+								. __('Warning you are updating existing entries because you have an ID column', 'shwcp') 
+								. '</p>';
+						}
+					}
+
 					$lastRow = $objPHPExcel->getActiveSheet()->getHighestRow();  // another way to get total
 		
 					// Get the actual db columns to return for selection
@@ -1313,13 +1325,14 @@
 					$response['new_file'] = $new_file;	
 					$response['none'] = __('No Assignment', 'shwcp');
 					$response['continue'] = __('Import Now', 'shwcp');
-					$response['step'] = __('Step 2, Assign your spreadsheet columns to <b>WP Contacts</b> columns', 'shwcp');
+					$response['step'] = __('Step 2, Assign your spreadsheet columns to <b>WP Contacts</b> columns', 'shwcp') . $step_note;
 					$response['fields'] = $sorting;
 					$response['topColumns'] = $topColumns;
 					$response['totalRows'] = $lastRow;
 					$response['totalRowText'] = __('Total Rows to import', 'shwcp');
 					$response['completeText'] = __('Complete', 'shwcp'); // Sent in this step since next step sends increments
 																		 // stored in hidden div
+					$response['update_entries'] = $update_entries;       // Are we updating or adding new entries
 					/* End examine first row */
 
 					// logging
@@ -1336,6 +1349,7 @@
 			} elseif (isset($_POST['import_step3']) && $_POST['import_step3'] == 'true') {
 				$fieldMap = isset($_POST['fieldMap']) ? $_POST['fieldMap'] : array();
 				$new_file = $_POST['new_file_loc'];
+				$update_entries = intval($_POST['update_entries']);  // 1 is update entries, anything else is insert
 
 				// check to make sure some are selected
         		$selected = false;
@@ -1437,42 +1451,52 @@
 							$insert_array = array();
 							// need to update sst each time in case new ones are added
 							$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
-
+							$update_id = ''; // Clear id for each row in update scenerios
 							foreach ($data as $k => $v) {
 								$v = trim($v);
-								//check for datetime column
-								$field_type = 'na';
-                           		foreach($sorting as $k2 => $v2) {
-                               		if ( $k == $v2->orig_name ) {
-                                   		$field_type = $v2->field_type;
+								if ($k == 'ID') {  // we need ID for update statement
+									$update_id = $v;
+								} else { 
+									//check for datetime column
+									$field_type = 'na';
+                           			foreach($sorting as $k2 => $v2) {
+                               			if ( $k == $v2->orig_name ) {
+                                   			$field_type = $v2->field_type;
+										}
+                               		}
+									if ($field_type == '7') { // datetime field and we need to try and convert
+										$timestamp = strtotime($v);
+										$datetime_format = date("Y-m-d H:i:s", $timestamp);
+										$insert_array[$k] = $datetime_format;
+
+									} elseif ($field_type == '11') { // date only field try and convert
+										$timestamp = strtotime($v);
+                                    	$date_format = date("Y-m-d", $timestamp);
+                                    	$insert_array[$k] = $date_format;
+
+									} elseif ($field_type == '10') { // dropdown type field need id or create
+										$sst_type = $wpdb->get_var(
+											"SELECT sst_type FROM $this->table_sst where sst_type_desc='$k' limit 1"
+										);
+										$real_value = $this->sst_update_db($v, $sst, $k, $sst_type);
+										$insert_array[$k] = $real_value;
+
+									} else {  // all other varchar fields
+										$insert_array[$k] = $v;
 									}
-                               	}
-								if ($field_type == '7') { // datetime field and we need to try and convert
-									$timestamp = strtotime($v);
-									$datetime_format = date("Y-m-d H:i:s", $timestamp);
-									$insert_array[$k] = $datetime_format;
-
-								} elseif ($field_type == '11') { // date only field try and convert
-									$timestamp = strtotime($v);
-                                    $date_format = date("Y-m-d", $timestamp);
-                                    $insert_array[$k] = $date_format;
-
-								} elseif ($field_type == '10') { // dropdown type field need id or create
-									$sst_type = $wpdb->get_var(
-										"SELECT sst_type FROM $this->table_sst where sst_type_desc='$k' limit 1"
-									);
-									$real_value = $this->sst_update_db($v, $sst, $k, $sst_type);
-									$insert_array[$k] = $real_value;
-
-								} else {  // all other varchar fields
-									$insert_array[$k] = $v;
 								}
 							}
-							$insert_array['created_by']    = $this->current_user->data->user_login;
-							$insert_array['updated_by']    = $this->current_user->data->user_login;
-							$insert_array['owned_by']      = $this->current_user->data->user_login;
-							$insert_array['creation_date'] = current_time( 'mysql' );
-							$insert_array['updated_date']  = current_time( 'mysql' );
+							if ($update_entries == 1) {  // If it's an update, leave original fields alone
+								$insert_array['updated_by']    = $this->current_user->data->user_login;
+								$insert_array['updated_date']  = current_time( 'mysql' );
+							} else { // Insert
+								$insert_array['created_by']    = $this->current_user->data->user_login;
+								$insert_array['updated_by']    = $this->current_user->data->user_login;
+								$insert_array['owned_by']      = $this->current_user->data->user_login;
+								$insert_array['creation_date'] = current_time( 'mysql' );
+								$insert_array['updated_date']  = current_time( 'mysql' );
+							}
+								
 
 							// Actual insert and clear array
 							// set the formats
@@ -1480,12 +1504,26 @@
                 			foreach ($insert_array as $f => $v) {
                         		$format[] = '%s';
                 			}
+							if ($update_entries == 1) { // Update database entries
+								$wpdb->update(
+									$this->table_main,
+									$insert_array,
+									array( 'id' => $update_id ),
+									$format,
+									array('%d')
+								);
+								print_r ("ID=" . $update_id);
+								print_r($insert_array);
 
-                    		$wpdb->insert(
-                        		$this->table_main,
-                        		$insert_array,
-                        		$format
-                    		);
+							} else {  // Insert database entries
+
+                    			$wpdb->insert(
+                        			$this->table_main,
+                        			$insert_array,
+                        			$format
+                    			);
+							}
+
                     		//$lead_id = $wpdb->insert_id;
 							$insert_array = array();
 							$format = array();
@@ -1499,6 +1537,8 @@
 					//print_r($column_map);	
 					// This is where we delete the file after processing
 					unlink($new_file);
+					//$response['count'] = $i - 1; // Future show results when done uploading
+				    //echo json_encode($response);
 					exit;
 				}
 
