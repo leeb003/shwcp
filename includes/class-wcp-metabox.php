@@ -21,7 +21,7 @@
             	array(&$this, "wcp_custom_box"), 
 				"page", 
 				"side", 
-				"core" 
+				"core", 
 			);
     	}
 			
