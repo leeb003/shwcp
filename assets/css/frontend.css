@@ -1693,7 +1693,8 @@ i.add-filter {
 
 /* Import & Export */
 
-.new-file-loc {
+.new-file-loc,
+.update-entries {
 	display: none;
 }
 
