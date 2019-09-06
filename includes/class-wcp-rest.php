@@ -254,6 +254,19 @@
 				)
 			) );
 
+			// /wp-json/shwcp/v1/create-entry-note/
+			register_rest_route( $namespace, '/create-entry-note/', array(
+				'methods' => 'POST',
+				'permission_callback' => array(
+					$this,
+					'shwcp_permission_callback',
+				),
+				'callback' => array(
+					$this,
+					'shwcp_create_entry_note'
+				)
+			) );
+
 			// /wp-json/shwcp/v1/update-entry-image/
 			register_rest_route( $namespace, '/update-entry-image/', array(
 				'methods' => 'POST',
@@ -307,7 +320,8 @@
 		 */
 		public function shwcp_get_ping($request) {
 			$return = array(
-				'auth'	 => true
+				'auth'	 => true,
+				'uid' => get_current_user_id()
 			);
 			$reponse = new WP_REST_Response( $return, 200 );
 			return $reponse;
@@ -705,6 +719,9 @@
             return $response;
 
 		}	
+
+
+
 		/**
 		 * Route Callback update entry image
 		 * similar to above create_entry_file method and uses the same functions
@@ -762,6 +779,32 @@
             return $response;
 
         }
+
+
+		/**
+		 * Route Callback Create Entry Note
+		 */
+		public function shwcp_create_entry_note($request) {
+			global $wpdb;
+			$params = $request->get_params();
+            $db        = isset($params['db']) ? $params['db'] : '';
+            $db_number = $this->get_tables($db);
+            $id        = isset($params['id']) ? intval($params['id']) : ''; // the entry id not note id
+			$content = isset($params['content']) ? $params['content'] : '';
+
+            if (trim($id) == '') {
+                $return = array(
+                    'error' => __('You must give an existing id', 'shwcp')
+                );
+                $response = new WP_REST_Response( $return, 400 );
+                return $response;
+            }	
+
+            $results = $this->add_note($db_number, $id, $content);
+
+            $response = new WP_REST_Response( $results['return'], $results['status'] );
+            return $response;
+		}
 			
 
 		/**
@@ -988,6 +1031,52 @@
 				return $wpdb->insert_id;
 			}
 		}
+
+		/**
+		 * Add entry note
+		 *
+		 * @param string $db_number the database
+		 * @param int id the entry id to add a note to
+		 * @param string $content to insert
+		 */
+		public function add_note($db_number, $id='', $content) {
+			global $wpdb;
+			$date_added      = current_time( 'mysql' );
+            $creator         = $this->current_user->ID; 
+			$wpdb->insert(
+                $this->table_notes,
+                array(
+                   'lead_id'      => $id,
+                   'note_content' => $content,
+                   'date_added'   => $date_added,
+                   'creator'      => $creator
+                ),
+                array(
+                    '%d',
+                    '%s',
+                    '%s',
+                    '%d'
+                )
+            );
+            $note_id = $wpdb->insert_id;
+			// log
+            //$output_string = "$note_id, $note_content";
+			$event = __('Added Entry Note', 'shwcp');
+            $detail = __('Note for entry', 'shwcp') . ' ' . $id;
+            $this->rest_log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $this->table_log);
+
+            $return = array(
+                'id' => $id,
+                'note_id' => $note_id,
+                'note_content' => $content,
+            );
+            $results = array(
+                    'status' => 200,
+                    'return' => $return
+                );
+            return $results;
+		}
+			
 
 		/**
 		 * Add or update a entry 

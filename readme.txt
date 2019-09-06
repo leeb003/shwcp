@@ -32,6 +32,9 @@ management.
 
 == Changelog ==
 
+= 3.2.0 =
+* Added insert notes capabilities to the REST api so that notes can now be created this way as well
+
 = 3.1.9 =
 * Added update entries functionality to spreadsheet imports to allow data with an ID column to update existing
 * entries with the same id instead of importing new ones
