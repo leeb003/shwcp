@@ -151,6 +151,28 @@
 						// check for date field searches that are in other formats
 						$db_format = "Y-m-d H:i:s";
 						$set_format = "$this->date_format $this->time_format";
+
+						// check for date search using today query
+						if ($field == 'updated_date' || $field == 'creation_date') {  // checks for built in date fields
+						 	if ($q == 'today') {
+								$q = current_time('Y-m-d');
+								//print_r($q);
+							}
+						} else {
+							foreach ($all_sort as $k2 => $v2) {
+                 	       		if ($v2->orig_name == $field  && $v2->field_type == '11') {
+									//print_r('found it');
+									if ($q == 'today') {
+										$q = current_time('Y-m-d');
+									}
+                           		}
+							}
+						}
+						// end for date search using today query
+						
+
+
+
 						if ($db_format != $set_format) {
                         	foreach ($all_sort as $k2 => $v2) {
                         		if ($v2->orig_name == $field  && $v2->field_type == '7') {

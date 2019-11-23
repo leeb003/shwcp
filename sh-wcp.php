@@ -1,11 +1,11 @@
 <?php
 /*
  * Plugin Name: WP Contacts
- * Plugin URI: http://www.sh-themes.com
+ * Plugin URI: https://www.wpcontacts.co
  * Description: Powerful and feature rich contact management: manage contacts, leads, inventory or just about anything else you need to keep track of.  Create multiple databases and assign different users to each.
- * Version: 3.2.0
- * Author: SH-Themes
- * Author URI: http://www.sh-themes.com
+ * Version: 3.2.1
+ * Author: ScriptHat
+ * Author URI: http://www.wpcontacts.co
  */
 if(defined('SHWCP_PLUGIN_VERSION') ) {
     die('ERROR: It looks like you already have one instance of WP Contacts installed. WordPress cannot activate and handle two instances at the same time, you need to remove the old one first.');
@@ -16,7 +16,7 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
     define('SHWCP_ROOT_FILE', __FILE__);
     define('SHWCP_ROOT_PATH', dirname(__FILE__));
     define('SHWCP_ROOT_URL', plugins_url('', __FILE__));
-    define('SHWCP_PLUGIN_VERSION', '3.2.0');
+    define('SHWCP_PLUGIN_VERSION', '3.2.1');
     define('SHWCP_PLUGIN_SLUG', basename(dirname(__FILE__)));
     define('SHWCP_PLUGIN_BASE', plugin_basename(__FILE__));
 	define('SHWCP_TEMPLATE', 'wcp-fullpage-template.php');
@@ -29,7 +29,7 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
 	define('SHWCP_NOTES', 'shwcp_notes');
 	define('SHWCP_EVENTS', 'shwcp_events');
 
-	define ('SHWCP_MARKET', 'envato');
+	//define ('SHWCP_MARKET', 'envato');
 
 	// Load classes
    	require_once SHWCP_ROOT_PATH . '/includes/class-main-wcp.php';
@@ -78,26 +78,15 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
         }
     }
 
+	// TGM Plugin Activation
+	require_once( SHWCP_ROOT_PATH . '/includes/tgmpa/class-tgm-plugin-activation.php');
+	require_once( SHWCP_ROOT_PATH . '/includes/wcp-tgmpa.php');
+	add_action( 'tgmpa_register', 'shwcp_register_required_plugins');
+
 	// the admin menu
 	if ( is_admin() ) {
 		require_once( SHWCP_ROOT_PATH . '/includes/class-wcp-api-tabs.php' );
 	}
-
-	// Automatic Updates
-    require SHWCP_ROOT_PATH . '/includes/plugin-updates/plugin-update-checker.php';
-    $update_checker = new PluginUpdateChecker_2_1(
-    'http://updates.sh-themes.com/server/?action=get_metadata&slug=shwcp', //Metadata URL.
-        __FILE__, //Full path to the main plugin file.
-        'shwcp' //Plugin slug. Usually it's the same as the name of the directory.
-    );
-    $update_checker->addQueryArgFilter('shwcp_updates_additional_queries');
-    function shwcp_updates_additional_queries($queryArgs) {
-		$first_tab = get_option('shwcp_main_settings');  // only the default db will have this
-        $license_key = isset($first_tab['license_key']) ? $first_tab['license_key'] : '';
-        $queryArgs['license_key'] = $license_key;
-        $queryArgs['market'] = SHWCP_MARKET;
-        return $queryArgs;
-    }
 
 	// Translations
 	add_action('init', 'shwcp_load_textdomain');
