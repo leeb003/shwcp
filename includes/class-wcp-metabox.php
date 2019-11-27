@@ -1,6 +1,7 @@
 <?php
 /**
  * WCP Class for adding metaboxes to our custom template for database selection
+ * Note: This is the pre-gutenberg method for database selection
  */
 
     class wcp_metabox extends main_wcp {
@@ -21,39 +22,14 @@
             	array(&$this, "wcp_custom_box"), 
 				"page", 
 				"side", 
-				"core"
+				"core",
+				array('__back_compat_meta_box' => true)
 			);
     	}
-			
 
 		public function wcp_custom_box() {
-			global $wpdb;
-			$options_table = $wpdb->prefix . 'options';
-			$option_entry = 'shwcp_main_settings';
-			$dbs = $wpdb->get_results("SELECT * FROM $options_table WHERE `option_name` LIKE '%$option_entry%'");
-			$databases = array();
-        	foreach ($dbs as $k => $option) {
-            	if ($option->option_name == $option_entry) {
-					$db_options = get_option($option->option_name);
-					if (!isset($db_options['database_name'])) {
-						$database_name = __('Default', 'shwcp');
-					} else {
-						$database_name = $db_options['database_name'];
-					}
-					$databases['default'] = $database_name;
-            	} else {
-                	$db_options = get_option($option->option_name);
-                	$remove_name = '/^' . $option_entry . '_/';  // Just get the database number
-                	$db_number = preg_replace($remove_name, '', $option->option_name);
-					$database_name = $db_options['database_name'];
-					$databases[$db_number] = $database_name;
-            	}
-        	}
-			
-			//print_r($databases);
-			//print_r($dbs);
-
-        	global $post;
+			global $post;
+			$databases = $this->wcp_getdbs();  // get databases from main public function wcp_getdbs
         	$database = get_post_meta( $post->ID, 'wcp_db_select', true);
 			if (!$database) {
 				$database = 'default';

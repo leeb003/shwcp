@@ -341,4 +341,69 @@
 			}
 		}
 
+		/**
+		 * Get a list of current databases
+		 * @ since 3.2.1
+		 * @return array
+		 */
+        public function wcp_getdbs($location='') {
+			$format = false;
+			if ($location == 'gutenberg') {
+				// This is from gutenberg and we need to format results for that
+				$format = true;
+			}
+            global $wpdb;
+			global $post;
+            $options_table = $wpdb->prefix . 'options';
+            $option_entry = 'shwcp_main_settings';
+            $dbs = $wpdb->get_results("SELECT * FROM $options_table WHERE `option_name` LIKE '%$option_entry%'");
+
+			// possible return items
+            $databases = array();
+			$gutenberg = array();
+			if ($format) {
+				$gutenberg['databases'][] = ['value' => null, 'label' => __('Select a Database', 'shwcp'), 'disabled' => true];
+				$selected = get_post_meta( $post->ID, 'wcp_db_select', true);
+				if (!$selected) {
+                	$selected = 'default';
+            	}
+				$gutenberg['selected'] = $selected;
+			}
+            
+			foreach ($dbs as $k => $option) {
+                if ($option->option_name == $option_entry) {
+                    $db_options = get_option($option->option_name);
+                    if (!isset($db_options['database_name'])) {
+                        $database_name = __('Default', 'shwcp');
+                    } else {
+                        $database_name = $db_options['database_name'];
+                    }
+					if ($format) {
+						$gutenberg['databases'][] = ['value'=> 'default', 'label'=> $database_name];
+						//$gutenberg .= "{value: 'default', label: '$database_name'},\n";
+					} else {
+                    	$databases['default'] = $database_name;
+					}
+                } else {
+                    $db_options = get_option($option->option_name);
+                    $remove_name = '/^' . $option_entry . '_/';  // Just get the database number
+                    $db_number = preg_replace($remove_name, '', $option->option_name);
+                    $database_name = $db_options['database_name'];
+
+					if ($format) {
+						$gutenberg['databases'][] = ['value' => $db_number, 'label' => $database_name];
+						//$gutenberg .= "{value: '$db_number', label: '$database_name'},\n";
+					} else {
+                    	$databases[$db_number] = $database_name;
+					}
+                }
+            }
+            //print_r($databases);
+			if ($format) {
+				return $gutenberg;
+			} else {
+            	return $databases;
+			}
+        }	
+
 	} // end class
