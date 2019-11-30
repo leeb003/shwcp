@@ -2924,29 +2924,9 @@
 			// Delete existing database
 			} elseif (isset($_POST['delete_db']) && $_POST['delete_db'] == 'true') {
 				$dbnumber = intval($_POST['db_number']);
-				$dbnumber = '_' . $dbnumber;
-				// delete tables
-				require_once SHWCP_ROOT_PATH . '/includes/class-setup-wcp.php';
-                $setup_wcp = new setup_wcp;
-				$setup_wcp->drop_tables($dbnumber);
-				// delete options - match settings api names and database number
-				$first_tab_key           = 'shwcp_main_settings' . $dbnumber;
-    			$permission_settings_key = 'shwcp_permissions'   . $dbnumber;
-    			$info_settings_key       = 'shwcp_info'          . $dbnumber;
-    			$db_actions_key          = 'shwcp_db'            . $dbnumber;
-				delete_option($first_tab_key);
-				delete_option($permission_settings_key);
-				delete_option($info_settings_key);
-				delete_option($db_actions_key);
-
-				// Delete File Directory
-				$file_loc = $this->shwcp_upload . $dbnumber;
-				if (file_exists($file_loc) ) {
-					$wp_filesystem->rmdir($file_loc, true);  // true for recursive
-				}
-
-				$response['deleted'] = $dbnumber;
-
+				// wcp_deldb in class-main
+				$db_deleted = $this->wcp_deldb($dbnumber);
+				$response['deleted'] = $db_deleted;
 			}
 
 

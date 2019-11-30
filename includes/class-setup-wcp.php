@@ -202,9 +202,6 @@
 	
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 			dbDelta( $main_sql );
-			// add version
-			add_option( 'table_v', 'SHWCP_TABLE_V');
-
 			dbDelta($sst_sql);
 			dbDelta($sort_sql);
 			dbDelta($log_sql);

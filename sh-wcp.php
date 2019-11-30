@@ -3,7 +3,7 @@
  * Plugin Name: WP Contacts
  * Plugin URI: https://www.wpcontacts.co
  * Description: Powerful and feature rich contact management: manage contacts, leads, inventory or just about anything else you need to keep track of.  Create multiple databases and assign different users to each.
- * Version: 3.2.2
+ * Version: 3.2.3
  * Author: ScriptHat
  * Author URI: http://www.wpcontacts.co
  */
@@ -16,7 +16,7 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
     define('SHWCP_ROOT_FILE', __FILE__);
     define('SHWCP_ROOT_PATH', dirname(__FILE__));
     define('SHWCP_ROOT_URL', plugins_url('', __FILE__));
-    define('SHWCP_PLUGIN_VERSION', '3.2.2');
+    define('SHWCP_PLUGIN_VERSION', '3.2.3');
     define('SHWCP_PLUGIN_SLUG', basename(dirname(__FILE__)));
     define('SHWCP_PLUGIN_BASE', plugin_basename(__FILE__));
 	define('SHWCP_TEMPLATE', 'wcp-fullpage-template.php');
@@ -28,8 +28,6 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
 	define('SHWCP_SORT', 'shwcp_sort');
 	define('SHWCP_NOTES', 'shwcp_notes');
 	define('SHWCP_EVENTS', 'shwcp_events');
-
-	//define ('SHWCP_MARKET', 'envato');
 
 	// Load classes
    	require_once SHWCP_ROOT_PATH . '/includes/class-main-wcp.php';

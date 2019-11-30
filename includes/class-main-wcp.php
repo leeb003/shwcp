@@ -406,4 +406,37 @@
 			}
         }	
 
+		/**
+		 * Delete all tables and files associated with a shwcp database
+		 * @ since 3.2.3
+		 * @ return integer
+		 */
+		public function wcp_deldb ($dbnumber) {
+			global $wp_filesystem;
+			if ($dbnumber == 'default') {
+				$dbnumber = '';
+			} else {
+				$dbnumber = '_' . $dbnumber;
+			}
+			 // delete tables
+                require_once SHWCP_ROOT_PATH . '/includes/class-setup-wcp.php';
+                $setup_wcp = new setup_wcp;
+                $setup_wcp->drop_tables($dbnumber);
+                // delete options - match settings api names and database number
+                $first_tab_key           = 'shwcp_main_settings'     . $dbnumber;
+                $permission_settings_key = 'shwcp_permissions'       . $dbnumber;
+				$frontend_settings       = 'shwcp_frontend_settings' . $dbnumber;
+                delete_option($first_tab_key);
+                delete_option($permission_settings_key);
+                delete_option($frontend_settings);
+
+                // Delete File Directory
+                $file_loc = $this->shwcp_upload . $dbnumber;
+                if (file_exists($file_loc) ) {
+                    $wp_filesystem->rmdir($file_loc, true);  // true for recursive
+                }
+			return $dbnumber;
+		}
+
+
 	} // end class
