@@ -31,6 +31,9 @@ if ( ! function_exists( '_wp_render_title_tag' ) ) {
 </head>
 <body <?php body_class(); ?>>
 
+<?php while ( have_posts() ) : the_post(); ?>
+<?php endwhile; ?>
+
 <?php the_content(); ?>
 
 <?php wp_footer(); ?>

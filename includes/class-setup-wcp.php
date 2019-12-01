@@ -444,7 +444,6 @@
 				'contact_image_url'     => '',
 				'contact_image_id'      => '',
 				'contact_upload'        => 'true',
-				'license_key'           => '',
 				'fixed_edit'            => 'false',
 				'all_fields'            => 'true',
 				'calendar_events'       => 'false',

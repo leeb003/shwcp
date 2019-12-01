@@ -828,7 +828,60 @@
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
                 $response['message'] = 'success';
 
+			// Frontend Regenerate Thumbnails
+			} elseif (isset($_POST['thumbnail_regen']) && $_POST['thumbnail_regen'] == 'true') {
+				$files = list_files($this->shwcp_upload, 1, array() );		
+				$filtered_files = array();
+				$size = intval($this->first_tab['contact_image_thumbsize']);
+				foreach($files as $k => $v) {
+					if (preg_match('/(\d+-small_image)\.(\S+)/',$v, $matches)) {
+						$filtered_files[$k]['name']=$matches[1];
+						$filtered_files[$k]['ext']=$matches[2];
+					}
+				}
+				
+				foreach ($filtered_files as $k => $v) {
+					//print_r($v['name']);
+					//print_r($v['ext']);
+						
+					$file = $shwcp_upload. '/' . $v['name'] .'.'.$v['ext'];
+					//print_r($thumb);	
+					$thumb = wp_get_image_editor( $file );	
+					if ( !is_wp_error($thumb) ) {
+                    	$thumb->resize($size, $size, true);
+                    	$thumb->save( $shwcp_upload . '/' . $v['name'] . '_th.' . $v['ext'] );
+					}
+					
+				}
+				// default image resize
+				$image_id = intval($this->first_tab['contact_image_id']);
+				if($image_id) {
+                	$image_meta = wp_get_attachment_metadata($image_id);
+                	$full_file = $image_meta['file'];
+					$upload_dir = wp_upload_dir();
+					$full_file_path = $upload_dir['basedir'] . '/' . $full_file;
+					//print_r($full_file_path);
+                	$file_fullname = basename( $full_file );
+                	$info = pathinfo($file_fullname);
+                	$file_name = basename($file_fullname,'.'. $info['extension']);
+                	$file_ext = $info['extension'];
+                	$small_image = $file_name . '_25x25' . '.' . $file_ext;
+                	$small_thumb = $shwcp_upload . '/' . $small_image;
+					$thumb = wp_get_image_editor($full_file_path);
+					if ( !is_wp_error($thumb) ) {
+						$thumb->resize($size, $size, true);
+                		$thumb->save($small_thumb);
+					}
+				}
+						
+				$event = __('Thumbnails', 'shwcp');
+                $detail = __('All thumbnails have been regenerated.', 'shwcp');
+                $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
+				$response['files'] = $filtered_files;
 
+                //$response['message'] = 'success';
+				// be sure to regen default as well
+	
 			// Manage Dropdowns
 			} elseif (isset($_POST['manage_dropdowns']) && $_POST['manage_dropdowns'] == 'true') {
 				$dropdowns = array();
@@ -1233,7 +1286,8 @@
 					move_uploaded_file($_FILES["file"]["tmp_name"], $new_file);
 					$thumb = wp_get_image_editor( $new_file );
 					if ( !is_wp_error($thumb) ) {
-						$thumb->resize(25, 25, true);
+						$size = intval($this->first_tab['contact_image_thumbsize']);
+						$thumb->resize($size, $size, true);
 						$thumb->save( $shwcp_upload . '/' . $lead_id . '-' . 'small_image_th' . $file_ext);
 					}
 					$wpdb->update(

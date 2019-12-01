@@ -128,6 +128,27 @@ EOC;
         </ul>
 EOC;
 
+		if ($this->first_tab['contact_image'] =='true') {
+
+			$regen_title = __('Regenerate Thumbnails', 'shwcp');
+			$regen_desc = __('If you have changed the size of thumbnails in the backend settings, you can regenerate all previous ones here.', 'shwcp');
+			$wait_text = __('Please wait...', 'shwpc');
+			$regen_button = __('Regenerate Now', 'shwcp');
+			$all_done = __('All Done!', 'shwcp');
+			$waiting = SHWCP_ROOT_URL . '/assets/img/wait.gif';
+			$wcp_sorting .= <<<EOC
+		<hr />
+		<div class="wcp-thumb-regen">
+			<div class="wcp-title">$regen_title</div>
+			<div class="wcp-button wcp-changetext regen-thumbnails">$regen_button</div>
+			<div class="wcp-wait hidden">$wait_text</div>
+			<div class="wcp-done hidden">$all_done</div>
+			<p>$regen_desc</p>
+		</div>
+EOC;
+		}	
+
+
 		
 
 		return $wcp_sorting;

@@ -54,9 +54,13 @@ jQuery(function ($) {  // use $ for jQuery
 	// Hide pagination results if use pagination is false
 	$(document).ready( function() {
 		checkPaging();
+		checkDefaultImage();
 	});
 	$(document).on('change', '.wcp-page-page', function() {
 		checkPaging();
+	});
+	$(document).on('change', '.wcp-contact-image', function() {
+		checkDefaultImage();
 	});
 
 	function checkPaging() {
@@ -67,6 +71,19 @@ jQuery(function ($) {  // use $ for jQuery
             $('.wcp-page-page-count').closest('tr').show();
         }
 	}
+
+	function checkDefaultImage() {
+		var contactImage = $('.wcp-contact-image option:selected').val();
+        if (contactImage == 'true') {
+            $(document).find('#upload_now2').closest('tr').show();
+            $(document).find('.thumbnail-size').closest('tr').show();
+        } else {
+            $(document).find('#upload_now2').closest('tr').hide();
+            $(document).find('.thumbnail-size').closest('tr').hide();
+        }
+	}
+
+	
 
 	// Hide / Show Calendar notifications
 	$(document).ready( function() {
@@ -160,15 +177,18 @@ jQuery(function ($) {  // use $ for jQuery
     });
 
 	// Show / Hide the Entry Image Upload fields on Entry Image Change
+/*
 	$(document).on('change', '.wcp-contact-image', function() {
 		var selected = $('.wcp-contact-image option:selected').val();
 		if (selected == 'true') {
-			$(document).find('#upload_now2').closest('.contact-upload').show();
+			$(document).find('#upload_now2').closest('tr').show();
+			$(document).find('.thumbnail-size').closest('tr').show();
 		} else {
-			$(document).find('#upload_now2').closest('.contact-upload').hide();
+			$(document).find('#upload_now2').closest('tr').hide();
+			$(document).find('.thumbnail-size').closest('tr').hide();
 		}
 	});
-
+*/
 	// Add custom links
 	$(document).on('click', '.add-custom-menu-link', function() {
 		var linkText = $(document).find('.wcp-cust-link-text').text();

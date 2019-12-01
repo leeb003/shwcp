@@ -135,7 +135,6 @@ class SHWCP_API_Tabs {
 			'page_option' => 'Some Page',
 			'database_name' => 'Default',
 			'page_public' => 'false',
-			'license_key' => '',
 			'troubleshoot' => 'false',   // enable scripts in header vs footer
 			'fixed_edit' => 'false',
 			'all_fields' => 'false',
@@ -156,10 +155,11 @@ class SHWCP_API_Tabs {
 			'page_color' => '#607d8b',
 			'logo_attachment_url' => SHWCP_ROOT_URL . '/assets/img/wpcontacts.png',
 			'logo_attachment_id' => '',
-			'page_footer' => 'WP Contacts &copy;2017 SH-Themes',
+			'page_footer' => 'WP Contacts &copy;2019 SH-Themes',
 			'page_greeting' => 'Welcome To <span class="wcp-primary">WP</span> Contacts',
 			'contact_image' => 'true', 
 			'contact_image_url' => '',
+			'contact_image_thumbsize' => '20',
 			'contact_image_id' => '',
 			'contact_upload' => 'true',
 		), $this->first_tab );
@@ -210,7 +210,8 @@ class SHWCP_API_Tabs {
 					$full_file_path = $upload_dir['basedir'] . '/' . $full_file;
 					$thumb = wp_get_image_editor( $full_file_path );
                     if ( !is_wp_error($thumb) ) {
-                        $thumb->resize(25, 25, true);
+						$size = intval($this->first_tab['contact_image_thumbsize']);
+                        $thumb->resize($size, $size, true);
                         $thumb->save( $new_thumb );
                     }
 				}
@@ -256,13 +257,12 @@ class SHWCP_API_Tabs {
 				$this->first_tab_key_db, 'section_general' );
 		add_settings_field( 'contact_image_url', __('Default Entry Image', 'shwcp'), 
 				array( &$this, 'field_default_image_url' ), $this->first_tab_key_db, 'section_general' );
+		add_settings_field( 'contact_image_thumbsize', __('Front Page Thumbnail Size', 'shwcp'),
+                array( &$this, 'field_contact_thumbsize' ), $this->first_tab_key_db, 'section_general' );
+
+
 		add_settings_field( 'contact_upload', __('Contact Uploads', 'shwcp'), array( &$this, 'field_contact_upload' ),
 				$this->first_tab_key_db, 'section_general' );
-
-		if ($this->first_tab_key == $this->first_tab_key_db) { // only needed on initial settings
-			add_settings_field( 'license_key', __('Envato Purchase Code', 'shwcp'), array( &$this, 'field_license_key' ),
-                $this->first_tab_key_db, 'section_general' );
-		}
 
 		add_settings_field( 'fixed_edit', __('Fixed Edit Column', 'shwcp'), array( &$this, 'field_fixed_edit' ),
                 $this->first_tab_key_db, 'section_general' );
@@ -403,17 +403,6 @@ class SHWCP_API_Tabs {
 		<p>
 			<?php echo __("Choose if you want to allow people who are not logged in read access to WP Contacts", "shwcp");?>
 		</p>
-		<?php
-	}
-
-	/*
-	 * Envato Purchase License Key
-	 */
-	function field_license_key() {
-		?>
-		<input class="wcp-license" name="<?php echo $this->first_tab_key_db; ?>[license_key]" 
-			value="<?php echo esc_attr( $this->first_tab['license_key'] ); ?>" />
-		<p><?php echo __("Enter your Envato purchase code for updates.", 'shwcp'); ?></p>
 		<?php
 	}
 
@@ -805,12 +794,12 @@ class SHWCP_API_Tabs {
 	 * Default Contact Image for entries
 	 */
 	function field_default_image_url() {
-			if ($this->show_contact_upload) {
-				$display = 'display-contact';
-			} else {
-				$display = 'hide-contact';
-			}
-		?>
+		if ($this->show_contact_upload) {
+			$display = 'display-contact';
+		} else {
+			$display = 'hide-contact';
+		}
+	?>
 		<div class="contact-upload <?php echo $display;?>">
 			<button id="upload_now2" class="button button-primary custom_contact_upload"><?php echo __("Upload", "shwcp");?>
 			</button>
@@ -827,6 +816,26 @@ class SHWCP_API_Tabs {
 		</div>
 		<?php
 	}
+
+	/*
+	 * Contact Image Front Page Thumb size
+	 */
+	function field_contact_thumbsize() {
+		if ($this->first_tab['contact_image']) {
+			$display = 'display-thumbsize';
+		} else {
+			$display = 'hide-thumbsize';
+		}
+	?>
+		<div class="thumbnail-size <?php echo $display;?>">
+			<input class="thumbnail-size" name="<?php echo $this->first_tab_key_db; ?>[contact_image_thumbsize]" 
+            	value="<?php echo esc_attr( $this->first_tab['contact_image_thumbsize'] ); ?>" /> px
+        	<p><?php echo __("This is the frontpage view thumbnail image size, defaults to 20px.  Keep it smaller for the table view and use only numbers.", "shwcp"); ?>
+			</p> 
+			<p><?php echo __("If you already have images set and are resizing, you can regenerate existing thumbnails under the Settings -> Manage Front Page area on the frontend.", 'shwcp'); ?></p>
+		</div>
+        <?php
+    }
 	
 	/*
 	 * Contacts allow file uploads

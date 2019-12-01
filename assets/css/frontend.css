@@ -719,8 +719,7 @@ p.status {
 
 .image-td a {
 	display: block;
-	width: 35px;
-	height: 35px;
+	margin-left: 10px;
 }
 
 .wcp-lead {

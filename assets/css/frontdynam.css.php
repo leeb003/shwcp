@@ -12,6 +12,7 @@ if ($database && $database != 'default') {
 $wcp_settings = get_option('shwcp_main_settings' . $db);
 $primary_color = $wcp_settings['page_color'];
 $logo = $wcp_settings['logo_attachment_url'];
+$contact_image_thumbsize = $wcp_settings['contact_image_thumbsize'];
 $custom_css = trim($wcp_settings['custom_css']);
 
 //test for admin bar and adjust elements as necessary
@@ -137,6 +138,10 @@ textarea.materialize-textarea:focus:not([readonly]) {
 }
 .left-col-width.ui-slider > .ui-slider-handle {
 	background: <?php echo $primary_color; ?>;
+}
+.image-td a {
+    width: <?php echo $contact_image_thumbsize; ?>px;
+    height: <?php echo $contact_image_thumbsize; ?>px;
 }
 
 <?php echo $admin_adjust; ?>

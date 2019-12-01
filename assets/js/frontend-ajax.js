@@ -2797,5 +2797,24 @@ jQuery(function ($) {  // use $ for jQuery
 	};
 
 	// End Fixed quick edit entries
+	
+	// Thumbnail regeneration routine
+    $(document).on('click', '.regen-thumbnails', function() {
+		var wait = $(document).find('.wcp-wait').text();
+		var done = $(document).find('.wcp-done').text();
+		$('.wcp-changetext').removeClass('regen-thumbnails').text(wait);
+       	$.post(WCP_Ajax.ajaxurl, {
+            // wp ajax action
+            action: 'ajax-wcpfrontend',
+            // vars
+            thumbnail_regen  : 'true',
+            nextNonce  : WCP_Ajax.nextNonce,
+            postID     : WCP_Ajax.postID
+        }, function(response) {
+			$('.wcp-changetext').text(done);
+
+        });
+        return false;
+	});
 
 });
