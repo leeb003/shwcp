@@ -65,6 +65,10 @@ form #submit {
 	display:none;
 }
 
+a.remove-backup {
+	color: #f44336;
+}
+
 .reset-success,
 .backup-success,
 .restore-success,

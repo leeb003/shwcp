@@ -411,6 +411,25 @@ jQuery(function ($) {  // use $ for jQuery
 		return false;
 	});
 
+	// download backup
+	// generates a form appended to body, submits and removes after submit
+	$(document).on('click', '.download-backup', function() {
+		var downloadUrl = $(document).find('.download-backup-url').text();
+		var backupEntry = $(this).closest('li').find('.backup-entry').text();
+		var database = $('.current-working-database').text();
+		var nonce = $('#wcp_dlb_nonce').val();
+		//var backupForm = '<form action="' + downloadUrl + '?file=' + backupEntry + '" method="post" '
+		var backupForm = '<form action="' + downloadUrl + '" method="post" '
+					   + 'class="hidden" id="bf_form_' + backupEntry + '">'
+		               + '<input type="hidden" name="file" value="' + backupEntry + '"/>'
+					   + '<input type="hidden" name="action" value="wcpdlbackups">'
+					   + '<input type="hidden" name="wcp_dlb_nonce" value="' + nonce + '" />'
+					   + '<input type="submit" name="dl_submit" id="dl_submit" value="submit"  />'
+					   + '</form>';
+		$(backupForm).appendTo('body').submit().remove();
+        return false;
+    });	
+
 	// display restore backup selection and button
 	$(document).on('click', '.restore-db-check', function() {
 		var restore = $(this).is(':checked');

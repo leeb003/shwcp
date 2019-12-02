@@ -101,6 +101,11 @@ class SHWCP_API_Tabs {
         $wcp_ajax = new wcp_ajax();
         add_action( 'wp_ajax_ajax-wcpbackend', array($wcp_ajax, 'myajax_wcpbackend_callback'));
 
+		// admin post for downloading backups
+        require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-dlbackups.php');
+        $wcp_dl_backups = new wcp_dl_backups();
+        add_action( 'admin_post_wcpdlbackups', array($wcp_dl_backups, 'dlbackups_callback'));
+
 		// get folder info in backup directory - repeat of main class for now since this class doesn't extend
         $upload_dir = wp_upload_dir();
         // backup directory & url
@@ -1396,6 +1401,10 @@ class SHWCP_API_Tabs {
 	/*
 	 * List current backups (tab 4) 
 	 *
+	 * Notes:
+	 * For the download backups jquery isn't the best method for downloading files, so we need to form submit
+     * and since the page is wrapped in a form we can't have a nested form.  We will instead append forms with 
+     * jquery and submit them in one step to admin-post.php where we can return the file.
      */
 	public function field_backups_list() {
 	?>
@@ -1408,14 +1417,16 @@ class SHWCP_API_Tabs {
                     $files_info[$i]['name'] = $v;
                     $size = size_format(get_dirsize($this->shwcp_backup . '/' . $v));
                     $file_date = date("m-d-Y H:i:s", filemtime($this->shwcp_backup . '/' . $v));
-                    echo "<li>$i). <b><span class='backup-entry'>$v</span> </b> <i>$file_date</i> $size "
-						 . " <a href='#' class='remove-backup'>" . __('Delete Backup', 'shwcp') . "</a></li>\n";
+                    echo "<li>$i). <b><span class='backup-entry'>$v</span> </b> <i>$file_date</i> $size |"
+						 . " <a href='#' class='remove-backup'>" . __('Delete Backup', 'shwcp') . "</a> |"
+						 . " <a href='#' class='download-backup' id='download_backup_$i'>" . __('Download Backup', 'shwcp') . "</a></li>\n";
                     $i++;
                 }
                 ?>
 			</ul>
+			<div class="download-backup-url hidden"><?php echo admin_url();?>admin-post.php</div>
+			<div class="download-backup-nonce hidden"><?php echo wp_nonce_field( 'wcp_dlb_nonce', 'wcp_dlb_nonce', false, false ); ?></div>
         </div>	
-
 	<?php }
 
 	/*
