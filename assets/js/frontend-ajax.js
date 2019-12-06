@@ -2,6 +2,7 @@ jQuery(function ($) {  // use $ for jQuery
     "use strict";
 
 	/* Modals */
+
 	// edit existing lead - uses showLeadDiag()
     $(document).on('click', '.wcp-lead', function() {
         var leadID = $(this).attr('class').split(' ')[1].split('-')[2];
@@ -164,6 +165,7 @@ jQuery(function ($) {  // use $ for jQuery
 					}
 
 				} else {  // The rest of the fields
+
 					var fieldType = 'na';
 					$.each(response.sorting, function(k2,v2) {
 						if (k == v2.orig_name) {
@@ -190,6 +192,21 @@ jQuery(function ($) {  // use $ for jQuery
                         	}
                     	});
                     	modalBody += '</select></div></div>';
+
+					} else if (fieldType == '777') { // Multi Select
+                        modalBody += '<div class="col-md-6"><div class="input-field">'
+                            + '<label for="' + k + '">' + v.trans + '</label>'
+                            + '<select multiple id="' + k + '" class="lead_select ' + k + ' multi-select-field ">';
+                        $.each(response.sst, function(k2,v2) {
+                            var selected = '';
+                            if (k == v2.sst_type_desc) {   // matching sst's
+                                if (v.value.includes(v2.sst_id)) { // selected
+                                    selected = 'selected="selected"';
+                                }
+                                modalBody += '<option value="' + v2.sst_id + '" ' + selected + '>' + v2.sst_name + '</option>';
+                            }
+                        });
+                        modalBody += '</select></div></div>';	
 
 					} else if (fieldType == '9') { // Checkboxes
 						var checkbox = v.value=='1' ? v.value : '';
@@ -283,19 +300,37 @@ jQuery(function ($) {  // use $ for jQuery
 
 
 			$('.shwcp-rating').rateit();
+	
+			select2_init();
+
     };
+	
+	function select2_init() {
+		$('.multi-select-field').select2({});
+    }
+
+    select2_init();
 
 	// Save the lead
 	$('.wcp-modal').on('click', '.wcp-save-lead', function() {
         var leadID = $('.wcp-edit-lead').attr('class').split(' ')[1].split('-')[1];
         var fieldVals = {};
 		var dropdownFields = {};
+		var multiSelect = {};
         $('.lead_field, .lead_select').each( function() {
             var name = $(this).attr('class').split(' ')[1];
             var value = $(this).val();
 			if ($(this).hasClass('dropdown-field')) { // dropdown build name association
 				var sst_name = $('option:selected', this).text();
                 dropdownFields[value] = sst_name;
+			}
+			if ($(this).hasClass('multi-select-field')) { // multi select build name association
+				$('option:selected', this).each( function() {
+					//alert($(this).text() + ' ' + $(this).val());
+					var sst_name = $('option:selected', this).text();
+					multiSelect[$(this).val()] = $(this).text();
+				});
+				//multiSelect[value] = sst_name;
 			}
             fieldVals[name] = value;
         });
@@ -311,12 +346,13 @@ jQuery(function ($) {  // use $ for jQuery
             // wp ajax action
             action: 'ajax-wcpfrontend',
             // vars
-            save_lead      : 'true',
-            lead_id        : leadID,
-            nextNonce      : WCP_Ajax.nextNonce,
-			postID         : WCP_Ajax.postID,
-            field_vals     : fieldVals,
-			dropdown_fields: dropdownFields,
+            save_lead         : 'true',
+            lead_id           : leadID,
+            nextNonce         : WCP_Ajax.nextNonce,
+			postID            : WCP_Ajax.postID,
+            field_vals        : fieldVals,
+			dropdown_fields   : dropdownFields,
+			multiselect_fields: multiSelect,
         }, function(response) {
 			if (response.logged_in == 'false') {
                 showLogInDiag(response.title, response.body, response.login_button, response.close);
@@ -1068,6 +1104,15 @@ jQuery(function ($) {  // use $ for jQuery
 
 	// Remove Dropdown Option
     $(document).on('click', '.remove-option', function() {
+		// Make sure there's at least 1 to avoid problems
+		var atleastoneWarning = $(document).find('.atleastone-warning').text();
+		var numberRemove = $('.removal-set').length;
+		numberRemove = numberRemove + 1;
+		var numberOptions = $('.wcp-selops').length;
+		if (numberRemove == numberOptions) {
+			alert(atleastoneWarning);
+			return;
+		}
         $(this).closest('div').addClass('removal-set');
         $(this).closest('div').find('input').addClass('remove').attr('disabled', 'disabled');
         $(this).removeClass('remove-sst wcp-red md-remove-circle-outline').addClass('no-remove-sst md-highlight-remove');
@@ -1231,20 +1276,21 @@ jQuery(function ($) {  // use $ for jQuery
 	$(document).on('click', '.add-field', function() {
 		var unique = randomString();
 		var text = $(document).find('.new-text').text();
-		var fieldTypeText  = $(document).find('.field-type-text').text();
-		var textFieldText  = $(document).find('.textfield-text').text();
-		var textAreaText   = $(document).find('.textarea-text').text();
-		var phoneText      = $(document).find('.phone-text').text();
-		var emailText      = $(document).find('.email-text').text();
-		var websiteText    = $(document).find('.website-text').text();
-		var dateOnlyText   = $(document).find('.date-only-text').text();
-		var dateText       = $(document).find('.date-text').text();
-		var rateText       = $(document).find('.rate-text').text();
-		var dropdownText   = $(document).find('.dropdown-text').text();
-		var checkText      = $(document).find('.check-text').text();
-		var mapText        = $(document).find('.map-text').text();
-		var requiredText   = $(document).find('.required-text').text();
-		var groupTitleText = $(document).find('.group-title-text').text();
+		var fieldTypeText   = $(document).find('.field-type-text').text();
+		var textFieldText   = $(document).find('.textfield-text').text();
+		var textAreaText    = $(document).find('.textarea-text').text();
+		var phoneText       = $(document).find('.phone-text').text();
+		var emailText       = $(document).find('.email-text').text();
+		var websiteText     = $(document).find('.website-text').text();
+		var dateOnlyText    = $(document).find('.date-only-text').text();
+		var dateText        = $(document).find('.date-text').text();
+		var rateText        = $(document).find('.rate-text').text();
+		var dropdownText    = $(document).find('.dropdown-text').text();
+		var multiSelectText = $(document).find('.multi-select-text').text();
+		var checkText       = $(document).find('.check-text').text();
+		var mapText         = $(document).find('.map-text').text();
+		var requiredText    = $(document).find('.required-text').text();
+		var groupTitleText  = $(document).find('.group-title-text').text();
 		var newFieldHolder = '<div class="wcp-fielddiv"></div>';
 		var newField = '<div class="wcp-group input-field"><label class="field-label" for="new-field">' + text + '</label>'
 					 + '<input class="wcp-field new-field" type="text" value="' + text + '" />'
@@ -1276,6 +1322,8 @@ jQuery(function ($) {  // use $ for jQuery
 					 + ' data-text="' + checkText + '" />' + checkText + '<br />'
 					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="10"'
                      + ' data-text="' + dropdownText + '" />' + dropdownText + '<br />'
+					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="777"'
+                     + ' data-text="' + multiSelectText + '" />' + multiSelectText + '<br />'
 					 + '<input type="radio" class="field-type" name="' + unique + '-type" value="99"'
                      + ' data-text="' + groupTitleText + '" />'+ groupTitleText + '<br />'
                      + '</div></div>'
@@ -1316,6 +1364,7 @@ jQuery(function ($) {  // use $ for jQuery
 		if (value == 8        // Remove required check for fields that don't need it
 			|| value == 9
 			|| value == 10
+			|| value == 777
 			|| value == 99
 	    ) {	
 			requiredField.remove();

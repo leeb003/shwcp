@@ -403,6 +403,7 @@
 
 				$field_vals = $_POST['field_vals'];
 				$dropdown_fields = isset($_POST['dropdown_fields']) ? $_POST['dropdown_fields'] : array();
+				$multiselect_fields = isset($_POST['multiselect_fields']) ? $_POST['multiselect_fields'] : array();
 				/* Check required fields */
 				$field_checks = $this->field_checks($sorting, $field_vals);
 
@@ -447,7 +448,7 @@
 					/* date and time conversion for saving */
 					foreach ($sorting as $k => $v) {
                         foreach ($field_vals as $k2 => $v2) {
-                            $v2 = stripslashes($v2);
+							$v2 = $this->stripslashes_deep($v2);
                             if ($k2 == $v->orig_name && $v->field_type == '7') {
 								$orig_datetime = DateTime::createFromFormat("$this->date_format $this->time_format", $v2);
 								if ($orig_datetime) {
@@ -477,6 +478,9 @@
 
 					// set the formats
 					foreach ($field_vals as $f => $v) {
+						if( is_array($v) ) {
+							$field_vals[$f] = json_encode($v);
+						}
 						$format[] = '%s';
 					}
 				
@@ -511,7 +515,10 @@
 					$max_display = 4;
                     $file_data = unserialize($lead_files);
                     $td_content = '<div class="files-preview">';
-                    $count = count($file_data);
+					$count = 0;
+					if (!empty($file_data)) {
+                    	$count = count($file_data);
+					}
                     $inc = 1;
                     if (isset($file_data[0])) { // check that we have at least 1 file
                     	foreach ($file_data as $fk => $fv) {
@@ -561,6 +568,19 @@
                                             $output_fields[$k2] = $v3;
                                         }
                                     }
+
+								} elseif ( $v->field_type == '777') { // multi select fields, send back translated value
+									$v2_array = json_decode($v2);
+									//$output_fields['raw_multi'] = $v2;
+									foreach ($multiselect_fields as $k3 => $v3) {
+										foreach($v2_array as $multi_key => $multi_val) {
+											if ($k3 == $multi_val) {
+												$output_array[] = $v3;
+											}
+                                        }
+									}
+									// lets display on the frontend with commas
+									$output_fields[$k2] = implode(', ', $output_array);
 
 								} else {
 									$output_fields[$k2] = $v2;
@@ -891,7 +911,7 @@
                 	"
             	);
 				foreach ($lead_columns as $k => $v) {  // lead_columns from sort generated above
-                	if ($v->field_type == '10') {
+                	if ($v->field_type == '10' || $v->field_type == '777') {
                     	$dropdowns[$v->orig_name] = $v->translated_name;
                 	}
             	}
@@ -1030,7 +1050,7 @@
                         	)
                     	);
 						/* Dropdowns add to sst table with unique sst_type above 3 */
-						if ($v['field_type'] == '10') {
+						if ($v['field_type'] == '10' || $v['field_type'] == '777') {
 							$query = "SELECT DISTINCT(sst_type) as sst_type FROM $this->table_sst ORDER BY sst_type DESC";
 							$existing_sst = $wpdb->get_results ( $query );
 							$sst_array = array();
@@ -1064,7 +1084,7 @@
 						if (in_array($v['orig_name'], $existing_cols)) {
 							$wpdb->query( "ALTER TABLE $this->table_main drop column {$v['orig_name']}" );
 						}
-						if ($v['field_type'] == '10') {  // delete from sst as well
+						if ($v['field_type'] == '10' || $v['field_type'] == '777') {  // delete from sst as well
 							$wpdb->delete($this->table_sst, array( 'sst_type_desc' => $v['orig_name'] ), array('%s') );
 						}
 
@@ -1102,20 +1122,18 @@
 									if ($last_field_type == '10') { // need to remove from sst
 										 $wpdb->delete($this->table_sst, array( 'sst_type_desc' => $v['orig_name'] ), array('%s') );
 									}
-                        		} elseif ( $last_field_type == '7' 
-									&& $v['field_type'] != '10' 
+                        		} elseif ( $last_field_type == '7' && $v['field_type'] != '10' || $last_field_type == '7' && $v['field_type'] != '777'
 								) {  // changed from date time to varchar
                             		$field_type = "text NOT NULL";
 									$wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
 
-								} elseif ( $last_field_type == '11' 
-                                    && $v['field_type'] != '10' 
+								} elseif ( $last_field_type == '11' && $v['field_type'] != '10' || $last_field_type == '11' && $v['field_type'] != '777'
                                 ) {  // changed from date time to varchar
                                     $field_type = "text NOT NULL";
                                     $wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
 
 								// changed from dropdown to something else, delete sst and remove front filtering
-                        		} elseif ( $last_field_type == '10' ) { 
+                        		} elseif ( $last_field_type == '10' || $last_field_type == '777' ) { 
 									$field_type = "text NOT NULL";
                                     $wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
 									$wpdb->delete($this->table_sst, array( 'sst_type_desc' => $v['orig_name'] ), array('%s') );
@@ -1144,7 +1162,32 @@
                                 		),
                                 		array( '%s','%s','%d','%d', '%d' )
                             		);
-								}
+
+								} elseif ( $v['field_type'] == '777' ) { // to dropdown, need to create it and alter
+                                    $field_type = "text NOT NULL";
+                                    $wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
+                                    $query = "SELECT DISTINCT(sst_type) as sst_type FROM $this->table_sst ORDER BY sst_type DESC";
+                                    $existing_sst = $wpdb->get_results ( $query );
+                                    $sst_array = array();
+                                    foreach ($existing_sst as $k2 => $v2) {
+                                        $sst_array[] = $v2->sst_type;
+                                    }
+                                    $sst_inc = 4; // start with 4 (above the defaults)
+                                    while(in_array($sst_inc, $sst_array)) {
+                                        $sst_inc++;
+                                    }
+                                    $wpdb->insert(
+                                        $this->table_sst,
+                                        array(
+                                            'sst_name' => 'Default',
+                                            'sst_type_desc' => $v['orig_name'],
+                                            'sst_type' => $sst_inc,
+                                            'sst_default' => 1,
+                                            'sst_order' => 1
+                                        ),
+                                        array( '%s','%s','%d','%d', '%d' )
+                                    );
+                                }
 							}
 						}
 
@@ -1164,7 +1207,7 @@
 							}
 						}
 						// Dropdown removed, reset front_filter_active and front_filter_sort
-						if ($last_field_type != $v['field_type'] && $last_field_type == '10') {
+						if ($last_field_type != $v['field_type'] && $last_field_type == '10' || $last_field_type != $v['field_type'] && $last_field_type == '777') {
 							$front_filter_active = 0;
 							$front_filter_sort = 0;
 						}
@@ -1529,11 +1572,31 @@
                                     	$insert_array[$k] = $date_format;
 
 									} elseif ($field_type == '10') { // dropdown type field need id or create
-										$sst_type = $wpdb->get_var(
-											"SELECT sst_type FROM $this->table_sst where sst_type_desc='$k' limit 1"
-										);
-										$real_value = $this->sst_update_db($v, $sst, $k, $sst_type);
-										$insert_array[$k] = $real_value;
+										if ($v !='') {  // we don't want empty options
+											$sst_type = $wpdb->get_var(
+												"SELECT sst_type FROM $this->table_sst where sst_type_desc='$k' limit 1"
+											);
+											$real_value = $this->sst_update_db($v, $sst, $k, $sst_type);
+											$insert_array[$k] = $real_value;
+										}
+									} elseif ($field_type == '777') { // multi-select options id or create for each one
+										$select_opts = explode('; ', $v);
+										//print_r($select_opts);
+										$select_array = array();
+										if (!empty($select_opts)) {
+											foreach ($select_opts as $sel_k => $sel_v) {
+												if ($sel_v != '') {  // we don't want empty options
+													$sst_type = $wpdb->get_var(
+                                            			"SELECT sst_type FROM $this->table_sst where sst_type_desc='$k' limit 1"
+                                        			);
+													$select_str = $this->sst_update_db($sel_v, $sst, $k, $sst_type);
+													$select_array[] = $select_str;
+												}
+											}
+											$real_value = json_encode($select_array);
+											//echo "$k = "; print_r($real_value);
+											$insert_array[$k] = $real_value;
+										}
 
 									} else {  // all other varchar fields
 										$insert_array[$k] = $v;
@@ -1993,7 +2056,7 @@
 					/* date and time conversion for saving */
                     foreach ($sorting as $k => $v) {
                         foreach ($field_vals as $k2 => $v2) {
-                            $v2 = stripslashes($v2);
+                            $v2 = $this->stripslashes_deep($v2);
                             if ($k2 == $v->orig_name && $v->field_type == '7') {
                                 $orig_datetime = DateTime::createFromFormat("$this->date_format $this->time_format", $v2);
 								if ($orig_datetime) {
@@ -2006,7 +2069,9 @@
                                     $new_datetime = $orig_datetime->format('Y-m-d');
                                     $field_vals[$k2] = $new_datetime;
                                 }
-							}
+							} elseif ($k2 == $v->orig_name && $v->field_type == '777') {
+                            	$field_vals[$k2] = json_encode($field_vals[$k2]);
+                            } 
 							
                         }
                     }

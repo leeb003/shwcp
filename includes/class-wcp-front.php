@@ -292,6 +292,8 @@
 					));
 				}
 
+				wp_enqueue_script('select2', SHWCP_ROOT_URL . '/assets/js/select2.min.js', array('touch-punch'), '4.0.5' );
+
                 wp_register_script( 'wcp-frontend',
                     SHWCP_ROOT_URL . '/assets/js/frontend.js', array( 'touch-punch' ), SHWCP_PLUGIN_VERSION, $load_footer );
                 wp_enqueue_script( 'wcp-frontend' );

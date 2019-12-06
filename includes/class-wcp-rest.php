@@ -361,7 +361,7 @@
 			// $sortby = isset($params['sortby']) ? $params['sortby'] : '';
 			$dir	= isset($params['dir']) ? $params['dir'] : 'asc';
 			$db_number= $this->get_tables($db);
-			$vars = '';
+			$vars = array();
 
 			$order_by = "order by id $dir"; // default
 			/*
@@ -617,11 +617,6 @@
 			$db		   = isset($params['db']) ? $params['db'] : '';
 			$db_number = $this->get_tables($db);
 			$fields    = isset($params['fields']) ? $params['fields'] : array();
-
-			// log
-            $event = __('Added Entry', 'shwcp');
-            $detail = __('Entry ID ', 'shwcp') . $id;
-            $this->rest_log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $this->table_log);
 			
 			$results = $this->add_update_entry('add', $db_number, $fields);
 
@@ -964,6 +959,22 @@
 										}
 									}
 								}
+							} elseif ($sv->field_type == '777') { // multi-select fields
+								$entry = '';
+								$multiselects = json_decode($v['value']);
+								$multiselect_array = array();
+								foreach($sst as $k2 => $v2) {
+									if ($k == $v2->sst_type_desc) { // matching sst's
+										if (!empty($multiselects)) {
+											foreach ($multiselects as $multi_k => $multi_v) {
+												if ($multi_v == $v2->sst_id) { // selected
+													$multiselect_array[] = $v2->sst_name;
+												}
+											}
+										}
+										$translated[$k]['value'] = implode(', ', $multiselect_array);
+									}
+								}
 							}
 						}
 					}
@@ -1146,6 +1157,34 @@
 									);
 							$value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $this->table_sst);
 							$wpdatafinal[$f] = $value;
+
+						} elseif ($v2->field_type == '777') { // multi-select options id or create for each one
+                            //print_r($select_opts);
+                            $select_array = array();
+                            if (!empty($v)) {
+								if (is_array($v)) {
+                            		foreach ($v as $sel_k => $sel_v) {
+                                		if ($sel_v != '') {  // we don't want empty options
+                                    		$sst_type = $wpdb->get_var(
+                                        		"SELECT sst_type FROM $this->table_sst where sst_type_desc='$f' limit 1"
+                                       		);
+                                        	$select_str = $this->sst_update_checkdb($sel_v, $sst, $f, $sst_type, $this->table_sst);
+                                        	$select_array[] = $select_str;
+                                    	}
+                                	}
+									$value = json_encode($select_array);
+                                	//echo "$k = "; print_r($real_value);
+                                	$wpdatafinal[$k] = $value;
+								} elseif ($v != '') {
+									$value = array();
+									$sst_type = $wpdb->get_var(
+                                        "SELECT sst_type FROM " . $this->table_sst
+                                        . " where sst_type_desc='$f' limit 1"
+                                    );
+                            		$value[] = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $this->table_sst);
+                            		$wpdatafinal[$f] = json_encode($value);
+                            	}
+							}
 						}
 					}
 				}

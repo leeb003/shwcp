@@ -48,29 +48,30 @@
                 "
             );
 
-            $field_title      = __('Add, Edit, Sort (for individual view and forms) and Remove Fields', 'shwcp');
-            $field_desc       = __('Core Fields cannot be removed, but all can be renamed.  Dropdown and Date field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed.', 'shwcp');
-            $save             = __('Save Changes', 'shwcp');
-            $add_new_text     = __('Add New Field', 'shwcp');
-            $new_text         = __('New Field', 'shwcp');
-            $text_field_text  = __('Text Field', 'shwcp');
-            $text_area_text   = __('Text Area', 'shwcp');
-            $phone_text       = __('Phone Number', 'shwcp');
-            $email_text       = __('Email Address', 'shwcp');
-            $website_text     = __('Website Address', 'shwcp');
-            $map_text         = __('Google Map Link', 'shwcp');
-			$date_only_text   = __('Date', 'shwcp');
-            $date_text        = __('Date Time', 'shwcp');
-            $rate_text        = __('Rating', 'shwcp');
-            $check_text       = __('Checkbox', 'shwcp');
-            $field_type_text  = __('Field Type', 'shwcp');
-			$dropdown_text    = __('Dropdown', 'shwcp');
-            $group_title_text = __('Group Title', 'shwcp');
-            $required_text    = __('Required', 'shwcp');
+            $field_title       = __('Add, Edit, Sort (for individual view and forms) and Remove Fields', 'shwcp');
+            $field_desc        = __('Core Fields cannot be removed, but all can be renamed.  Dropdown and Date field types should only be created on fields with no pre-existing data, they also should not change type once they are in use as data will be removed.', 'shwcp');
+            $save              = __('Save Changes', 'shwcp');
+            $add_new_text      = __('Add New Field', 'shwcp');
+            $new_text          = __('New Field', 'shwcp');
+            $text_field_text   = __('Text Field', 'shwcp');
+            $text_area_text    = __('Text Area', 'shwcp');
+            $phone_text        = __('Phone Number', 'shwcp');
+            $email_text        = __('Email Address', 'shwcp');
+            $website_text      = __('Website Address', 'shwcp');
+            $map_text          = __('Google Map Link', 'shwcp');
+			$date_only_text    = __('Date', 'shwcp');
+            $date_text         = __('Date Time', 'shwcp');
+            $rate_text         = __('Rating', 'shwcp');
+            $check_text        = __('Checkbox', 'shwcp');
+            $field_type_text   = __('Field Type', 'shwcp');
+			$dropdown_text     = __('Dropdown', 'shwcp');
+			$multi_select_text = __('Multi Select', 'shwcp');
+            $group_title_text  = __('Group Title', 'shwcp');
+            $required_text     = __('Required', 'shwcp');
 
-            $remove_text      = __('Toggle Field Removal', 'shwcp');
-            $remove_set_text  = __('Set For Removal', 'shwcp');
-            $cancel_text      = __('Cancel', 'shwcp');
+            $remove_text       = __('Toggle Field Removal', 'shwcp');
+            $remove_set_text   = __('Set For Removal', 'shwcp');
+            $cancel_text       = __('Cancel', 'shwcp');
 
             $date_warning = __('If changing an existing field type to the Date or Date Time selection all existing data for this field will be removed.  Just make sure that is what you want before saving.', 'shwcp');
             $date_warning_title = __('Warning', 'shwcp');
@@ -131,6 +132,7 @@ EOC;
 					// 10 dropdown select
 					// 11 date only picker
                     // 99 group title
+					// 777 multi select
                     if (isset($v->field_type) ) {
                         $field_type = $v->field_type;
                     } else {
@@ -176,6 +178,9 @@ EOC;
 						. '<input type="radio" class="field-type" name="' . $v->orig_name . '-type" value="10" '
                         . (($field_type == '10') ? $checked : '')
                         . ' data-text="' . $dropdown_text . '" />' . $dropdown_text . '<br />'
+						. '<input type="radio" class="field-type" name="' . $v->orig_name . '-type" value="777" '
+                        . ( ( $field_type == '777' ) ? $checked : '' )
+                        . ' data-text="' . $multi_select_text . '" />' . $multi_select_text . '<br />'
                         . '<input type="radio" class="field-type" name="' . $v->orig_name . '-type" value="99" '
                         . (($field_type == '99') ? $checked : '')
                         . ' data-text="' . $group_title_text . '" />' . $group_title_text . '<br />'
@@ -214,6 +219,9 @@ EOC;
                         $group_title_bg = ' style="background-color: #ededed;"';
                         $specific_type = '<div class="field-options-title"><span>' . $group_title_text . '</span></div>';
                         $required_field = ''; // just a label and not form input
+					} elseif ( $field_type == '777' ) {
+                    	$specific_type  = '<div class="field-options-title"><span>' . $multi_select_text . '</span></div>';
+                    	$required_field = ''; // not on multi select
                     } else {
                         $specific_type = '<div class="field-options-title"><span>' . $text_field_text . '</span></div>';
                     }
@@ -270,6 +278,7 @@ EOC;
             	<div class="date-text" style="display:none;">$date_text</div>
             	<div class="rate-text" style="display:none;">$rate_text</div>
 				<div class="dropdown-text" style="display:none;">$dropdown_text</div>
+				<div class="multi-select-text" style="display:none;">$multi_select_text</div>
             	<div class="check-text" style="display: none;">$check_text</div>
             	<div class="group-title-text" style="display:none;">$group_title_text</div>
             	<div class="required-text" style="display:none;">$required_text</div>
@@ -280,13 +289,14 @@ EOC;
 			$options_title = __('Create your option lists for dropdown custom field types', 'shwcp');
 			$options_desc = __('You must have created and saved at least one dropdown field in Manage Fields first', 'shwcp');
 			$select_desc = __('Select the List to manage', 'shwcp');
-			$dropdown_label = __('Dropdown Field To Manage', 'shwcp');
+			$dropdown_label = __('Dropdown or Multi-Select field to manage', 'shwcp');
 			$default_option = __('Select', 'shwcp');
 			$toggle_text = __('Toggle Option Removal', 'shwcp');
 			$sort_text = __('Sort', 'shwcp');
 			$options_text = __('Options', 'shwcp');
 			$add_option_text = __('Add New Option', 'shwcp');
 			$save_options_text = __('Save Dropdown Options', 'shwcp');
+			$atleastone_warning = __('You must have at least one option for the list.', 'shwcp');
 			$new_option_text = __('New Option', 'shwcp');
 			
 			$dropdowns = array();
@@ -319,6 +329,7 @@ EOC;
 					<div class="options-div col-md-4 col-sm-12"> </div>
 				</div>
 			</div>
+			<div class="atleastone-warning" style="display:none;">$atleastone_warning</div>
 EOC;
 
 		

@@ -669,6 +669,32 @@ EOC;
 													</div>
 												</div>
 EOC;
+							
+                            } elseif ($sv->field_type == '777') { // Multiselect
+                                $field_type = <<<EOC
+                                                <div class="col-md-6 $k-col">
+                                                    <div class="input-field">
+                                                        <label for="$k">$clean_trans</label>
+                                                        <select multiple id="$k" class="lead_select $k multi-select-field">
+EOC;
+                            	foreach($sst as $k2 => $v2) {
+                                    $v2->sst_name = stripslashes($v2->sst_name);
+                                    $selected = '';
+                                    if ($k == $v2->sst_type_desc) {   // matching sst's
+										if ($v['value'] == NULL) {$v['value'] = '[""]';}  // empty sets
+                                        if ( in_array($v2->sst_id, json_decode($v['value']))) { // selected
+                                            $selected = 'selected="selected"';
+                                        }
+                                        $field_type .= <<<EOC
+                                                            <option value="$v2->sst_id" $selected>$v2->sst_name</option>
+EOC;
+                                    }
+                                }
+                                $field_type .= <<<EOC
+                                                        </select>
+                                                    </div>
+                                                </div>
+EOC;
 
 							} elseif ($sv->field_type == '99') { // Group Title
 								$field_type = <<<EOC

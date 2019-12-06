@@ -112,26 +112,38 @@
 						}
 					}
                 }
-				// check for dropdown type field (similar to source, status, type)
+				// check for dropdown type field or multiselect field search
                 $dropdown_search = false;
+				$multi_search = false;
                 foreach($all_sort as $k => $v) {
                     if ($field == $v->orig_name) {
                         if ($v->field_type == '10') {
                             $dropdown_search = true;
-                        }
+                        } elseif ($v->field_type == '777') {
+							$multi_search = true;
+						}
                     }
                 }
 
 
                 if (isset($_GET['q']) && $_GET['q'] != '') {
 				 	// field conditionals
-					if ($dropdown_search) {
+					if ($dropdown_search) {  // dropdown search
 						$q = $wpdb->esc_like($_GET['q']);
 						$check = $wpdb->get_row(
 							"select * from $this->table_sst where sst_type_desc='$field' and sst_name LIKE '%$q%'"
 						);
 						$real_val = isset($check->sst_id) ? $check->sst_id : 'NULL'; // To avoid db errors
 						$search = 'AND l.' . $field . '=' . $real_val;
+			
+					} elseif ($multi_search) { // multi-select search
+						$q = $wpdb->esc_like($_GET['q']);
+                        $check = $wpdb->get_row(
+                            "select * from $this->table_sst where sst_type_desc='$field' and sst_name LIKE '%$q%'"
+                        );
+                        $real_val = isset($check->sst_id) ? $check->sst_id : 'NULL'; // To avoid db errors
+                        $search = 'AND l.' . $field . ' like "%\"' . $real_val . '\"%"';
+
 					} elseif ( $field == 'wcp_all_fields' ) {  // all fields search
 						$search = '';
 						$q = $wpdb->esc_like($_GET['q']);
@@ -168,10 +180,6 @@
                            		}
 							}
 						}
-						// end for date search using today query
-						
-
-
 
 						if ($db_format != $set_format) {
                         	foreach ($all_sort as $k2 => $v2) {
@@ -586,7 +594,12 @@ EOC;
                     continue;
                 }
 				$v = stripslashes($v);
-				$orig_name = $sorting[$i]->orig_name;
+                $orig_name = $sorting[$i]->orig_name;				
+
+				$no_link_th = "";
+				if ($sorting[$i]->field_type == '777') {   // No sorting on multiselect field types
+					$no_link_th = "<th class='table-head $orig_name'>$v</th>";
+				}
 
                 //print_r($lead_columns);
                 // default arrow down
@@ -609,12 +622,17 @@ EOC;
 
 				$link_beg = '<a href="' . $sort_link . '">';
                 $link_end = '</a>';
-
-                $wcp_main .= <<<EOC
+				if ($no_link_th !='') {
+					$wcp_main .=<<<EOC
+									$no_link_th
+EOC;
+				} else {
+                	$wcp_main .= <<<EOC
 
 									<th class="table-head $orig_name">$link_beg$v $arrow$link_end</th>
 
 EOC;
+				}
                 $i++;
             }
 			$edit_text = __('Quick Edit', 'shwcp');
@@ -709,6 +727,7 @@ EOC;
 						 * 8 = star rating
 						 * 9 = checkbox
 						 * 10 = dropdown field
+						 * 777 = multi-select field
 						 */
 						$td_content = '';
 						$now = date('Y-m-d H:i:s');
@@ -721,7 +740,10 @@ EOC;
 									$max_display = 4;
 									$file_data = unserialize($v);
 									$td_content = '<div class="files-preview">';
-									$count = count($file_data);
+									$count = 0;
+									if (!empty($file_data)) {
+										$count = count($file_data);
+									} 
 									$inc = 1;
 									if (isset($file_data[0])) { // check that we have at least 1 file
 										foreach ($file_data as $fk => $fv) {
@@ -758,6 +780,24 @@ EOC;
                                     }
 									$td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;entry=' 
 											    . $lead['wcp_lead_id'] . '">' . $selected . '</a>';
+
+								} elseif ($sv->field_type == '777') { // multi select fields
+                                    $selected = '';
+									$selected_array = array();
+                                    foreach($sst_all as $k2 => $v2) {
+                                        if ($sv->orig_name == $v2->sst_type_desc) {   // matching sst's
+											if ($v == NULL) {$v = '[""]';}  // empty sets
+                                            if ( in_array($v2->sst_id, json_decode($v)) ) {
+                                                array_push( $selected_array, $v2->sst_name );
+                                                //$selected .= $v2->sst_name .'; ';
+                                            }
+
+                                        }
+										$selected = implode(', ', $selected_array);
+                                    }
+
+                                    $td_content = '<a class="individual-link" href="' . $page_ind_arg . '&amp;entry='
+                                                  . $lead['wcp_lead_id'] . '">' . $selected . '</a>';
 
 								} elseif ($sv->field_type == '9') { // checkbox
 									$checked = '';

@@ -77,6 +77,7 @@
 					 . '<li>' . __('Import 1 file at a time.', 'shwcp') . '</li>'
 					 . '<li>' . __('Your Import file will need a header row so you can line up your data with the columns in the next step.', 'shwcp') . '</li>'
 					 . '<li>' . __('Importing is going to be directly impacted by your server php upload file limits and memory limits.  Ask your webhost how to increase these if needed.', 'shwcp') . '</li>'
+					 . '<li>' . __('Multi-select fields must use a semicolon and space (; ) for delimeters.', 'shwcp') . '</li>'
 					 . '</ol>'
 					 . '<div id="browse_import" href="#">'
 					 . __('Drag or click to upload a csv, xls, or xlsx file', 'shwcp')

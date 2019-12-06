@@ -167,6 +167,7 @@ class SHWCP_API_Tabs {
 			'contact_image_thumbsize' => '20',
 			'contact_image_id' => '',
 			'contact_upload' => 'true',
+			'export_file' => 'WP-Contacts-Export',
 		), $this->first_tab );
 
 		// set current user default to full permissions
@@ -258,6 +259,8 @@ class SHWCP_API_Tabs {
 				$this->first_tab_key_db, 'section_general' );
 		add_settings_field( 'page_greeting', __('Greeting Text', 'shwcp'), array( &$this, 'field_greeting_option' ),
 		        $this->first_tab_key_db, 'section_general' );
+		add_settings_field( 'export_file', __('Export File Name', 'shwcp'), array( &$this, 'field_export_file' ),
+				$this->first_tab_key_db, 'section_general' );
 		add_settings_field( 'contact_image', __('Entry Image', 'shwcp'), array( &$this, 'field_contact_image' ),
 				$this->first_tab_key_db, 'section_general' );
 		add_settings_field( 'contact_image_url', __('Default Entry Image', 'shwcp'), 
@@ -771,6 +774,16 @@ class SHWCP_API_Tabs {
         <textarea name="<?php echo $this->first_tab_key_db; ?>[page_greeting]"><?php echo esc_attr( $this->first_tab['page_greeting'] ); ?>
  		</textarea>
 		<p><?php echo __("Greeting Text on login form, keep it relatively short", "shwcp"); ?></p>
+        <?php
+    }
+
+	/*
+	 * Export File Name
+	 */
+	function field_export_file() {
+		?>
+		<input name="<?php echo $this->first_tab_key_db;?>[export_file]" value="<?php echo esc_attr($this->first_tab['export_file'] ); ?>"/>
+        <p><?php echo __("The file name for csv and xls exports", "shwcp"); ?></p>
         <?php
     }
 

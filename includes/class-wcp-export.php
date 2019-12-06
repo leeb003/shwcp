@@ -403,7 +403,20 @@
 											$real_value = $wpdb->get_var(
 											"SELECT sst_name FROM $this->table_sst where sst_id=" . $real_value . " limit 1"
 											);
-										}
+										} elseif ($ev->field_type == '777') { // 777 is multiselect field type
+                                            $real_values = json_decode($real_value);
+                                            $values_array = array();
+											if (!empty($real_values)) {
+                                            	foreach ($real_values as $realk => $realv) {
+                                                	$values_array[] = $wpdb->get_var(
+                                                    	"SELECT sst_name FROM $this->table_sst where sst_id=" . $realv. " limit 1"
+                                                	);
+                                            	}
+                                            	$real_value = implode('; ', $values_array);
+											} else {
+												$real_value = '';
+											}
+                                        }	
 									}
 								}
 
@@ -420,14 +433,14 @@
 
 			// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 			$objPHPExcel->setActiveSheetIndex(0);
-
+			$export_file = $this->first_tab['export_file'];
 			// Choose output format 
 			if ($type == 'csv') {    // Save csv FILE
 
     			$objWriter = new PHPExcel_Writer_CSV($objPHPExcel);
     			header('Content-Encoding: UTF-8');
    	 			header('Content-type: text/csv; charset=UTF-8');
-    			header('Content-Disposition: attachment; filename=WP-Contacts-Export.csv');
+    			header("Content-Disposition: attachment; filename=$export_file.csv");
     			echo "\xEF\xBB\xBF"; // UTF-8 BOM
                 $objWriter->save('php://output');
 
@@ -438,7 +451,7 @@
     			header('Cache-Control: post-check=0, pre-check=0', false);
     			header('Pragma: no-cache');
     			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    			header('Content-Disposition: attachment;filename=WP-Contacts-Export.xlsx');
+    			header("Content-Disposition: attachment;filename=$export_file.xlsx");
                 $objWriter->save('php://output');
 			}
 			exit;

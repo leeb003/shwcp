@@ -99,6 +99,21 @@
                                         );
 								$value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $db);
 								$wpdatafinal[$f] = $value;
+
+							} elseif ($v2->field_type == '777') { // multi-select options id or create for each one
+                            	if ($v != '') {
+                                   	$value_array = explode(',', $v);
+									$field_array = array();
+									foreach ($value_array as $v_k => $v_v) {
+                                   		$sst_type = $wpdb->get_var(
+                                       		"SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db 
+                                       		. " where sst_type_desc='$f' limit 1"
+                                   		);
+                                   		$value = $this->sst_update_checkdb($v_v, $sst, $f, $sst_type, $db);
+										$field_array[] = $value;
+									}
+                                   	$wpdatafinal[$f] = json_encode($field_array);
+                            	}
 							}
 						}
 					}
@@ -234,117 +249,6 @@
     	}
 		/* End Contact Form 7 Methods */
 
-		/* Ninja Form Methods Pre 3.0 */
-		public function ninja_forms_wpcontacts() {
-			global $ninja_forms_processing;
-			$wpcinsert = false;
-			
-			// get the submitted data
-			$all_fields = $ninja_forms_processing->get_all_fields();
-			$field_settings = $ninja_forms_processing->get_field_settings();
-			if ( is_array( $all_fields ) ) {
-				global $wpdb;
-
-				$wpdatapre = array();
-				$wpdatabasemap = '';
-				foreach ($all_fields as $field_id => $user_value ) {
-					//echo $user_value . "\n";
-					// We care about the admin field for mapping
-					$field_settings = $ninja_forms_processing->get_field_settings($field_id);
-					foreach ($field_settings['data'] as $field_setting => $field_value) {
-						if ($field_setting == 'admin_label') {  // check for our naming convention
-							$admin_label = explode( '-', $field_value );
-							if ($admin_label[0] == 'wpcontacts') {
-								// We have a match
-								$wpcinsert = true;
-								$wpdatapre[$admin_label[1]] = $user_value;
-								//echo $admin_label[0] . '  ' . $wp_field . " MATCH FOR FIELD\n\n";
-							} elseif ($field_value == trim('wpdatabasemap') ) {  // database to use
-								$wpdatabasemap = trim($user_value);
-							}	
-								
-						}
-					}
-					//print_r($field_settings);
-					// do something
-				}
-
-				$db = '';
-                if ($wpdatabasemap) {
-                    $name = $wpdatabasemap;
-                    $db = $this->search_option_dbname($name);
-					if ($db) {
-                    	$db = '_' . $db;
-					}
-                }
-                $main_table = $wpdb->prefix . SHWCP_LEADS . $db;
-
-				/* Get the existing columns to compare submitted to */
-                $main_columns = $wpdb->get_results(
-                    "
-                    SELECT `COLUMN_NAME`
-                    FROM `INFORMATION_SCHEMA`.`COLUMNS`
-                    WHERE `TABLE_SCHEMA`='$wpdb->dbname'
-                    AND `TABLE_NAME`='$main_table'
-                    "
-                );
-                $existing_fields = array();
-                foreach ($main_columns as $k => $v) {
-                    $existing_fields[] = $v->COLUMN_NAME;
-                }
-
-				// If we have any matches...insert
-				if ($wpcinsert) {
-					// process and insert
-					foreach ($wpdatapre as $k => $v) {
-						if (in_array($k, $existing_fields)) {
-							$wpdatafinal[$k] = $v;
-							//echo "$k set to $v \n\n";
-						}
-					}
-					$wpdatafinal['creation_date'] = current_time( 'mysql' );
-                	$wpdatafinal['created_by']    = __('Ninja Form Submittal', 'shwcp');
-                	$wpdatafinal['updated_date']  = current_time( 'mysql' );
-                	$wpdatafinal['updated_by']    = __('Ninja Form Submittal', 'shwcp');
-					// remove any fields that shouldn't be changed
-					unset($wpdatafinal['id']);
-
-					//echo "Fields to insert \n\n";
-					//print_r($wpdatafinal);
-
-					/* Dropdown Check */
-                	$sorting = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SORT . $db);
-                	$sst = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SST . $db);
-                	foreach ($wpdatafinal as $f => $v) {
-                    	foreach ($sorting as $k2 => $v2) {
-                        	if ($v2->orig_name == $f) {
-                            	if ($v2->field_type == '10') {
-                                	$sst_type = $wpdb->get_var(
-                                            "SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db
-                                            . " where sst_type_desc='$f' limit 1"
-                                        );
-                                	$value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $db);
-                                	$wpdatafinal[$f] = $value;
-                            	}
-                        	}
-                    	}
-                	}
-
-					// Prepare insert
-                	foreach ($wpdatafinal as $f => $v) {
-                       	$format[] = '%s';
-                	}
-
-                	$wpdb->insert(
-                    	$wpdb->prefix . SHWCP_LEADS . $db,
-                    	$wpdatafinal,
-                    	$format
-                	);
-				} // end match and insert
-							
-			}			
-		}
-
 		/* Ninja Form Methods 3.0 and above */
         public function ninja_forms3_wpcontacts($form_data) {
             $wpcinsert = false;
@@ -427,6 +331,25 @@
                                         );
                                     $value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $db);
                                     $wpdatafinal[$f] = $value;
+
+								} elseif ($v2->field_type == '777') { // multi-select options id or create for each one
+                            		$select_array = array();
+                            		if (!empty($v)) {
+                                		if (is_array($v)) {
+                                    		foreach ($v as $sel_k => $sel_v) {
+                                        		if ($sel_v != '') {  // we don't want empty options
+                                            		$sst_type = $wpdb->get_var(
+														"SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db . " where sst_type_desc='$f' limit 1"
+                                            		);
+                                            		$select_str = $this->sst_update_checkdb($sel_v, $sst, $f, $sst_type, $db);
+                                            		$select_array[] = $select_str;
+                                        		}
+                                    		}
+                                    		$value = json_encode($select_array);
+                                    		//echo "$k = "; print_r($real_value);
+                                    		$wpdatafinal[$k] = $value;
+										}
+									}
                                 }
                             }
                         }
@@ -446,7 +369,7 @@
             }
         }
 
-		/* End Ninja Form Methods for pre 3.0 and post 3.0 */
+		/* End Ninja Form Methods post version 3.0 */
 
 		/* Gravity Form Methods */
 		public function gravity_forms_wpcontacts($entry, $form) {
@@ -548,7 +471,21 @@
                                         );
                                 	$value = $this->sst_update_checkdb($v, $sst, $f, $sst_type, $db);
                                 	$wpdatafinal[$f] = $value;
-                            	}
+
+								} elseif ($v2->field_type == '777') { // multi-select options id or create for each one
+                            		$value = array();
+                                	if ($v != '') {
+                                   		$value_array = json_decode($v);
+										foreach ($value_array as $v_k => $v_v) {	
+                                   			$sst_type = $wpdb->get_var(
+                                       			"SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db
+                                       			. " where sst_type_desc='$f' limit 1"
+                                   			);
+                                   			$value[] = $this->sst_update_checkdb($v_v, $sst, $f, $sst_type, $db);
+										}
+										$wpdatafinal[$f] = json_encode($value);
+                               		}
+                        		}
                         	}
                     	}
                 	}
