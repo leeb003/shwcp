@@ -454,7 +454,8 @@
 				'custom_time'           => 'false',
 				'custom_css'            => '',
 				'custom_js'             => '',
-				'troubleshoot'          => 'false'
+				'troubleshoot'          => 'false',
+				'export_file'           => 'WP-Contacts-Export',
 			);
 
 			$main_settings_option     = 'shwcp_main_settings' . $dbnumber;

@@ -1,9 +1,9 @@
 === WordPress Plugin Template ===
 Contributors: sh-themes
 Tags: wordpress, plugin, leads, contacts
-Requires at least: 4.0
-Tested up to: 4.6.1
-Stable tag: 4.6.1
+Requires at least: 4.9
+Tested up to: 5.3
+Stable tag: 5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Leads and Contacts manager used as a WordPress plugin
@@ -31,6 +31,28 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 3.2.7 =
+* Cloning Databases functionality.  Now you can easily clone an existing database with settings to another new one in your backend settings.
+
+= 3.2.6 = 
+* New feature Multiselection fields!  Now you can create custom multiselection field types in your WP Contacts.
+* Set name for export files.
+
+= 3.2.5 = 
+* Users now have the option to download database backup zip files through the backend Database settings tab
+
+= 3.2.4 = 
+* Custom thumbnail sizes are now allowed and can be set in the backend settings.  
+* Existing thumbnails can be regenerated through Settings -> Manage Front Page on the frontend
+
+= 3.2.3 =
+* Uninstall routine correctly removes tables and options upon uninstall
+
+= 3.2.2 = 
+* Gutenberg sidebar implemented for database selection on WP Contacts page when WP Contacts page template is selected
+
+= 3.2.1 =
+* Automatic updates are now handled by the Envato Market plugin, users will be given the option to install it for managing updates now.
 
 = 3.2.0 =
 * Added insert notes capabilities to the REST api so that notes can now be created this way as well

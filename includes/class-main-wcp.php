@@ -439,6 +439,136 @@
 		}
 
 		/**
+		 * Clone an existing database to a new one with all options and files
+		 * @ since 3.2.7
+		 * @ return array
+		 */
+		public function wcp_clonedb($dbnumber, $dbname="unnamed") {
+			global $wpdb;
+			$db_cloned['number'] = $dbnumber;
+			if ($db_cloned['number'] == 'default') {
+				$db_to_clone = '';
+			} else {
+				$db_to_clone = '_' . intval($db_cloned['number']);
+			}
+			$next_db = $this->wcp_next_db();
+
+			$table_main_from 			= $wpdb->prefix . SHWCP_LEADS . $db_to_clone;
+			$table_sst_from 			= $wpdb->prefix . SHWCP_SST . $db_to_clone;
+			$table_log_from 			= $wpdb->prefix . SHWCP_LOG . $db_to_clone;
+			$table_sort_from 			= $wpdb->prefix . SHWCP_SORT . $db_to_clone;
+			$table_notes_from			= $wpdb->prefix . SHWCP_NOTES . $db_to_clone;
+			$table_events_from 			= $wpdb->prefix . SHWCP_EVENTS . $db_to_clone;
+
+			$first_tab_options_from 	= 'shwcp_main_settings' . $db_to_clone;
+			$second_tab_options_from 	= 'shwcp_permissions' . $db_to_clone;
+			$frontend_settings_from 	= 'shwcp_frontend_settings' . $db_to_clone;
+
+
+			$table_main_to            = $wpdb->prefix . SHWCP_LEADS . $next_db;
+            $table_sst_to             = $wpdb->prefix . SHWCP_SST . $next_db;
+            $table_log_to             = $wpdb->prefix . SHWCP_LOG . $next_db;
+            $table_sort_to            = $wpdb->prefix . SHWCP_SORT . $next_db;
+			$table_notes_to			  = $wpdb->prefix . SHWCP_NOTES . $next_db;
+            $table_events_to          = $wpdb->prefix . SHWCP_EVENTS . $next_db;
+
+            $first_tab_options_to     = 'shwcp_main_settings' . $next_db;
+            $second_tab_options_to    = 'shwcp_permissions' . $next_db;
+            $frontend_settings_to     = 'shwcp_frontend_settings' . $next_db;			
+
+			$db_clone_to = $wpdb->prefix . SHWCP_LEADS . $next_db;
+
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			// Main table
+			dbDelta(
+				"CREATE TABLE $table_main_to LIKE $table_main_from;
+				INSERT INTO `$table_main_to` SELECT * FROM $table_main_from;"
+			);
+			// SST table
+			dbDelta(
+                "CREATE TABLE $table_sst_to LIKE $table_sst_from;
+                INSERT INTO `$table_sst_to` SELECT * FROM $table_sst_from;"
+            );
+			// Log table (no entries)
+			dbDelta(
+                "CREATE TABLE $table_log_to LIKE $table_log_from;"
+            );
+			// Sort table
+			dbDelta(
+                "CREATE TABLE $table_sort_to LIKE $table_sort_from;
+                INSERT INTO `$table_sort_to` SELECT * FROM $table_sort_from;"
+            );
+			// Notes table
+			dbDelta(
+		        "CREATE TABLE $table_notes_to LIKE $table_notes_from;
+                INSERT INTO `$table_notes_to` SELECT * FROM $table_notes_from;"
+            );
+			// Events table
+			dbDelta(
+                "CREATE TABLE $table_events_to LIKE $table_events_from;
+                INSERT INTO `$table_events_to` SELECT * FROM $table_events_from;"
+            );
+			// Options entries
+			$first_tab         = get_option($first_tab_options_from);
+			$second_tab        = get_option($second_tab_options_from);
+			$frontend_settings = get_option($frontend_settings_from);
+			$first_tab['database_name'] = $dbname . "-clone";
+			
+
+			update_option($first_tab_options_to, $first_tab);
+			update_option($second_tab_options_to, $second_tab);
+			update_option($frontend_settings_to, $frontend_settings);
+
+			// Create folders and copy
+			global $wp_filesystem;
+			$upload_dir = wp_upload_dir();
+			wp_mkdir_p($upload_dir['basedir'] . '/shwcp' . $next_db);
+			copy_dir(
+				$upload_dir['basedir'] . '/shwcp' . $db_to_clone,
+				$upload_dir['basedir'] . '/shwcp' . $next_db
+			);
+
+
+			$db_cloned['next_db'] = $next_db;
+			$db_cloned['name'] = $dbname;
+			$db_cloned['db_to_clone'] = $db_to_clone;
+
+			return $db_cloned;
+
+			// just need to copy directory and have create function in wcp-ajax use the wcp_next_db below
+		}
+
+		/**
+		 * Next available database number used for create and clone
+		 * @ since 3.2.7
+		 * return integer
+		 */
+		public function wcp_next_db() {
+			global $wpdb;
+			// loop through existing leads table to find the next available number to assign the db to 
+            $databases = array();
+			$table_main = $wpdb->prefix . SHWCP_LEADS;
+            $dbs = $wpdb->get_results("SHOW tables LIKE '$table_main%'");
+            foreach ($dbs as $k => $v) {
+            	foreach ($v as $v2 => $table) {
+                	if ($table == $table_main) {  // default database, ignore...
+                    	// ignore
+                    } else {        // All others created, find numeric values after name
+                    	$databases[] = $table;
+                    }
+                }
+            }
+            $db_inc = 1;
+            $dbname = $table_main . '_' . $db_inc;
+            while(in_array($dbname, $databases)) {
+            	$db_inc++;
+            	$dbname = $table_main . '_' . $db_inc;
+            }
+            $dbnumber = '_' . $db_inc;	
+			return ($dbnumber);
+		}
+
+		/**
 		 *  Strip slashes on array function
 		 * @ since 3.2.5
 		 * @ return string

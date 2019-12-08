@@ -2997,6 +2997,8 @@
 				$db_trans_name = sanitize_text_field($_POST['db_trans_name']);
 				// loop through existing leads table to find the next available number to assign the db to 
 				$table_main = $wpdb->prefix . SHWCP_LEADS;
+
+				/*
             	$databases = array();
             	$dbs = $wpdb->get_results("SHOW tables LIKE '$table_main%'");
             	foreach ($dbs as $k => $v) {
@@ -3015,6 +3017,8 @@
                     $dbname = $table_main . '_' . $db_inc;
                 }
 				$dbnumber = '_' . $db_inc;
+*/
+				$dbnumber = $this->wcp_next_db();
 				// create the database
 				require_once SHWCP_ROOT_PATH . '/includes/class-setup-wcp.php';
                 $setup_wcp = new setup_wcp;
@@ -3038,7 +3042,7 @@
 				// responses
 				$response['created'] = 'true';
 				$response['dbnumber'] = $dbnumber;
-				$response['dbname'] = $dbname;
+				//$response['dbname'] = $dbname;
 
 			// Delete existing database
 			} elseif (isset($_POST['delete_db']) && $_POST['delete_db'] == 'true') {
@@ -3046,6 +3050,16 @@
 				// wcp_deldb in class-main
 				$db_deleted = $this->wcp_deldb($dbnumber);
 				$response['deleted'] = $db_deleted;
+
+			// Clone existing database
+			} elseif (isset($_POST['clone_db']) && $_POST['clone_db'] == 'true') {
+				$dbnumber = sanitize_text_field($_POST['db_number']);
+				$dbname = sanitize_text_field($_POST['db_name']);
+				// wcp_clonedb in class-main
+				$db_cloned = $this->wcp_clonedb($dbnumber, $dbname);
+				$response['cloned_number'] = $db_cloned['number'];
+				$response['cloned_name'] = $db_cloned['name'];
+				$response['next_db'] = $db_cloned['next_db'];
 			}
 
 

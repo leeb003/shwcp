@@ -1543,10 +1543,13 @@ class SHWCP_API_Tabs {
 			'manage_options', 'shwcp_add_db', array(&$this, 'shwcp_add_db'));
 		$delete_db = add_submenu_page( $this->plugin_options_key, __('Delete Database', 'shwcp'), __('Delete Database', 'shwcp'),
 			'manage_options', 'shwcp_delete_db', array(&$this, 'shwcp_delete_db'));
+		$clone_db = add_submenu_page( $this->plugin_options_key, __('Clone Database', 'shwcp'), __('Clone Database', 'shwcp'),
+			'manage_options', 'shwcp_clone_db', array(&$this, 'shwcp_clone_db'));
 
 		// loaded only in our Contacts menu
         add_action( 'load-' . $add_db, array($this, 'load_admindb_scripts') );
 		add_action( 'load-' . $delete_db, array($this, 'load_admindb_scripts') );
+		add_action( 'load-' . $clone_db, array($this, 'load_admindb_scripts') );
 	}
 	
 
@@ -1647,6 +1650,60 @@ EOC;
             <div class="shwcp-deldb-confirm" $hidden><h3>$dbname $removed_text</h3></div>
 EOC;
 	}
+
+	/*
+	 * Submenu Clone Database
+	 */
+	function shwcp_clone_db() {
+		$steps = __('Choose the database you would like to clone and click submit to confirm', 'shwcp');
+        $label = __('Clone', 'shwcp');
+        $title = __('Clone Existing Database', 'shwcp');
+        $select_text = __('--Select--', 'shwcp');
+        $hidden = ' style="display:none"';
+        $submitted = isset($_GET['submitted']) ? intval($_GET['submitted']) : '';
+        $dbname = isset($_GET['dbname']) ? $_GET['dbname'] : '';
+        $description = __("Clone a database and all of it's settings for a quick start on a new database.", 'shwcp');
+        $cloned_text = __('Database has been cloned.', 'shwcp');
+        if ($submitted == '1') {
+            $hidden = '';
+        }
+        echo <<<EOC
+            <div class="wrap"><div id="icon-tools" class="icon32"></div>
+                <h2>$title</h2>
+                <p>$description</p>
+            </div>
+            <hr />
+            <h3>$steps</h3>
+            <hr />
+            <div class="shwcp-clone-div">
+                <label for="shwcp-clonedb-name">$label : </label>
+                <select class="shwcp-clonedb-name" />
+                <option value="">$select_text</option>
+EOC;
+        global $wpdb;
+        $options_table = $wpdb->prefix . 'options';
+        $option_entry = $this->first_tab_key;
+        $dbs = $wpdb->get_results("SELECT * FROM $options_table WHERE `option_name` LIKE '%$option_entry%'");
+        foreach($dbs as $k => $db) {
+			if ($db->option_name == $this->first_tab_key) { // default database, no deleting
+				$db_number = 'default';
+				$options = get_option($db->option_name);
+				echo '<option value="' . $db_number . '">' . $options['database_name'] . '</option>';
+			} else {
+            	$remove_name = '/^' . $this->first_tab_key . '_/';  // Just get the database number
+            	$db_number = preg_replace($remove_name, '', $db->option_name);
+            	$options = get_option($db->option_name);
+            	echo '<option value="' . $db_number . '">' . $options['database_name'] . '</option>';
+			}
+        }
+    
+        echo <<<EOC
+                </select>&nbsp;&nbsp;
+                <button class="button-primary shwcp-clonedb-submit">$label</button>
+            </div>
+            <div class="shwcp-clonedb-confirm" $hidden><h3>$dbname $cloned_text</h3></div>
+EOC;
+    }
 
 	/* Only called on our plugin tabs page */
 	function load_admin_scripts() {

@@ -64,4 +64,33 @@ jQuery(function ($) {  // use $ for jQuery
 		}
 	});
 
+	// Clone Database
+	$(document).on('click', '.shwcp-clonedb-submit', function() {
+        var dbToClone = $(document).find('.shwcp-clonedb-name option:selected').val();
+        var dbNameToClone = $(document).find('.shwcp-clonedb-name option:selected').text();
+        if (dbToClone) {
+            //alert(dbToClone);
+            $.post(WCP_Ajax_DB_Admin.ajaxurl, {
+                // wp ajax action
+                action: 'ajax-wcpbackend',
+                // vars
+                clone_db: 'true',
+                db_number: dbToClone,
+				db_name: dbNameToClone,
+                nextNonce : WCP_Ajax_DB_Admin.nextNonce
+
+            }, function(response) {
+                if (response.cloned_number) {
+                    var url = window.location.href;
+                    if (url.indexOf('?') > -1){
+                        url += '&submitted=1&dbname=' + dbNameToClone
+                    }else{
+                        url += '?submitted=1&dbname=' + dbNameToClone
+                    }
+                    window.location.href=url;
+                }
+            });
+        }
+    });	
+
 });

@@ -467,8 +467,9 @@
 			$wcp_permissions = $this->second_tab; //set in main
 
 			// Menu translation
-			$home_menu = __('Home', 'shwcp'); // used in drawer menu
-			$home = __('Home', 'shwcp');
+			$home_text = $this->first_tab['database_name'];
+			$home_menu = $home_text;
+			$home = $home_text;
 
 			$dd_filter = false; // check for Dropdown filters as well
 			foreach($_GET as $key=>$value){
