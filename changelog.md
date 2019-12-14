@@ -1,0 +1,72 @@
+# Changelog
+All notable changes to WP Contacts will be documented in this file starting with version 3.1.0.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.2.7] - 2019-12-7
+### Added
+- Cloning Databases functionality.  Now you can easily clone an existing database with settings to another new one in your backend settings.
+
+## [3.2.6] - 2019-12-6
+### Added
+- New feature Multiselection fields!  Now you can create custom multiselection field types in your WP Contacts.
+- Set name for export files.
+
+## [3.2.5] - 2019-12-2 
+### Added
+- Users now have the option to download database backup zip files through the backend Database settings tab
+
+## [3.2.4] - 2019-11-30 
+- Custom thumbnail sizes are now allowed and can be set in the backend settings.  
+- Existing thumbnails can be regenerated through Settings -> Manage Front Page on the frontend
+
+## [3.2.3] - 2019-11-29
+- Uninstall routine correctly removes tables and options upon uninstall
+
+## [3.2.2] - 2019-11-27
+- Gutenberg sidebar implemented for database selection on WP Contacts page when WP Contacts page template is selected
+
+## [3.2.1] - 2019-11-22
+- Automatic updates are now handled by the Envato Market plugin, users will be given the option to install it for managing updates now.
+
+## [3.2.0] - 2019-9-6
+- Added insert notes capabilities to the REST api so that notes can now be created this way as well
+
+## [3.1.9] - 2019-8-6
+- Added update entries functionality to spreadsheet imports to allow data with an ID column to update existing
+- entries with the same id instead of importing new ones
+- Fixed php 7.2+ null count warning message
+
+## [3.1.8] - 2019-6-27 
+- Added detail logging on Entry detail modification, something we have overlooked in the past
+
+## [3.1.7] - 2019-3-13 
+- Added duplicate entries functionality to frontend
+- PHP Notification fixes
+
+## [3.1.6] - 2018-8-31 
+- Fixed bug when adding new entry could not go directly to entry to edit
+- Changed add/edit modal to disallow outside clicks when open
+
+## [3.1.5] - 2017-11-22
+- Fixed bug where database ordering for form integration was not sending
+- results to the correct database when non-default used.
+
+## [3.1.4] - 2017-9-29
+- Greek language file added.  Thanks to George Konstantinidis!
+
+## [3.1.3] - 2017-9-26
+- Bug fix for custom roles small screens adding entries
+
+## [3.1.2] - 2017-9-1
+- Bug fix for ie 11 with javascript error thrown for no matching parenthesis
+
+## [3.1.1] - 2017-8-28
+- Bug fix for add new entries permission where radio allowed both being
+- checked and not saving to db
+
+## [3.1.0] - 2017-7-21
+- Bug fix choice selection for form integrations when selection exists for other dropdown
+- Contact Form 7 version 4.8 update fix tag array to object check
+
