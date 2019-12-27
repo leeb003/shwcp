@@ -130,7 +130,12 @@
 					  . '<div class="input-field"><label for="filter-sel">' . __('Select Field', 'shwcp') . '</label>'
 					  . '&nbsp;&nbsp;&nbsp;<select class="filter-sel input-select" name="filter-sel[]">';
 				foreach ($filter_fields as $k => $v) {
-					$content .= '<option value="' . $v->orig_name . '">' . $v->translated_name . '</option>';
+					// Check our individual field overrides for adding to the main content
+                    $access_display = $this->check_field_override($v->orig_name);
+					//echo "Access display for $v->orig_name = $access_display<br />";
+					if ($access_display) {
+						$content .= '<option value="' . $v->orig_name . '">' . $v->translated_name . '</option>';
+					}
 				}
 				$content .= '</select>'
 					  . '</div></div>'
@@ -154,28 +159,39 @@
 				$cut = ceil($fields_total / 3);
 				$i = 1;
 				foreach ($export_fields as $k => $v) {
-					if ($v->field_type != 99 
-						&& $v->orig_name != 'lead_files'
-					) {
-						$content .= '<p><input type="checkbox" id="' . $v->orig_name 
-						 . '" class="export-field" name="fields[' . $v->orig_name . ']" />' 
-						 . '<label for="' . $v->orig_name . '">' . stripslashes($v->translated_name) . '</label></p>';
-						$i++;
-					}
+					// Check our individual field overrides for adding to the main content
+                    $access_display = $this->check_field_override($v->orig_name);
+                    //echo "Access display for $v->orig_name = $access_display<br />";
+                    if ($access_display) {
+						if ($v->field_type != 99 
+							&& $v->orig_name != 'lead_files'
+						) {
+							$content .= '<p><input type="checkbox" id="' . $v->orig_name 
+						 			  . '" class="export-field" name="fields[' . $v->orig_name . ']" />' 
+						 			  . '<label for="' . $v->orig_name . '">' . stripslashes($v->translated_name) . '</label></p>';
+							$i++;
+						}
 
-					if ($i == $cut) {
-						$content .= '</div><div class="col-md-4 col-sm-6">' . "\n";
-						$i = 1;
+						if ($i == $cut) {
+							$content .= '</div><div class="col-md-4 col-sm-6">' . "\n";
+							$i = 1;
+						}
 					}
 				}
 				global $post;
 				$postID = $post->ID;
 
 				$content .= '<p><input type="checkbox" id="photo-links" class="export-field" name="fields[photo-links]" />' 
-					 . '<label for="photo-links">' . __('Links to Photos', 'shwcp') . '</label></p>'
-					 . '<p><input type="checkbox" id="file-links" class="export-field" name="fields[file-links]" />' 
-					 . '<label for="file-links">' . __('Links to Files', 'shwcp') . '</label></p>'
-					 . '</div></div>'
+					 . '<label for="photo-links">' . __('Links to Photos', 'shwcp') . '</label></p>';
+
+				// Check our individual field overrides for adding to the main content
+                $access_display = $this->check_field_override('lead_files');
+                if ($access_display) {
+					$content .= '<p><input type="checkbox" id="file-links" class="export-field" name="fields[file-links]" />' 
+					 	. '<label for="file-links">' . __('Links to Files', 'shwcp') . '</label></p>';
+				}
+
+				$content .= '</div></div>'
 					 . '<div class="row"><hr /><div class="col-md-12">'
 					 . '<div class="input-field"><label for="export-type">' . __('Choose a format:', 'shwcp') 
 					 . '</label><select id="export-type" class="input-select" name="output-type">'

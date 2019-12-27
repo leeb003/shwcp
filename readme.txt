@@ -31,6 +31,10 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 3.2.8 =
+* Fix for displaying multi-select fields in view only mode on the individual entry page
+* New feature - Individual field overrides for custom roles. You can now choose which fields are accessible for custom roles that you create!
+
 = 3.2.7 =
 * Cloning Databases functionality.  Now you can easily clone an existing database with settings to another new one in your backend settings.
 

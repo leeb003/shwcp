@@ -390,6 +390,11 @@ EOC;
 				$field_type = '';
 				foreach ($sorting as $sk => $sv) {
 					if ($v['trans'] == $sv->translated_name) {  // match up sorting for each field for field type display
+						// Check our individual field overrides for adding to the main content
+						$access_display = $this->check_field_override($sv->orig_name);
+						//echo "Access display is  $access_display for $sv->orig_name<br />";
+						if (!$access_display) { continue; }
+
 						if ($sv->field_type == '7'
 							|| $sv->orig_name == 'updated_date'
 							|| $sv->orig_name == 'creation_date'
@@ -462,6 +467,28 @@ EOC;
 													<span class="non-edit-value $sv->orig_name">$entry</span>
 												</div>
 EOC;
+
+						} elseif ($sv->field_type == '777') { // Multiselect
+							$selected_ms = array();
+                            $fields_section .= <<<EOC
+                                                <div class="col-md-6 $k-col">
+													<span class="non-edit-label">$sv->translated_name</span>
+EOC;
+                            foreach($sst as $k2 => $v2) {
+                            	$v2->sst_name = stripslashes($v2->sst_name);
+                                if ($k == $v2->sst_type_desc) {   // matching sst's
+                                    if ( in_array($v2->sst_id, json_decode($v['value']))) { // selected
+										$selected_ms[] = $v2->sst_name;
+									}
+								}
+							}
+							$selected_ms_print = implode(', ', $selected_ms);		
+                            $fields_section .= <<<EOC
+                                                     <span class="non-edit-value $sv->orig_name">$selected_ms_print</span>
+												</div>
+EOC;
+
+
 						} elseif ($sv->field_type == '99') { // Group Title
 							$fields_section .= <<<EOC
 												<div class="col-md-12">
@@ -509,6 +536,11 @@ EOC;
 			$last = count($translated);
 			foreach ( $translated as $k => $v) {
 				if ('owned_by' == $k) {
+					// Check Field overrides
+					$access_display = $this->check_field_override('owned_by');
+					if (!$access_display) { continue; }
+					//echo "Field owned by display = $access_display<br />";
+
 					// Manage Own can or can't change ownership
 					$can_change_ownership = isset($this->second_tab['own_leads_change_owner'])
 						? $this->second_tab['own_leads_change_owner'] : 'no';
@@ -575,6 +607,10 @@ EOC;
 					$field_type = '';
 					foreach ($sorting as $sk => $sv) {
 						if ($v['trans'] == $sv->translated_name) {  // match up sorting for each field for field type display
+							// Check our individual field overrides for adding to the main content
+                    		$access_display = $this->check_field_override($sv->orig_name);
+                    		//echo "Access display is  $access_display for $sv->orig_name<br />";
+
 							if ($sv->field_type == '2'
 								|| $sv->field_type == '6'
 							) {  // Textarea, or Map Address
@@ -719,7 +755,11 @@ EOC;
 												</div>
 EOC;
 					}
-					$fields_section .= $field_type;
+
+					// If field override allows it
+                    if ($access_display) {
+						$fields_section .= $field_type;
+					}
 				}
 				$i++;
 			}

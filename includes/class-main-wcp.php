@@ -290,6 +290,28 @@
 		}
 
 		/**
+		 * Check for field override values set
+		 * and see if the user role can access the individual field
+		 * returns true for non-custom and custom with access, false for hidden or no access
+		 */
+		public function check_field_override($field_name) {
+			$custom = $this->get_custom_role();
+			//print_r($custom);
+			if (!$custom['access']) {
+				return true;  // can access the field
+			} else {
+				if ( (isset($custom['perms']['field_override']) && $custom['perms']['field_override'] == 'yes')
+					 && (isset($custom['perms']['field_val'][$field_name]) && $custom['perms']['field_val'][$field_name] == 'hidden') 
+				) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		}
+
+
+		/**
 		 * Get the lead count total
 		 * called after current_user established to retain count for users
 		 */

@@ -90,8 +90,8 @@ class SHWCP_API_Tabs {
 		add_action( 'init', array( &$this, 'load_settings' ) );
 		add_action( 'admin_init', array( &$this, 'register_first_tab' ) );
 		add_action( 'admin_init', array( &$this, 'register_second_tab' ) );
-		add_action( 'admin_init', array( &$this, 'register_third_tab' ) );
-		add_action( 'admin_init', array( &$this, 'register_forth_tab' ) );
+		add_action( 'admin_init', array( &$this, 'register_db_tab' ) );
+		add_action( 'admin_init', array( &$this, 'register_info_tab' ) );
 		add_action( 'admin_menu', array( &$this, 'add_admin_menus' ) );
 		// submenus
 		add_action('admin_menu', array(&$this, 'add_admin_submenus' ) );
@@ -328,10 +328,10 @@ class SHWCP_API_Tabs {
 	}
 
 	/*
-	 * Register third tab info
+	 * Register info tab info
 	 *
 	 */
-	function register_third_tab() {
+	function register_info_tab() {
 		$this->plugin_settings_tabs[$this->info_settings_key_db] = __('Site Information', 'shwcp');
 
 		register_setting( $this->info_settings_key_db, $this->info_settings_key_db );
@@ -342,10 +342,10 @@ class SHWCP_API_Tabs {
 	}
 
 	/*
-	 * Register Forth tab info
+	 * Register db tab info
 	 *
 	 */
-	function register_forth_tab() {
+	function register_db_tab() {
 		$this->plugin_settings_tabs[$this->db_actions_key_db] = __('Database Operations', 'shwcp');
 
         register_setting( $this->db_actions_key_db, $this->db_actions_key_db );
@@ -369,7 +369,12 @@ class SHWCP_API_Tabs {
 	function section_general_desc() { echo __('Set up WP Contacts general settings on this tab.', 'shwcp'); }
 	function section_permission_desc() { echo __('Set up WP Contacts Users and access to the frontend.  You will have Full Access by default. Keep in mind if you have public accessible set to true in the Main Settings, all logged in users will also be able to view entries.', 'shwcp'); }
 	function section_site_desc() { echo __('Note that these server settings will affect the size, amount, and time taken allowed for uploads and scripts.  Be aware of this as it will affect the size of uploads and time allowed for processing imports etc.  <br />These PHP settings may need to be adjusted on your server according to your requirements.', 'shwcp');
-	echo '<br /><br /><u>' . __('You are running version', 'shwcp') . ' <b>' . SHWCP_PLUGIN_VERSION . '</b> ' . __('of WP Contacts', 'shwcp') . '</u><br /><p>' . __('Have a question? Take a look at our', 'shwcp') . ' <a href="http://docs.wpcontacts.co/xdocs/wp-contacts/" target="_blank">' . __('Online Documentation', 'shwcp') . '</p>';
+	echo '<br /><br /><u>' . __('You are running version', 'shwcp') . ' <b>' . SHWCP_PLUGIN_VERSION . '</b> ' . __('of WP Contacts', 'shwcp') . '</u><br /><p>' . __('Have a question? Take a look at our', 'shwcp') . ' <a href="https://www.scripthat.com/support/" target="_blank">' . __('Online Documentation', 'shwcp') . '</a></p>';
+
+	echo '<p>' . __('Need some help? Visit our', 'shwcp') . ' <a href="https://scripthat.ticksy.com" target=_blank">' . __('Support System', 'shwcp') . '</a></p>';
+
+	echo '<p>' . __('If WP Contacts is a great tool for you we would really appreciate a quick rating.  Ratings help our product grow and encourage us to improve and add features.', 'shwcp') . '<br />' . __('You can give us a rating in your ', 'shwcp') . ' <a href="https://codecanyon.net/downloads" target=_blank">' . __('downloads area at codecanyon.net', 'shwcp') . '</a></p>';
+
 	}
 	function section_db_desc() { echo __('This section allows you to perform various actions on your database.  Pay attention to what you are doing as changes here will affect what you have in your database!', 'shwcp'); }
 	
@@ -938,11 +943,17 @@ class SHWCP_API_Tabs {
 	 * Custom Roles field callback
 	 */
 	function field_custom_roles() {
-	//print_r($this->permission_settings['custom_roles']);
+		//print_r($this->permission_settings['custom_roles']);
+		global $wpdb;
+		$fields = $wpdb->get_results("SELECT * FROM $this->table_sort");
+
+		//print_r($fields);
+		$fo_explain = __('You can choose to hide certain fields for this user role.  An example usecase would be if you wanted some fields with sensitive information protected from this role.  This applies to exports as well.', 'shwcp');   
 	?>	
 		<p><button class="button-primary wcp-custom-role"><?php echo __('Add New Role', 'shwcp'); ?></button></p>
 		<p><?php echo __('Before removing any custom roles, make sure none of your users are assigned to it.', 'shwcp');?></p>
 		<p><?php echo __('Some features must be enabled in main settings (e.g. file uploads, entry photos, events.) before access is available.', 'shwcp');?></p>
+		<p class="cust-role-msg hidden"><?php echo __('Click to expand/collapse', 'shwcp');?></p>
 		<table class="wcp-user-roles">
 
 		<?php
@@ -954,7 +965,9 @@ class SHWCP_API_Tabs {
             	foreach ($this->permission_settings['custom_roles'] as $k => $v) { 
 					$inc++;	
 				?>
-					<tr class="cust-role-row row-<?php echo $inc;?>">
+					<tr class="wcp-spacer"></tr>
+					<tr class="wcp-custrole-header wcp-parent" id="wcprow-<?php echo $inc;?>"><th colspan="3"><?php echo $inc;?>.) <?php echo $v['name'];?></th></tr>
+					<tr class="cust-role-row child-wcprow-<?php echo $inc;?> row-<?php echo $inc;?>">
 					  <td class="role-name">	
 						<p class="role-title"><?php echo __('Unique Role Name', 'shwcp');?></p>
 						<input class="wcp-cust-role" 
@@ -1166,6 +1179,71 @@ class SHWCP_API_Tabs {
 							  <br />
                     		</td>
                 		  </tr>
+<?php // Field Overrides ?>
+						  <tr>
+						    <td class="option-name field_override" colspan="4">
+						      <p class="role-title">
+								<?php echo __('Individual Field Overrides', 'shwcp');?> 
+								<span class="fo_explain" title="<?php echo $fo_explain;?>">?</span>
+							  </p>
+							 <?php
+								$display_fo = '';
+								if (!isset($v['field_override'])) {
+									$v['field_override'] = 'no';
+								}
+								if ($v['field_override'] == 'no') {
+									$display_fo = 'display:none';
+								}
+							  ?>
+							  <input type="radio" class="field_override_enable"
+							  name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][field_override]"
+							  value="yes" <?php checked($v['field_override'], 'yes');?>><?php echo __('Enable', 'shwcp');?>
+							  <br />
+							  <input type="radio" class="field_override_enable"
+                              name="<?php echo $this->permission_settings_key_db;?>[custom_roles][<?php echo $inc;?>][field_override]"
+                              value="no" <?php checked($v['field_override'], 'no');?>><?php echo __('Disabled', 'shwcp');?>
+
+						    </td>
+ 						  </tr>
+						  <tr>
+						  	<td colspan="4"><table class="field_override_fields" style="<?php echo $display_fo;?>">
+<?php 
+					$inc_fo = 0;
+?>
+					         <tr>
+<?php
+					if (!isset($v['field_val'])) {
+                        $v['field_val'] = array();
+                    }
+					foreach ($fields as $k => $val) {
+						// Default value for field overide
+						if (!isset($v['field_val'][$val->orig_name])) {
+                            	$v['field_val'][$val->orig_name] = 'shown';
+						}
+
+						if ($inc_fo == 8) { 
+							$inc_fo = 0;	
+?>
+							  </tr><tr>
+				<?php   }  ?>
+							    <td>
+								  <p class="fo_title"><?php echo $val->translated_name;?></p>
+
+							      <input type="radio" name="<?php echo $this->permission_settings_key_db; ?>[custom_roles][<?php echo $inc;?>][field_val][<?php echo $val->orig_name;?>]" value="shown" <?php checked($v['field_val'][$val->orig_name], 'shown');?>><?php echo __('Shown', 'shwcp');?>
+								  <br />
+								  <input type="radio" name="<?php echo $this->permission_settings_key_db; ?>[custom_roles][<?php echo $inc;?>][field_val][<?php echo $val->orig_name;?>]" value="hidden" <?php checked($v['field_val'][$val->orig_name], 'hidden');?>><?php echo __('Hidden', 'shwcp');?>
+								  <br />
+								</td>
+<?php
+						$inc_fo++;
+					}
+?>
+							
+							  </tr>
+							</table></td>
+						  </tr>
+
+
             			</table>
 
 
@@ -1281,6 +1359,48 @@ class SHWCP_API_Tabs {
                         <input type="radio" name="" value="no" checked="checked"><?php echo __('No', 'shwcp');?><br />
                     </td> 
                 </tr>
+				<tr>
+                    <td class="option-name field_override" colspan="4">
+                        <p class="role-title">
+							<?php echo __('Individual Field Overrides', 'shwcp');?>
+							<span class="fo_explain" title="<?php echo $fo_explain;?>">?</span>
+						</p>
+                        <input type="radio" class="field_override_enable" name="" value="yes"><?php echo __('Enable', 'shwcp');?>
+                        <br />
+                        <input type="radio" class="field_override_enable" name="" value="no" checked="checked"><?php echo __('Disabled', 'shwcp');?>
+                   </td>
+                </tr>
+
+                          <tr>
+                            <td colspan="4"><table class="field_override_fields" style="display:none">
+<?php
+                    $inc_fo = 0;
+?>
+                             <tr>
+<?php
+                    foreach ($fields as $k => $val) {
+                        if ($inc_fo == 8) {
+                            $inc_fo = 0;   
+?>
+                              </tr><tr>
+                <?php   }  ?>
+                                <td>
+                                  <p class="fo_title"><?php echo $val->translated_name;?></p>
+								  <p class="fo_orig_name hidden"><?php echo $val->orig_name;?></p>
+                                  <input type="radio" name="" value="shown" checked="checked"><?php echo __('Shown', 'shwcp');?>
+                                  <br />
+                                  <input type="radio" name="" value="hidden"><?php echo __('Hidden', 'shwcp');?>
+                                  <br />
+                                </td>
+<?php
+                        $inc_fo++;
+                    }
+?>
+
+                              </tr>
+                            </table></td>
+                          </tr>
+				
 			</table>
 		</div>
 	

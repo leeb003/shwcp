@@ -1,8 +1,14 @@
 # Changelog
 All notable changes to WP Contacts will be documented in this file starting with version 3.1.0.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [3.2.8] - 2019-12-27
+### Fixed
+- Displaying multi-select fields in view only mode on the individual entry page now displays correctly.
+
+### Added
+- New feature, Individual field overrides for custom roles. You can now choose which fields are accessible for custom roles that you create!
 
 ## [3.2.7] - 2019-12-7
 _____

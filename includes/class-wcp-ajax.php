@@ -172,7 +172,11 @@
             	foreach ($sorting as $k => $v) {
                 	foreach ($lead_pre as $k2 => $v2) {
                     	if ($v->orig_name == $k2) {
-                        	$lead[$k2] = $v2;
+							// field override check
+							$access_display = $this->check_field_override($v->orig_name);
+							if ($access_display) {
+                        		$lead[$k2] = $v2;
+							}
                     	}
                 	}
             	}
@@ -225,7 +229,7 @@
 						$translated[$k]['trans'] = $k;
 					}
 				} 
-				
+			
 				//$response['sorting'] = $sorting;
 				//$response['data'] = $lead;
 				$response['sst'] = $sst;
@@ -514,7 +518,8 @@
 					// files display
 					$max_display = 4;
                     $file_data = unserialize($lead_files);
-                    $td_content = '<div class="files-preview">';
+					
+					$td_content = '<div class="files-preview">';
 					$count = 0;
 					if (!empty($file_data)) {
                     	$count = count($file_data);
@@ -543,8 +548,12 @@
                         }
                     }
                     $td_content .= '</div>';
-
-					$field_vals['lead_files'] = $td_content;
+					
+					// field override check
+                    $access_display = $this->check_field_override('lead_files');
+                    if ($access_display) {	
+						$field_vals['lead_files'] = $td_content;
+					}
 
 
 					foreach ($sorting as $k => $v) {	
@@ -701,8 +710,12 @@
             	$i = 1;
 				$i2 = 1;
             	foreach ($export_fields as $k => $v) {
+					// Check our individual field overrides for adding to the main content
+                    $access_display = $this->check_field_override($v->orig_name);
+					
 					if ($v->field_type != 99
                     	&& $v->orig_name != 'lead_files'
+						&& $access_display
                 	) {
                     	$field_choices .= '<p><input type="checkbox" id="' . $v->orig_name
                          . '" class="export-field" name="fields[' . $v->orig_name . ']" />'

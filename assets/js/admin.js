@@ -238,7 +238,7 @@ jQuery(function ($) {  // use $ for jQuery
 		var uniqueString   = 'Custom-' + Math.floor(Math.random() * 26) + Date.now();
 		var currRows = 0; // default start
 		$('.cust-role-row').each(function() {
-			var tempRow = parseInt($(this).attr('class').split(' ')[1].split('-')[1]);
+			var tempRow = parseInt($(this).attr('class').split(' ')[1].split('-')[2]);
 			if (tempRow > currRows) {
 				currRows = tempRow;
 			}
@@ -256,8 +256,18 @@ jQuery(function ($) {  // use $ for jQuery
 				});
 			}
 		});
+
+		// modify names for fields
+		optionsClone.find('.field_override_fields td').each(function() {
+			var fieldName = $(this).find('.fo_orig_name').text();
+			//alert(fieldName);
+			$(this).find('input').each(function() {
+				var inputName = currentDB + '[custom_roles][' + nextRow + '][field_val][' + fieldName + ']';
+				$(this).attr('name', inputName);
+			});
+		});
 	
-		var addRole = '<tr class="cust-role-row row-' + nextRow + '"><td class="role-name">'
+		var addRole = '<tr class="cust-role-row child-wcprow-' + nextRow + ' row-' + nextRow + '"><td class="role-name">'
 					+ '<p class="role-title">' + roleLabel + '</p>'
 					+ '<input class="wcp-cust-role" name="' 
 					+ currentDB + '[custom_roles][' + nextRow + '][name]" '
@@ -278,7 +288,10 @@ jQuery(function ($) {  // use $ for jQuery
 
 	// delete custom role
 	$(document).on('click', '.remove-cust .remove-button', function() {
-		$(this).closest('.cust-role-row').fadeOut().remove();
+		var thisTR = $(this).closest('.cust-role-row');
+		var rowNumb = parseInt($(thisTR).attr('class').split(' ')[1].split('-')[2]);
+		$(thisTR).closest('.cust-role-row').fadeOut().remove();
+		$('#wcprow-' + rowNumb).fadeOut().remove();
 		return false;
 	});
 
@@ -300,6 +313,27 @@ jQuery(function ($) {  // use $ for jQuery
         } else {
 			$(this).closest('tr').find('.entries_ownership, .manage_entry_files, .manage_entry_photo')
             .removeClass('wcp-disabled'); //.find('input').prop('disabled', false);
+		}
+	});
+
+    // Custom roles contract expand settings
+	$(document).ready(function () {  
+		var custRoleMsg = $(document).find('.cust-role-msg').text();
+		$('tr.cust-role-row').hide().children('td');
+        $('tr.wcp-parent')  
+            .css("cursor", "pointer")  
+            .attr("title", custRoleMsg)  
+            .click(function () {  
+                $(this).siblings('.child-' + this.id).fadeToggle();  
+            });  
+    });
+	// Custom roles enable Field Overrides
+	$(document).on('change', '.field_override_enable', function() {
+		var enable = $(this).val();
+		if (enable == 'no') {
+			$(this).closest('tr').next('tr').find('.field_override_fields').fadeOut();
+		} else {
+			$(this).closest('tr').next('tr').find('.field_override_fields').fadeIn();
 		}
 	});
 

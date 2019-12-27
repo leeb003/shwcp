@@ -622,19 +622,26 @@ EOC;
 
 				$link_beg = '<a href="' . $sort_link . '">';
                 $link_end = '</a>';
-				if ($no_link_th !='') {
-					$wcp_main .=<<<EOC
+
+				// Custom role individual field check for colums
+				$access = $this->check_field_override($orig_name);
+                if ($access) {
+	
+					if ($no_link_th !='') {
+						$wcp_main .=<<<EOC
 									$no_link_th
 EOC;
-				} else {
-                	$wcp_main .= <<<EOC
+					} else {
+                		$wcp_main .= <<<EOC
 
 									<th class="table-head $orig_name">$link_beg$v $arrow$link_end</th>
 
 EOC;
+					}
 				}
-                $i++;
+                	$i++;
             }
+			
 			$edit_text = __('Quick Edit', 'shwcp');
 			if ($this->can_edit) { // user can edit leads
             	$wcp_main .= <<<EOC
@@ -713,7 +720,7 @@ EOC;
 						$val_name = substr($v, 0, 12);
 						$trans_key = 'col-' . preg_replace('/\W+/','',strtolower(strip_tags($key_name)));
 						$trans_val = 'val-' . preg_replace('/\W+/','',strtolower(strip_tags($val_name)));
-
+				
 						/* Field types selection - matches on translated name
 						 *
 						 * 1 = default text field
@@ -732,9 +739,13 @@ EOC;
 						$td_content = '';
 						$now = date('Y-m-d H:i:s');
 						$now_time = date_create($now);
+						$access_display = true;
 
 						foreach ($sorting as $sk => $sv) {
 							if ($k == $sv->translated_name) {  // match up the sorting for each field to get the field type display
+
+								/// Check our individual field overrides for adding to the main content
+								$access_display = $this->check_field_override($sv->orig_name);
 
 								if ($sv->orig_name == 'lead_files') { // Contact files display
 									$max_display = 4;
@@ -927,10 +938,14 @@ EOC;
 								        . $lead['wcp_lead_id'] . '">' . $v . '</a>';
 						}
 
-						$wcp_main .= <<<EOC
+						// Custom role individual field override check for fields
+                		if ($access_display) {
+
+							$wcp_main .= <<<EOC
 
 									<td class="$col_num $trans_key $trans_val">$td_content</td>
 EOC;
+						}
                     }
                     $i2++;
                 }

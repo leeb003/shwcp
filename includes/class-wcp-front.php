@@ -936,8 +936,11 @@ EOC;
 					$top_search .= '<div class="add-holder"><i class="add-lead wcp-white wcp-sm md-add-circle-outline hidden-xs" '
                                  . 'title="' . __('Add Entry', 'shwcp') . '"> </i></div>';
 				} 
-																	   // Can export all or own, need to filter export for own
-				if ($custom_role['perms']['access_export'] == 'all' || $custom_role['perms']['access_export'] == 'own') {
+		  	    // Can export all or own, need to filter export for own
+				if ($custom_role['perms']['access_export'] == 'all'
+						|| $custom_role['perms']['access_export'] == 'own'
+						&& $this->curr_page != 'entry'
+					) {
 					$get_params = '';
                 	foreach ($_GET as $k => $v) {
                     	$get_params .= '<input type="hidden" name="get_params[' . $k . ']" value="' . $v . '" />';
