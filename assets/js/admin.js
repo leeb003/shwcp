@@ -224,6 +224,37 @@ jQuery(function ($) {  // use $ for jQuery
 		$(this).closest('tr').remove();
 	});
 
+	// CSS and JS editor setup
+    $(function(){
+        if( $('#code_editor_page_js').length ) {
+            var editorSettings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
+            editorSettings.codemirror = _.extend(
+                {},
+                editorSettings.codemirror,
+                {
+                    indentUnit: 2,
+                    tabSize: 2,
+                    mode: 'javascript',
+                }
+            );
+            var editor = wp.codeEditor.initialize( $('#code_editor_page_js'), editorSettings );
+        }
+
+        if( $('#code_editor_page_css').length ) {
+            var editorSettings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
+            editorSettings.codemirror = _.extend(
+                {},
+                editorSettings.codemirror,
+                {
+                    indentUnit: 2,
+                    tabSize: 2,
+                    mode: 'css',
+                }
+            );
+            var editor = wp.codeEditor.initialize( $('#code_editor_page_css'), editorSettings );
+        }
+    });
+
 	/* End First Tab Settings */
 
 	/* Second Tab (Fields) Settings */

@@ -160,7 +160,7 @@ class SHWCP_API_Tabs {
 			'page_color' => '#607d8b',
 			'logo_attachment_url' => SHWCP_ROOT_URL . '/assets/img/wpcontacts.png',
 			'logo_attachment_id' => '',
-			'page_footer' => 'WP Contacts &copy;2019 SH-Themes',
+			'page_footer' => 'WP Contacts &copy;2020 ScriptHat',
 			'page_greeting' => 'Welcome To <span class="wcp-primary">WP</span> Contacts',
 			'contact_image' => 'true', 
 			'contact_image_url' => '',
@@ -369,7 +369,7 @@ class SHWCP_API_Tabs {
 	function section_general_desc() { echo __('Set up WP Contacts general settings on this tab.', 'shwcp'); }
 	function section_permission_desc() { echo __('Set up WP Contacts Users and access to the frontend.  You will have Full Access by default. Keep in mind if you have public accessible set to true in the Main Settings, all logged in users will also be able to view entries.', 'shwcp'); }
 	function section_site_desc() { echo __('Note that these server settings will affect the size, amount, and time taken allowed for uploads and scripts.  Be aware of this as it will affect the size of uploads and time allowed for processing imports etc.  <br />These PHP settings may need to be adjusted on your server according to your requirements.', 'shwcp');
-	echo '<br /><br /><u>' . __('You are running version', 'shwcp') . ' <b>' . SHWCP_PLUGIN_VERSION . '</b> ' . __('of WP Contacts', 'shwcp') . '</u><br /><p>' . __('Have a question? Take a look at our', 'shwcp') . ' <a href="https://www.scripthat.com/support/" target="_blank">' . __('Online Documentation', 'shwcp') . '</a></p>';
+	echo '<br /><br /><u>' . __('You are running version', 'shwcp') . ' <span class="shwcp-version">' . SHWCP_PLUGIN_VERSION . '</span> ' . __('of WP Contacts', 'shwcp') . '</u><br /><p>' . __('Have a question? Take a look at our', 'shwcp') . ' <a href="https://www.scripthat.com/support/" target="_blank">' . __('Online Documentation', 'shwcp') . '</a></p>';
 
 	echo '<p>' . __('Need some help? Visit our', 'shwcp') . ' <a href="https://scripthat.ticksy.com" target=_blank">' . __('Support System', 'shwcp') . '</a></p>';
 
@@ -641,7 +641,7 @@ class SHWCP_API_Tabs {
 	 */
 	function field_custom_css() {
 		?>
-		<textarea class="custom-css" name="<?php echo $this->first_tab_key_db; ?>[custom_css]"><?php echo esc_attr( $this->first_tab['custom_css'] ); ?></textarea>
+		<textarea class="custom-css" id="code_editor_page_css" name="<?php echo $this->first_tab_key_db; ?>[custom_css]"><?php echo esc_attr( $this->first_tab['custom_css'] ); ?></textarea>
 		<?php
 	}
 
@@ -650,7 +650,7 @@ class SHWCP_API_Tabs {
 	 */
 	function field_custom_js() {
 		?>
-		<textarea class="custom-js" name="<?php echo $this->first_tab_key_db; ?>[custom_js]"><?php echo esc_attr( $this->first_tab['custom_js'] ); ?></textarea>
+		<textarea class="custom-js" id="code_editor_page_js" name="<?php echo $this->first_tab_key_db; ?>[custom_js]"><?php echo esc_attr( $this->first_tab['custom_js'] ); ?></textarea>
 		<?php
 	}
 
@@ -1618,8 +1618,6 @@ class SHWCP_API_Tabs {
 
 		// loaded only in our Contacts menu
 		add_action( 'load-' . $plugin_options, array($this, 'load_admin_scripts') );
-		// loaded in WP admin for metabox functionality
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_meta_enqueue_script' ), 10,1);
 	}
 
 	/*
@@ -1840,17 +1838,6 @@ EOC;
 	}
 
 	/**
-	 * Load admin meta Javascript outside of plugin admin (for pages)
-	 * @since 2.0.0
-	 * @return void
-	 */
-	public function admin_meta_enqueue_script() {
-		wp_register_script( 'wcp-admin-meta', SHWCP_ROOT_URL . '/assets/js/admin-meta.js', array( 'jquery' ), 
-				SHWCP_PLUGIN_VERSION, true);
-		wp_enqueue_script('wcp-admin-meta');
-	}
-
-	/**
      * Load admin Javascript.
      * @access public
      * @since 1.0.0
@@ -1867,6 +1854,7 @@ EOC;
         	'ajaxurl' => admin_url('admin-ajax.php'),
             'nextNonce' => wp_create_nonce( 'myajax-next-nonce' )
         ));
+		wp_enqueue_code_editor( array( 'type' => 'text/html' ) );
 	} // End admin_enqueue_scripts
 
 	/**

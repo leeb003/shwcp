@@ -438,7 +438,7 @@
 				'page_color'            => '#dd3333',
 				'logo_attachment_url'   => SHWCP_ROOT_URL . '/assets/img/wpcontacts.png',
             	'logo_attachment_id'    => '',
-				'page_footer'           => 'WP Contacts &copy;2017 SH-Themes',
+				'page_footer'           => 'WP Contacts &copy;2020 ScriptHat',
 				'page_greeting'         => 'Welcome To <span class="wcp-primary">WP</span> Contacts',
 				'contact_image'         => 'true',
 				'contact_image_url'     => '',

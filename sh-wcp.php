@@ -118,13 +118,8 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
 	// Full page template class
     require_once SHWCP_ROOT_PATH . '/includes/class-page-templater.php';
 
-	// Page metabox for db selection (classic editor)
-	if (is_admin()) {
-    	require_once SHWCP_ROOT_PATH . '/includes/class-wcp-metabox.php';
-    	$wcp_metabox = new wcp_metabox;
-		$wcp_metabox->gen_metaboxes();
-	}
-
+	// Gutenberg or Classic editor - load files and scripts for whats used
+	add_action( 'plugins_loaded', array( $main_wcp, 'shwcp_editor_check') );
 
 	/* Form Plugin integrations (Contact Form 7, Ninja, Gravity */
 	require_once SHWCP_ROOT_PATH . '/includes/class-form-integration.php';
@@ -146,9 +141,4 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
 	/* Rest API Endpoints */
 	require_once SHWCP_ROOT_PATH . '/includes/class-wcp-rest.php';
 	$wcp_rest = new wcp_rest;
-
-	/* Gutenberg Environment */
-	//require_once SHWCP_ROOT_PATH . '/shwcp-gutenberg/plugin.php';
-	require_once SHWCP_ROOT_PATH . '/includes/class-wcp-gutenberg.php';
-
 

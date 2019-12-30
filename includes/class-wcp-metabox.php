@@ -9,11 +9,23 @@
 
         // methods
 		public function gen_metaboxes() {
+			// Scripts
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_meta_enqueue_script' ), 10,1);
 			// Metabox for database selection
         	add_action("add_meta_boxes_page", array(&$this, "db_selection"));
 			// Save the post data
         	add_action( 'save_post', array(&$this, 'save_postdata') );
 		}
+
+		/**
+     	 * Load admin meta Javascript outside of plugin admin (for pages)
+     	 * @since 2.0.0
+     	 * @return void
+     	 */
+    	public function admin_meta_enqueue_script() {
+        	wp_register_script( 'wcp-admin-meta', SHWCP_ROOT_URL . '/assets/js/admin-meta.js', array( 'jquery' ), SHWCP_PLUGIN_VERSION, true);
+        	wp_enqueue_script('wcp-admin-meta');
+    	}
 
 		public function db_selection() {
 			add_meta_box(

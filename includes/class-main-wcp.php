@@ -603,5 +603,52 @@
     		return $value;
 		}
 
+		/*
+         * Check editor and load either Gutenberg or Classic files and scripts
+         * @ since 3.2.8
+         */
+		public function shwcp_editor_check() {
+        	$gutenberg_active = $this->shwcp_gutenberg_active();
+        	if ($gutenberg_active) {
+            	/* Gutenberg Envieonment */
+            	//require_once SHWCP_ROOT_PATH . '/shwcp-gutenberg/plugin.php';
+            	require_once SHWCP_ROOT_PATH . '/includes/class-wcp-gutenberg.php';
+
+        	} else {
+            	// Page metabox for db selection (classic editor)
+            	if (is_admin()) {
+                	require_once SHWCP_ROOT_PATH . '/includes/class-wcp-metabox.php';
+                	$wcp_metabox = new wcp_metabox;
+                	$wcp_metabox->gen_metaboxes();
+            	}
+        	}
+    	}
+
+    	/*
+     	 * Check if gutenberg is active
+     	 */
+    	public function shwcp_gutenberg_active() {
+        	$gutenberg    = false;
+        	$block_editor = false;
+        	if ( has_filter( 'replace_editor', 'gutenberg_init' ) ) {
+            	// Gutenberg is installed and activated.
+            	$gutenberg = true;
+        	}
+        	if ( version_compare( $GLOBALS['wp_version'], '5.0-beta', '>' ) ) {
+            	// Block editor.
+            	$block_editor = true;
+        	}
+        	if ( ! $gutenberg && ! $block_editor ) {
+            	return false;
+        	}
+        	include_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+        	if ( ! is_plugin_active( 'classic-editor/classic-editor.php' ) ) {
+            	return true;
+        	}
+        	$use_block_editor = ( get_option( 'classic-editor-replace' ) === 'no-replace' );
+        	return $use_block_editor;
+    	}
+
 
 	} // end class

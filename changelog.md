@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [3.2.8] - 2019-12-27
 ### Fixed
 - Displaying multi-select fields in view only mode on the individual entry page now displays correctly.
+- Gutenberg Database selection Classic editor metabox interference
 
 ### Added
 - New feature, Individual field overrides for custom roles. You can now choose which fields are accessible for custom roles that you create!
+- Code editor for custom css and js fields
+- Backend ui enhancements
 
 ## [3.2.7] - 2019-12-7
 _____

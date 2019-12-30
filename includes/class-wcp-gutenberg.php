@@ -9,7 +9,7 @@ function myprefix_enqueue_assets() {
 	$wcp_databases = $main_wcp->wcp_getdbs($location);
     wp_enqueue_script(
         'shwcp-pagedb-script', SHWCP_ROOT_URL . '/assets/js/guten-build/index.js',
-        //plugins_url( 'build/index.js', __FILE__ ),
+		//'shwcp-pagedb-script', SHWCP_ROOT_URL . '/shwcp-gutenberg/build/index.js',
         array( 'wp-blocks','wp-plugins', 'wp-edit-post', 'wp-element', 'wp-i18n', 'wp-components', 'wp-data', 'wp-compose', 'wp-api-fetch' )
     );
 	// get an array of current databases to pass to database selection on page from main_wcp

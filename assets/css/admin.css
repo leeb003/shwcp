@@ -244,3 +244,7 @@ span.fo_explain:hover {
 .wcp_users th, .wcp_users td {
 	padding: 10px 10px;
 }
+.shwcp-version {
+    color: #15b532;
+	font-weight: 700;
+}
