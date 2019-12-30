@@ -33,7 +33,10 @@ management.
 == Changelog ==
 = 3.2.8 =
 * Fix for displaying multi-select fields in view only mode on the individual entry page
+* Gutenberg Database selection Classic editor metabox interference
 * New feature - Individual field overrides for custom roles. You can now choose which fields are accessible for custom roles that you create!
+* Code editor for custom css and js fields
+* Backend ui enhancements
 
 = 3.2.7 =
 * Cloning Databases functionality.  Now you can easily clone an existing database with settings to another new one in your backend settings.
