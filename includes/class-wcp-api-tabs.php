@@ -333,11 +333,12 @@ class SHWCP_API_Tabs {
 	 */
 	function register_info_tab() {
 		$this->plugin_settings_tabs[$this->info_settings_key_db] = __('Site Information', 'shwcp');
+		$banner_img = "<img src='" . SHWCP_ROOT_URL . '/assets/img/wpcontacts590x300-2.jpg' . "' /><br /><br />";
 
 		register_setting( $this->info_settings_key_db, $this->info_settings_key_db );
-		add_settings_section( 'section_info', __('Information about your server', 'shwcp'), array( &$this, 'section_site_desc' ), 
+		add_settings_section( 'section_info', $banner_img . __('Information', 'shwcp'), array( &$this, 'section_site_desc' ), 
 				$this->info_settings_key_db);
-		add_settings_field( 'site_info', __('Info', 'shwcp'), array( &$this, 'field_section_info'), 
+		add_settings_field( 'site_info', __('Server Info', 'shwcp'), array( &$this, 'field_section_info'), 
 				$this->info_settings_key_db, 'section_info' );
 	}
 

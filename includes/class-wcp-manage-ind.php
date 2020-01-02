@@ -103,7 +103,7 @@ class wcp_ind_manage extends main_wcp {
          */ 
 		$photo_tile = <<<EOC
 						<div class="tile-title text-center">$photo_title</div>
-                  		<div class="ind-photo"><img class="img-responsive" src="$photo_img" /></div>
+                  		<div class="ind-photo"><img class="img-fluid" src="$photo_img" /></div>
 					</li>
 EOC;
 		$files_tile = <<<EOC

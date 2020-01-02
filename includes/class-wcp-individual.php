@@ -236,7 +236,7 @@ class wcp_individual extends main_wcp {
 
 								<div class="lead-image-container col-md-12 leadID-$lead_id">
 									<div class="image-holder">
-										<img class="current-image img-responsive" src="$small_image" alt="$lead_image_text" />
+										<img class="current-image img-fluid" src="$small_image" alt="$lead_image_text" />
 									</div>
 
 EOC;

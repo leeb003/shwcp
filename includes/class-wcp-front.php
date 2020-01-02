@@ -81,7 +81,7 @@
 				wp_enqueue_style( 'md-iconic-font' );
 
                 // Bootstrap style
-                wp_register_style( 'bs-modals', SHWCP_ROOT_URL . '/assets/js/bs-modals-only/css/bootstrap.css', '3.3.0' );
+				wp_register_style( 'bs-modals', SHWCP_ROOT_URL . '/assets/css/bootstrap.css', '4.4.1' );
                 wp_enqueue_style( 'bs-modals' );
 				wp_register_style( 'bs-grid', SHWCP_ROOT_URL . '/assets/css/grid12.css', '3.2.4');
 				wp_enqueue_style( 'bs-grid' );
@@ -107,30 +107,12 @@
 				wp_register_style( 'datepicker', SHWCP_ROOT_URL . '/assets/css/datepicker.css', '1' );
 				wp_enqueue_style( 'datepicker' );
 
-				// ie9
-				wp_register_style('shwcp-ie9', SHWCP_ROOT_URL . '/assets/css/ie9.css');
-				wp_enqueue_style('shwcp-ie9');
-				$wp_styles->add_data('shwcp-ie9', 'conditional', 'IE 9');
-
 				// fullcalendar.css
                 if ('events' == $this->curr_page) { // Event calendar view
 					wp_enqueue_style( 'wp-color-picker' );
 					wp_register_style('fullcalendar', SHWCP_ROOT_URL . '/assets/css/fullcalendar.css');
 					wp_enqueue_style('fullcalendar');
 				}
-				/* not ready yet, need to purchase license as well
-				// introjs for demo site
-				$url = $_SERVER['HTTP_HOST'];
-				if ( ($url == 'demo.sh-themes.com' || $url == 'php56host.com')
-					&& is_user_logged_in() 
-				) {
-
-					wp_register_style('introjs', SHWCP_ROOT_URL . '/assets/css/introjs/introjs.css');
-					wp_enqueue_style( 'introjs');
-					wp_register_style('introjs-theme', SHWCP_ROOT_URL . '/assets/css/introjs/introjs-nassim.css');
-					wp_enqueue_style( 'introjs-theme');
-				}
-				*/
 				// dynamic css
 				global $post; // send post id for database style selection
 				wp_register_style('dynamic-css', 
@@ -417,27 +399,18 @@
     				));
                 }
 
-                // Bootstrap 3 Modals
-                wp_register_script( 'bootstrap-modals', SHWCP_ROOT_URL . '/assets/js/bs-modals-only/js/bootstrap.js',
-                    array( 'jquery' ), '3.3.0', $load_footer );
+				// Bootstrap 3 Modals
+                wp_register_script( 'bootstrap-utils', SHWCP_ROOT_URL . '/assets/js/bootstrap-util.min.js',
+                    array( 'jquery' ), '4.4.1', $load_footer );
+                wp_enqueue_script( 'bootstrap-utils' );
+                wp_register_script( 'bootstrap-modals', SHWCP_ROOT_URL . '/assets/js/bootstrap-modal.min.js',
+                    array( 'bootstrap-utils' ), '4.4.1', $load_footer );
                 wp_enqueue_script( 'bootstrap-modals' );
 
 				// mprogress
 				wp_register_script( 'shwcp-mprogress', SHWCP_ROOT_URL . '/assets/js/mprogress.js', array( 'jquery' ), '1', $load_footer);
 				wp_enqueue_script( 'shwcp-mprogress' );
 
-				/* Not ready yet
-				// introjs for guided tour
-				$url = $_SERVER['HTTP_HOST'];
-				if (($url == 'demo.sh-themes.com' || $url == 'php56host.com') 
-					&& is_user_logged_in()
-				) {
-					wp_register_script( 'introjs', SHWCP_ROOT_URL . '/assets/js/introjs/intro.js', array('shwcp-mprogress' ), '2.4.0', $load_footer);
-					wp_enqueue_script( 'introjs' );
-					wp_register_script( 'introjs-config', SHWCP_ROOT_URL . '/assets/js/introjs/intro-config.js', array('introjs' ), '2.4.0', $load_footer);
-                    wp_enqueue_script( 'introjs-config' );
-				}
-				*/
             }
         } // End enqueue_scripts 
 
@@ -657,7 +630,7 @@ EOC;
 			}
 			if (isset($wcp_settings['logo_attachment_url']) && $wcp_settings['logo_attachment_url'] != '') {
 				$logo_text = __('Logo', 'shwcp');
-				$logo = '<img class="img-responsive" src="' . $wcp_settings['logo_attachment_url'] . '" alt="' . $logo_text . '"/>';
+				$logo = '<img class="img-fluid" src="' . $wcp_settings['logo_attachment_url'] . '" alt="' . $logo_text . '"/>';
 			} else {
 				$logo = "";
 			}
@@ -865,10 +838,10 @@ EOC;
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            	<h4 class="modal-title" id="myModalLabel"></h4>
             </div>
             <div class="modal-body"></div>
         	<div class="modal-footer"></div>
