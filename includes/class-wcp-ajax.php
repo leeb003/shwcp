@@ -69,7 +69,7 @@
                 $sorting = $wpdb->get_results ("SELECT * from $this->table_sort order by sort_number asc");
 				$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");
 
-				$remove_entries = $_POST['remove_entries'];
+				$remove_entries = array_map('intval', $_POST['remove_entries']);
 				$remove = array();
 				$i = 1;
 
@@ -118,7 +118,7 @@
 				|| isset($_POST['new_lead']) && $_POST['new_lead'] == 'true'
 			) {
 				$new = false;
-				$lead_id = $_POST['lead_id'];
+				$lead_id = intval($_POST['lead_id']);
 
 				// Manage Own can or can't change ownership
 				$response['access'] = $this->current_access;
@@ -257,7 +257,7 @@
             }
             elseif (isset($_POST['duplicate_all_confirm']) && $_POST['duplicate_all_confirm'] == 'true') {
 
-                $duplicate_entries = $_POST['duplicate_entries'];
+				$duplicate_entries = array_map('intval', $_POST['duplicate_entries']);
 
                 $column_name = $wpdb->get_results("DESCRIBE $this->table_main");
                 $columns=[];
@@ -396,7 +396,7 @@
 			// Save Lead
 			} elseif (isset($_POST['save_lead']) && $_POST['save_lead'] == 'true') {  // save the lead updates
 				$new = false;
-				$lead_id = $_POST['lead_id'];
+				$lead_id = intval($_POST['lead_id']);
 
 				// Get the sorting info for returning fields to frontend and updating the table and for checking required
                 $sorting = $wpdb->get_results (
@@ -406,8 +406,18 @@
                 );
 
 				$field_vals = $_POST['field_vals'];
-				$dropdown_fields = isset($_POST['dropdown_fields']) ? $_POST['dropdown_fields'] : array();
-				$multiselect_fields = isset($_POST['multiselect_fields']) ? $_POST['multiselect_fields'] : array();
+				$dropdown_fields = array();
+                if (isset($_POST['dropdown_fields'])) {
+                    foreach ($_POST['dropdown_fields'] as $post_k => $post_v) {
+                        $dropdown_fields[$post_k] = sanitize_text_field($post_v);
+                    }
+                }
+				$multiselect_fields = array();
+                if (isset($_POST['multiselect_fields'])) {
+                    foreach ($_POST['multiselect_fields'] as $post_k => $post_v) {
+                        $multiselect_fields[$post_k] = sanitize_text_field($post_v);
+                    }
+                }
 				/* Check required fields */
 				$field_checks = $this->field_checks($sorting, $field_vals);
 
@@ -580,7 +590,7 @@
 
 								} elseif ( $v->field_type == '777') { // multi select fields, send back translated value
 									$v2_array = json_decode($v2);
-									//$output_fields['raw_multi'] = $v2;
+									$output_array = array();
 									foreach ($multiselect_fields as $k3 => $v3) {
 										foreach($v2_array as $multi_key => $multi_val) {
 											if ($k3 == $multi_val) {
@@ -744,8 +754,8 @@
 
 				$previous = $wpdb->get_results ("SELECT * from $this->table_sort");
 				$delete = $wpdb->query("TRUNCATE TABLE $this->table_sort"); // empty table first
-				$keepers = isset($_POST['keepers']) ? $_POST['keepers'] : array();
-				$nonkeepers = isset($_POST['nonkeepers']) ? $_POST['nonkeepers'] : array();
+				$keepers = isset($_POST['keepers']) ? $this->sanitize_array($_POST['keepers']) : array();
+                $nonkeepers = isset($_POST['nonkeepers']) ? $this->sanitize_array($_POST['nonkeepers']) : array();
 
 				$sort_ind = 1;
 
@@ -829,8 +839,8 @@
 
 			// Frontend Filters
 			} elseif (isset($_POST['frontend_filter']) && $_POST['frontend_filter'] == 'true') {
-                $keepers    = isset($_POST['keepers']) ? $_POST['keepers'] : array();
-                $nonkeepers = isset($_POST['nonkeepers']) ? $_POST['nonkeepers'] : array();
+				$keepers = isset($_POST['keepers']) ? $this->sanitize_array($_POST['keepers']) : array();
+                $nonkeepers = isset($_POST['nonkeepers']) ? $this->sanitize_array($_POST['nonkeepers']) : array();
 				foreach ($keepers as $k2 => $v2) {
 					$wpdb->update(
                        	$this->table_sort,
@@ -932,7 +942,7 @@
 
 			// Select Specific Dropdown options
 			} elseif (isset($_POST['dropdown_select']) && $_POST['dropdown_select'] == 'true') {
-				$list = $_POST['dropdown_list'];
+				$list = sanitize_text_field($_POST['dropdown_list']);
 				$options = $wpdb->get_results (
 					"
 					SELECT * from $this->table_sst WHERE sst_type_desc='$list' order by sst_order asc
@@ -942,12 +952,13 @@
 
 			// Save Dropdown options
 			} elseif (isset($_POST['save_dropdown_options']) && $_POST['save_dropdown_options'] == 'true') {
-				$sst_type_desc = $_POST['sst_type_desc'];
+				$sst_type_desc = sanitize_text_field($_POST['sst_type_desc']);
 				// get the current sst_type for the dropdown
 				$sst_type = $wpdb->get_var("SELECT sst_type FROM $this->table_sst where sst_type_desc='$sst_type_desc' limit 1");
 				$new_options = array();
 				$i = 1;
-				foreach ($_POST['optlist'] as $k => $v) {
+				$optlist = $this->sanitize_array($_POST['optlist']);
+				foreach ($optlist as $k => $v) {
 					// insert
 					if ($v['action'] == 'add' ) {
 						$wpdb->insert(
@@ -1012,7 +1023,8 @@
 				$response['last_sorting'] = $last_sorting;
 				$i = 1; // sort_ind_number
 				$c_inc = 1;
-				foreach ($_POST['fieldlist'] as $k => $v) {
+				$fieldlist = $this->sanitize_array($_POST['fieldlist']);
+				foreach ($fieldlist as $k => $v) {
 					if ($v['action'] == 'add') { 
 
 						if ($v['field_type'] == '7' || $v['field_type'] == '11') {  // Date picker, date time type
@@ -1254,7 +1266,7 @@
 			// Saving original settings to main_settings, and new frontend settings to frontend_settings
 			} elseif (isset($_POST['manage_individual']) && $_POST['manage_individual'] == 'true') {
 				$columns = intval($_POST['columns']);
-				$tiles = $_POST['tiles'];
+				$tiles = $this->sanitize_array($_POST['tiles']);
 				$frontend = array();
 				$frontend['ind_columns'] = $columns;
 				$main_settings     = 'shwcp_main_settings' . $current_db;
@@ -1401,7 +1413,7 @@
 					/* Examine first row for column names */
                     $new_file = $shwcp_upload . '/' . $file_name;
                     $new_file_url = $shwcp_upload_url . '/' . $file_name;
-					$orig_name = $_POST['name'];
+					$orig_name = sanitize_file_name($_POST['name']);
                     move_uploaded_file($_FILES["file"]["tmp_name"], $new_file);
 
 					require_once SHWCP_ROOT_PATH . '/includes/PHPExcel/Classes/PHPExcel.php';
@@ -1458,7 +1470,7 @@
 			// Upload CSV or Excel file for import, Step 3 process file
 			} elseif (isset($_POST['import_step3']) && $_POST['import_step3'] == 'true') {
 				$fieldMap = isset($_POST['fieldMap']) ? $_POST['fieldMap'] : array();
-				$new_file = $_POST['new_file_loc'];
+				$new_file = sanitize_text_field($_POST['new_file_loc']);
 				$update_entries = intval($_POST['update_entries']);  // 1 is update entries, anything else is insert
 
 				// check to make sure some are selected
@@ -1682,9 +1694,9 @@
 			} elseif (isset($_POST['mail_chimp']) && $_POST['mail_chimp'] == 'true') {
 				$api_key         = trim($_POST['api_key']);
 				$list            = trim($_POST['list']);
-				$email_field     = isset($_POST['email_field']) ? $_POST['email_field'] : '';
-				$firstname_field = isset($_POST['firstname_field']) ? $_POST['firstname_field'] : '';
-				$lastname_field  = isset($_POST['lastname_field']) ? $_POST['lastname_field'] : '';
+				$email_field     = isset($_POST['email_field']) ? sanitize_text_field($_POST['email_field']) : '';
+				$firstname_field = isset($_POST['firstname_field']) ? sanitize_text_field($_POST['firstname_field']) : '';
+				$lastname_field  = isset($_POST['lastname_field']) ? sanitize_text_field($_POST['lastname_field']) : '';
 				$response['select_label'] = __("Select Your MailChimp list to import into", 'shwcp');
 				$response['email_label'] = __("Email Address Field", 'shwcp');
 				$response['firstname_label'] = __("First Name Field", 'shwcp');
@@ -1721,9 +1733,9 @@
 			} elseif (isset($_POST['mail_chimp_conf']) && $_POST['mail_chimp_conf'] == 'true') {
 				$api_key         = trim($_POST['api_key']);
                 $list            = trim($_POST['list']);
-                $email_field     = isset($_POST['email_field']) ? $_POST['email_field'] : '';
-                $firstname_field = isset($_POST['firstname_field']) ? $_POST['firstname_field'] : '';
-                $lastname_field  = isset($_POST['lastname_field']) ? $_POST['lastname_field'] : '';
+                $email_field     = isset($_POST['email_field']) ? sanitize_text_field($_POST['email_field']) : '';
+                $firstname_field = isset($_POST['firstname_field']) ? sanitize_text_field($_POST['firstname_field']) : '';
+                $lastname_field  = isset($_POST['lastname_field']) ? sanitize_text_field($_POST['lastname_field']) : '';
 				require_once SHWCP_ROOT_PATH . '/includes/mail-chimp/MailChimp.php';
                 $MailChimp = new MailChimp($api_key);
 				$owner_only = '';
@@ -1769,7 +1781,7 @@
 			// Confirm Remove File
 			} elseif (isset($_POST['remove_file_check']) && $_POST['remove_file_check'] == 'true') {
 				$lead_id = intval($_POST['lead_id']);
-				$lead_file = $_POST['lead_file'];
+				$lead_file = sanitize_text_field($_POST['lead_file']);
 				$response['message'] = '<p class="remove-file-confirm leadID-' . $lead_id . '">'
 					 			     . __('Are you sure you wish to remove the following file?', 'shwcp')
 									 . ' <br /><br /><b><span class="file-remove-name">' . $lead_file 
@@ -1781,7 +1793,7 @@
 			// Actually Remove File and update db
 			} elseif (isset($_POST['remove_file_confirm']) && $_POST['remove_file_confirm'] == 'true') {
                 $lead_id = intval($_POST['lead_id']);
-				$lead_file = $_POST['lead_file'];
+				$lead_file = sanitize_text_field($_POST['lead_file']);
 				$lead_dir = $shwcp_upload . '/' . $lead_id . '-files';
 				if (file_exists($lead_dir . '/' . $lead_file)) {
 					unlink($lead_dir . '/' . $lead_file);
@@ -2042,7 +2054,7 @@
 			} elseif (isset($_POST['save_lead_fields']) && $_POST['save_lead_fields'] == 'true') {
 				$lead_id = intval($_POST['lead_id']);
 
-                $field_vals = $_POST['field_vals'];
+				$field_vals = $this->sanitize_array($_POST['field_vals']);
 
 				 // Get the sorting info for checking required
                 $sorting = $wpdb->get_results (
@@ -2834,7 +2846,7 @@
 
                 // Nonce is checked, get the POST data and sign user on
                 $info = array();
-                $info['user_login'] = $_POST['username'];
+				$info['user_login'] = sanitize_user($_POST['username']);
                 $info['user_password'] = $_POST['password'];
                 $info['remember'] = true;
 
@@ -2877,7 +2889,7 @@
 
 			// Reset Database to initial state
             if (isset($_POST['reset_db']) && $_POST['reset_db'] == 'true') {
-				$db = $_POST['database'];
+				$db = sanitize_text_field($_POST['database']);
 				require_once SHWCP_ROOT_PATH . '/includes/class-setup-wcp.php';
         		$setup_wcp = new setup_wcp;
 
@@ -2897,7 +2909,7 @@
 
 			// Backup Database and files
 			} elseif ( isset($_POST['backup_db']) && $_POST['backup_db'] == 'true') {
-				$db = $_POST['database'];
+				$db = sanitize_text_field($_POST['database']);
 				require_once SHWCP_ROOT_PATH . '/includes/class-setup-wcp.php';
 				$setup_wcp = new setup_wcp;
 
@@ -2952,7 +2964,7 @@
 
 			// Delete existing backups
 			} elseif (isset($_POST['remove_backup']) && $_POST['remove_backup'] == 'true') {
-				$backup = trim($_POST['backup']);
+				$backup = trim(sanitize_text_field($_POST['backup']));
 				$filters = array( '../', '/');
 				$backup = str_replace($filters, "", $backup); // just in case someones doing something funny
 				// Remove all files and directories in our custom upload directory as well
@@ -2961,8 +2973,8 @@
 
 			// Restore a backup
 			} elseif (isset($_POST['restore_backup']) && $_POST['restore_backup'] == 'true') {
-				$backup = trim($_POST['backup']);
-				$db = $_POST['database'];
+				$backup = trim(sanitize_text_field($_POST['backup']));
+                $db = sanitize_text_field($_POST['database']);
 				if ($backup == '') {
 					$response['restored'] = 'false';
 					$response['error'] = 'true';
@@ -3011,26 +3023,6 @@
 				// loop through existing leads table to find the next available number to assign the db to 
 				$table_main = $wpdb->prefix . SHWCP_LEADS;
 
-				/*
-            	$databases = array();
-            	$dbs = $wpdb->get_results("SHOW tables LIKE '$table_main%'");
-            	foreach ($dbs as $k => $v) {
-                	foreach ($v as $v2 => $table) {
-                    	if ($table == $table_main) {  // default database, ignore...
-							// ignore
-                    	} else {        // All others created, find numeric values after name
-							$databases[] = $table;
-                    	}
-                	}
-            	}
-				$db_inc = 1;
-				$dbname = $table_main . '_' . $db_inc;
-                while(in_array($dbname, $databases)) {
-                	$db_inc++;
-                    $dbname = $table_main . '_' . $db_inc;
-                }
-				$dbnumber = '_' . $db_inc;
-*/
 				$dbnumber = $this->wcp_next_db();
 				// create the database
 				require_once SHWCP_ROOT_PATH . '/includes/class-setup-wcp.php';

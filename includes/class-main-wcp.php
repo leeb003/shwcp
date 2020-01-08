@@ -624,6 +624,24 @@
         	}
     	}
 
+		/**
+         * Sanitize multidimensional array
+         * @ since 1.0.0
+         * @return array
+         */
+        public function sanitize_array( &$array ) {
+            foreach ($array as &$value) {
+                if( !is_array($value) ) {
+                    // sanitize if value is not an array
+                    $value = sanitize_text_field( $value );
+                } else {
+                    // go inside this function again
+                    $this->sanitize_array($value);
+                }
+                return $array;
+            }
+        }
+
     	/*
      	 * Check if gutenberg is active
      	 */

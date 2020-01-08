@@ -3083,3 +3083,7 @@ padding:12px;
     top: 21px;
     right: 10px;
 }
+
+.hidden {
+	display: none;
+}
