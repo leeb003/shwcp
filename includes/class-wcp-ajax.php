@@ -873,7 +873,7 @@
 
 			// Frontend Regenerate Thumbnails
 			} elseif (isset($_POST['thumbnail_regen']) && $_POST['thumbnail_regen'] == 'true') {
-				$files = list_files($this->shwcp_upload, 1, array() );		
+				$files = list_files($shwcp_upload, 1, array() );		
 				$filtered_files = array();
 				$size = intval($this->first_tab['contact_image_thumbsize']);
 				foreach($files as $k => $v) {

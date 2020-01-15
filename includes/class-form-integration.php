@@ -394,15 +394,35 @@
                             	$wpcinsert = true;
 								if (is_array($form['fields'][$forminc]->inputs) ) { // This is a field with subfields
 									$wpdatapre[$label_value[1]] = '';
-									foreach ($form['fields'][$forminc]->inputs as $input => $inputv) {
-										$entryid = $inputv['id'];
-										$wpdatapre[$label_value[1]] .= $entry["$entryid"] . ' '; 
-										/* Have to use the quotes to access the ids (e.g. 11.3) above or php can't find them!! */
+									if ($label_value[1] == 'wcpsplit') { // We split data up in different fields
+										$label_inc = 2;
+										foreach ($form['fields'][$forminc]->inputs as $input => $inputv) {
+											if (!isset($inputv['isHidden'])) {  // isHidden is marked for fields not used
+												$entryid = $inputv['id'];
+												$wpdatapre[$label_value[$label_inc]] = $entry["$entryid"];
+												$label_inc++;
+											}
+										}
+									} else { // no splitting, combining to 1 field
+										foreach ($form['fields'][$forminc]->inputs as $input => $inputv) {
+											$entryid = $inputv['id'];
+											$wpdatapre[$label_value[1]] .= $entry["$entryid"] . ' '; 
+											/* Have to use the quotes to access the ids (e.g. 11.3) above or php can't find them!! */
+										}
 									}
 
 								} else { // The other fields
 									$entryid = $form['fields'][$forminc]->id;
-									$wpdatapre[$label_value[1]] = $entry[$entryid];
+
+									if ($label_value[1] == 'wcpsplit') {   // This is our split field used for separating name fields
+										$name = $this->split_name($entry[$entryid]);
+										$wpdatapre[$label_value[2]] = $name[0];
+										$wpdatapre[$label_value[3]] = $name[1];
+										//echo "Field 1 is "  . $label_value[2] . " Value is " . $pieces[0] . "\n";
+
+									} else {                                           // non split fields
+										$wpdatapre[$label_value[1]] = $entry[$entryid];
+									}
 								}
 							} elseif ( $value == 'wpdatabasemap' ) {
 								$entryid = $form['fields'][$forminc]->id;
@@ -458,13 +478,20 @@
                     //echo "Fields to insert \n\n";
                     //print_r($wpdatafinal);
 
-					/* Dropdown Check */
+					/* Field Checks */
                 	$sorting = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SORT . $db);
                 	$sst = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . SHWCP_SST . $db);
                 	foreach ($wpdatafinal as $f => $v) {
                     	foreach ($sorting as $k2 => $v2) {
                         	if ($v2->orig_name == $f) {
-                            	if ($v2->field_type == '10') {
+								if ($v2->field_type == '9') {  // Checkbox handling, these are currently 1 for 1
+									if (!empty(trim($v))) {
+										$wpdatafinal[$f] = '1';
+									} else {
+										$wpdatafinal[$f] = '0';
+									}
+
+                            	} elseif ($v2->field_type == '10') {
                                 	$sst_type = $wpdb->get_var(
                                             "SELECT sst_type FROM " . $wpdb->prefix . SHWCP_SST . $db
                                             . " where sst_type_desc='$f' limit 1"
@@ -559,5 +586,16 @@
                 return $wpdb->insert_id;
             }
         }
+		/*
+		 * Split up a name into two parts First and last taking into account that there might be a middle
+		 * uses regex that accepts any word character or hyphen in last name
+		 * Currently used in GF only
+		 */
+		public function split_name($name) {
+    		$name = trim($name);
+    		$last_name = (strpos($name, ' ') === false) ? '' : preg_replace('#.*\s([\w-]*)$#', '$1', $name);
+    		$first_name = trim( preg_replace('#'.$last_name.'#', '', $name ) );
+    		return array($first_name, $last_name);
+		} 
 
 	}

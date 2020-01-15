@@ -31,6 +31,11 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+= 3.2.9 = 
+* Fix for resizing thumbnails routine on non-default database
+* Fix for some ui bugs
+* Added some Gravity Forms enhancements
+
 = 3.2.8 =
 * Fix for displaying multi-select fields in view only mode on the individual entry page
 * Gutenberg Database selection Classic editor metabox interference
