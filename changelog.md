@@ -3,6 +3,14 @@ All notable changes to WP Contacts will be documented in this file starting with
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.2.9] - 2020-1-15
+### Fixed
+- Resizing thumbnails routine on non-default database
+- UI bugs
+
+### Added 
+- Gravity Forms enhancements
+
 ## [3.2.8] - 2019-12-27
 ### Fixed
 - Displaying multi-select fields in view only mode on the individual entry page now displays correctly.
