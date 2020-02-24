@@ -436,7 +436,7 @@
 				'default_sort_dir'      => 'asc',
 				'show_admin'            => 'false',
 				'page_color'            => '#dd3333',
-				'logo_attachment_url'   => SHWCP_ROOT_URL . '/assets/img/wpcontacts.png',
+				'logo_attachment_url'   => SHWCP_ROOT_URL . '/assets/img/wp-contacts300x60.png',
             	'logo_attachment_id'    => '',
 				'page_footer'           => 'WP Contacts &copy;2020 ScriptHat',
 				'page_greeting'         => 'Welcome To <span class="wcp-primary">WP</span> Contacts',

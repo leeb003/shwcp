@@ -19,6 +19,11 @@ body {
 	color: rgba(0,0,0,0.87);
 }
 
+body.entry_print {
+	background-color: #fff;
+
+}
+
 a {
 	color: #333;
 	text-decoration: none;
@@ -146,6 +151,13 @@ p.status {
 	margin-right: 15px;
 	overflow: auto;
 }
+
+.wcp-print-container {
+	padding: 20px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+	
 
 .wcp-toolbar {
 	padding-left: 20px;
@@ -345,13 +357,15 @@ p.status {
 
 /* End Search section */
 .add-holder,
-.export-holder {
+.export-holder, 
+.wcp-print-holder {
 	float: right;
 }
 .add-lead:hover, .delete-lead:hover, .search-leads:hover, .add-edit-event:hover, .export-view:hover {
 	cursor: pointer;
 }
-.add-lead {
+.add-lead,
+.wcp-print-holder {
 	margin-right: 15px;
 }
 .export-view {
@@ -1049,7 +1063,7 @@ input.lead_field {
 .wcp-edit-lead td, .wcp-no-edit td {
 	padding-bottom: 10px;
 }
-.wcp-edit-lead label, .wcp-no-edit .non-edit-label {
+.wcp-edit-lead label, .wcp-no-edit .non-edit-label, .wcp-print-container label {
 	display:inline-block;
 	width: 100%;
 }
@@ -1604,6 +1618,10 @@ i.option-sort {
 	background-color: rgba(153,153,153, 0.1);
 	overflow: auto;
 }
+.wcp-print-container .entry-details {
+	background-color: #fff;
+	border: 1px solid #f5f5f5;
+}
 
 /* Upload Progress Bar */
 .progress-container {
@@ -1823,12 +1841,14 @@ i.add-filter {
 /* Remove default checkbox */
 .edit-td [type="checkbox"]:not(:checked), [type="checkbox"]:checked,
 .wcp-container [type="checkbox"]:not(:checked), [type="checkbox"]:checked,
+.wcp-print-container [type="checkbox"]:not(:checked), [type="checkbox"]:checked,
 .wcp-modal [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
   	position: absolute;
   	left: -9999px; }
 
 .edit-td [type="checkbox"] + label,
 .wcp-container [type="checkbox"] + label,
+.wcp-print-container [type="checkbox"] + label,
 .wcp-modal [type="checkbox"] + label {
     position: relative;
     padding-left: 35px;
@@ -1852,6 +1872,7 @@ i.add-filter {
 
 /* .edit-td [type="checkbox"] + label, */
 .wcp-container .input-field [type="checkbox"] + label,
+.wcp-print-container .input-field [type="checkbox"] + label,
 .wcp-modal .input-field [type="checkbox"] + label {
 	height: auto;
 }
@@ -1863,6 +1884,7 @@ i.add-filter {
 
 .edit-td [type="checkbox"] + label:before,
 .wcp-container [type="checkbox"] + label:before,
+.wcp-print-container [type="checkbox"] + label:before,
 .wcp-modal [type="checkbox"] + label:before {
     content: '';
     position: absolute;
@@ -1883,6 +1905,7 @@ i.add-filter {
 
 .edit-td [type="checkbox"]:not(:checked):disabled + label:before,
 .wcp-container [type="checkbox"]:not(:checked):disabled + label:before,
+.wcp-print-container [type="checkbox"]:not(:checked):disabled + label:before,
 .wcp-modal [type="checkbox"]:not(:checked):disabled + label:before {
     border: none;
     background-color: rgba(0, 0, 0, 0.26); 
@@ -1890,6 +1913,7 @@ i.add-filter {
 
 .edit-td [type="checkbox"]:checked + label:before,
 .wcp-container [type="checkbox"]:checked + label:before,
+.wcp-print-container [type="checkbox"]:checked + label:before,
 .wcp-modal [type="checkbox"]:checked + label:before {
   	top: -4px;
   	left: -3px;
@@ -1912,6 +1936,7 @@ i.add-filter {
 
 .edit-td [type="checkbox"]:checked:disabled + label:before,
 .wcp-container [type="checkbox"]:checked:disabled + label:before,
+.wcp-print-container [type="checkbox"]:checked:disabled + label:before,
 .wcp-modal [type="checkbox"]:checked:disabled + label:before {
   	/* border-right: 2px solid rgba(0, 0, 0, 0.26);
   	border-bottom: 2px solid rgba(0, 0, 0, 0.26); */
@@ -1945,6 +1970,11 @@ i.add-filter {
 	/* margin-top:14px; */
 	padding: 0 10px;
 }
+
+.input-field.no-padding {
+	padding: 0px;
+}
+
 .wcp-perms-tab .input-field {
 	min-height: auto;
 }

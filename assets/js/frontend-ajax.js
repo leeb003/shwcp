@@ -1993,7 +1993,10 @@ jQuery(function ($) {  // use $ for jQuery
 			tinymce.remove('notes-area');
 			tinyMCE.init({
 				mode: 'exact',
+				schema: 'html5',
 				elements: 'notes-area',
+				plugins: 'link lists textcolor colorpicker image',
+				toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | forecolor backcolor link image",
 				menubar: false
 			});
         });
@@ -2037,14 +2040,25 @@ jQuery(function ($) {  // use $ for jQuery
 
             // initialize tinymce
             tinymce.remove('notes-area');
-            tinyMCE.init({
-                mode: 'exact',
+			tinyMCE.init({
+			 mode: 'exact',
+                schema: 'html5',
                 elements: 'notes-area',
+                plugins: 'link lists textcolor colorpicker image',
+                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | forecolor backcolor link image",
                 menubar: false
-            });
+            });	
         });
         return false;
     });
+
+	// Allow tinyMCE editor url link editing and inserting popup to work correctly
+    // reference https://stackoverflow.com/questions/18111582/tinymce-4-links-plugin-modal-in-not-editable#answer-18209594
+	$(document).on('focusin', function(e) {
+    	if ($(e.target).closest(".mce-window").length) {
+        	e.stopImmediatePropagation();
+    	}
+	});
 
 	// Save edited note
 	$(document).on('click', '.save-edit-note', function() {

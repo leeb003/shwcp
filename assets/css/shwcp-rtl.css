@@ -34,6 +34,9 @@
 .sst-bar, .lead-count, .sst-select {
 	float: right;
 }
+.sst-select li ul {
+	left: 9999px;
+}
 .lead-count {
 	text-align: left;
 	padding-left: 40px;

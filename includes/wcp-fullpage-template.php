@@ -8,6 +8,10 @@
  * @since shwcp 1.0
  */
 ?><!DOCTYPE html>
+<?php
+// get the current page and put in body class
+$curr_page = isset($_GET['wcp']) ? sanitize_text_field($_GET['wcp']) : '';
+?>
 <html <?php language_attributes(); ?>>
 <head>
     <meta charset="<?php bloginfo( 'charset' ); ?>">
@@ -29,7 +33,7 @@ if ( ! function_exists( '_wp_render_title_tag' ) ) {
     <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
     <?php wp_head(); ?>
 </head>
-<body <?php body_class(); ?>>
+<body <?php body_class("$curr_page"); ?>>
 
 <?php while ( have_posts() ) : the_post(); ?>
 <?php endwhile; ?>

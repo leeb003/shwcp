@@ -31,6 +31,12 @@ the control to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
+
+= 3.3.0 = 
+* Added print page for individual entries option
+* Added notes capabilities - links and image insertion as well as quite a few other formatting options
+* Changed some icons and logos
+
 = 3.2.9 = 
 * Fix for resizing thumbnails routine on non-default database
 * Fix for some ui bugs

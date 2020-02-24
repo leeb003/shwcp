@@ -475,6 +475,8 @@
 			$page_fields_arg  = add_query_arg( array('wcp' => 'fields'), get_permalink() );
 			$page_entry       = __('Individual Entry', 'shwcp');
 			$page_entry_arg   = add_query_arg( array('wcp' => 'entry'), get_permalink() );
+			$page_entry_p     = __('Individual Entry Print View', 'shwcp');
+			$page_entry_p_arg = add_query_arg( array('wcp' => 'entry_print'), get_permalink() );
 			$page_export      = __('Import & Export', 'shwcp');
 			$page_export_arg  = add_query_arg( array('wcp' => 'ie'), get_permalink() );
 			$page_stats       = __('Statistics', 'shwcp');
@@ -535,10 +537,16 @@ EOC;
 					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-manage-ind.php');
                     $wcp_ind_manage = new wcp_ind_manage();
                     $this->main_section = apply_filters('wcp_ind_manage_filter', $wcp_ind_manage->manage_individual());
-				} elseif ('entry' == $this->curr_page) { // Individual Lead page
+				} elseif ('entry' == $this->curr_page) { // Individual Entry page
 					require_once(SHWCP_ROOT_PATH  . '/includes/class-wcp-individual.php');
 					$wcp_individual = new wcp_individual();
 					$this->main_section = apply_filters('wcp_individual_filter', $wcp_individual->get_individual($db));
+					$lead_id = intval($_GET['entry']);
+					$bar_tools = $this->top_search($search_select);
+				} elseif ('entry_print' == $this->curr_page) { // Individual Entry print view
+					require_once(SHWCP_ROOT_PATH . '/includes/class-wcp-individual-print.php');
+					$wcp_individual_print = new wcp_individual_print();
+					$this->main_section = apply_filters('wcp_individual_filter', $wcp_individual_print->get_individual_print($db));
 					$lead_id = intval($_GET['entry']);
 					$bar_tools = $this->top_search($search_select);
 				} elseif ('ie' == $this->curr_page) { // Import Export page
@@ -804,7 +812,16 @@ EOC;
 			$wcp_links = apply_filters('wcp_menu_links_filter', $wcp_links); // Add filter for just the links
 
 			$this->head_section .= $wcp_links;
-			$this->head_section .= <<<EOC
+
+			if ('entry_print' == $this->curr_page) { // minimize print entry page
+				$this->head_section = <<<EOC
+				<div class="wcp-print-wrapper">
+					<div class="wcp-print-inner">
+						<div class="wcp-print-container">
+EOC;
+
+			} else {  // everything else
+				$this->head_section .= <<<EOC
 					</ul>
             	</nav>   
             
@@ -820,11 +837,20 @@ EOC;
     					</div>			
 						<div class="wcp-container">
 EOC;
+			}
 	
 	$this->head_section = apply_filters('wcp_head_section_filter', $this->head_section);  // filter for head
 
 	$page_footer = isset($this->first_tab['page_footer']) ? $this->first_tab['page_footer'] : '';
-	$this->bottom_section = <<<EOC
+	if ('entry_print' == $this->curr_page) { // minimize print entry page
+		$this->bottom_section = <<<EOC
+				</div><!-- End wcp-print-container -->
+			</div>
+	    </div>
+EOC;
+
+	} else {
+		$this->bottom_section = <<<EOC
 				</div><!-- End wcp-container -->
 			</div>
 		</div>
@@ -849,6 +875,8 @@ EOC;
 	</div>
 </div>
 EOC;
+	}
+
 	$this->bottom_section = apply_filters('wcp_bottom_section_filter', $this->bottom_section); // filter for bottom
 
 			$content = $this->head_section . $this->main_section . $this->bottom_section;
@@ -887,6 +915,14 @@ EOC;
             $top_search .= '</select>'
                 		 . '<input class="wcp-search-input" placeholder="' . __('Search', 'shwcp') . '" type="search" value="" />'
                 		 . '</div>';
+			
+			if ('entry' == $this->curr_page) { // Individual Entry page, add print view option
+				$entry_id = intval($_GET['entry']);
+				$page_entry_p_arg = add_query_arg( array('wcp' => 'entry_print', 'entry' => $entry_id), get_permalink() );
+                $top_search .= '<div class="wcp-print-holder"><a href="' . $page_entry_p_arg 
+							 . '" target="_blank"><i class="print-vew wcp-white wcp-sm md-print" title="' 
+							 . __('Print View', 'shwcp') . '"> </i></a></div>';
+            }
 
 			$custom_role = $this->get_custom_role();
             // no access to adding for entry page and people who can't edit 

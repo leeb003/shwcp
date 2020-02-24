@@ -158,7 +158,7 @@ class SHWCP_API_Tabs {
 			'default_sort_dir' => 'desc',
 			'show_admin' => 'true',
 			'page_color' => '#607d8b',
-			'logo_attachment_url' => SHWCP_ROOT_URL . '/assets/img/wpcontacts.png',
+			'logo_attachment_url' => SHWCP_ROOT_URL . '/assets/img/wp-contacts300x60.png',
 			'logo_attachment_id' => '',
 			'page_footer' => 'WP Contacts &copy;2020 ScriptHat',
 			'page_greeting' => 'Welcome To <span class="wcp-primary">WP</span> Contacts',
@@ -333,7 +333,7 @@ class SHWCP_API_Tabs {
 	 */
 	function register_info_tab() {
 		$this->plugin_settings_tabs[$this->info_settings_key_db] = __('Site Information', 'shwcp');
-		$banner_img = "<img src='" . SHWCP_ROOT_URL . '/assets/img/wpcontacts590x300-2.jpg' . "' /><br /><br />";
+		$banner_img = "<img src='" . SHWCP_ROOT_URL . '/assets/img/wp-contacts-nobg300x65.png' . "' /><br /><br />";
 
 		register_setting( $this->info_settings_key_db, $this->info_settings_key_db );
 		add_settings_section( 'section_info', $banner_img . __('Information', 'shwcp'), array( &$this, 'section_site_desc' ), 
@@ -1615,7 +1615,7 @@ class SHWCP_API_Tabs {
 	function add_admin_menus() {
 		$plugin_options = add_menu_page( __('WP Contacts', 'shwcp'), __('WP Contacts', 'shwcp'), 'manage_options', 
 				$this->plugin_options_key, array($this, 'plugin_options_page'), 
-				SHWCP_ROOT_URL . '/assets/img/wcp-16.png', '27.337');
+				SHWCP_ROOT_URL . '/assets/img/wpc-16.png', '27.337');
 
 		// loaded only in our Contacts menu
 		add_action( 'load-' . $plugin_options, array($this, 'load_admin_scripts') );
