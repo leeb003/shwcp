@@ -625,6 +625,34 @@
     	}
 
 		/**
+		 * Check and assign automatic role for each database on WordPress user creation if enabled
+		 * @ since 3.3.0
+		 */
+		public function shwcp_auto_role($user_id) {
+			$current_dbs = $this->wcp_getdbs();
+			//print_r($current_dbs);
+			foreach ($current_dbs as $number => $name) {
+         		if ($number == 'default') {
+            		$ext = '';
+         		} else {
+            		$ext = '_' . $number;
+         		}
+         		$name = 'shwcp_permissions' . $ext;
+				$options = get_option($name);
+
+				$auto_role_enable = $options['auto_role_enable'];
+				$auto_role_set = $options['auto_role_set'];
+				if (
+					$auto_role_enable == 'yes'
+					&& isset($auto_role_set) 
+				) {
+					$options['permission_settings'][$user_id] = $auto_role_set;		
+					update_option($name, $options);
+				}
+			}
+		}
+
+		/**
          * Sanitize multidimensional array
          * @ since 1.0.0
          * @return array

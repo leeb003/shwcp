@@ -175,6 +175,8 @@ class SHWCP_API_Tabs {
 		$this->permission_settings = array_merge( array(
 			'advanced_option'        => 'Advanced value',
 			'own_leads_change_owner' => 'yes',
+			'auto_role_enable'       => 'no',
+			'auto_role_set'          => 'readonly',
 			'permission_settings'    => array (
 				"$current_user" => 'full'
 			),
@@ -321,6 +323,8 @@ class SHWCP_API_Tabs {
 		register_setting( $this->permission_settings_key_db, $this->permission_settings_key_db );
 		add_settings_section( 'section_permission', __('Set Users Access to WP Contacts', 'shwcp'), array( &$this, 'section_permission_desc' ), $this->permission_settings_key_db );
 		add_settings_field( 'manage_own_owner', __('Manage Own Entries Ownership Change', 'shwcp'), array( &$this, 'field_manage_own_owner' ), $this->permission_settings_key_db, 'section_permission' );
+
+		add_settings_field( 'auto_role', __('Assign roles automatically on WordPress user creation', 'shwcp'), array( &$this, 'field_auto_role' ), $this->permission_settings_key_db, 'section_permission' );
 
 		add_settings_field( 'user_permission', __('Users', 'shwcp'), array( &$this, 'field_user_permission' ), $this->permission_settings_key_db, 'section_permission' );
 
@@ -894,6 +898,54 @@ class SHWCP_API_Tabs {
             <?php echo __("Allow <b>Manage Own Entries</b> users to change entry ownership (hand entries off to other users) ?","shwcp");?>
         </p>
         <?php
+	}
+
+	/*
+	 * Automatic role assignment on user creation (user_registration hook)
+	 */
+	function field_auto_role() {
+		$access_levels = array(
+            'none'     => __('No Access', 'shwcp'),
+            'readonly' => __('Read Only', 'shwcp'),
+            'ownleads' => __('Manage Own Entries', 'shwcp'),
+            'full'     => __('Full Access', 'shwcp')
+        );
+        // add on any custom roles
+        $custom_roles = isset($this->permission_settings['custom_roles']) ? $this->permission_settings['custom_roles'] : array();
+        foreach ($custom_roles as $k => $role) {
+            $access_levels[$role['unique']] = $role['name'];
+        }
+		?>
+		<table class="wcp_auto_access">
+		<tr>
+			<th><?php echo __('Enabled', 'shwcp');?></th>
+			<th><?php echo __('Role assigned', 'shwcp');?></th>
+		</tr>
+		<tr>
+		    <td>
+				<select class="auto-role-enable" name="<?php echo $this->permission_settings_key_db; ?>[auto_role_enable]">
+					<option value="no" <?php selected ( $this->permission_settings['auto_role_enable'], 'no'); ?>>
+					<?php echo __('No', 'shwcp'); ?></option>
+
+					<option value="yes" <?php selected ( $this->permission_settings['auto_role_enable'], 'yes'); ?>>
+					<?php echo __('Yes', 'shwcp'); ?></option>
+				</select>
+			</td>
+			<td>
+				<select class="auto-role-set" name="<?php echo $this->permission_settings_key_db;?>[auto_role_set]">
+            <?php
+            foreach ($access_levels as $av => $an) {
+            ?>
+                	<option value="<?php echo $av;?>" <?php selected ($this->permission_settings['auto_role_set'], $av);?>><?php echo $an;?></option>
+            <?php } ?>
+            	</select>
+			</td>
+		</tr>
+	    </table>
+		<p>
+			<?php echo __("Automatically assigns new users to a specific role when they are created in WordPress.  Understand what this means before enabling.", "shwcp");?>
+		</p>
+		<?php
 	}
 
 	/*

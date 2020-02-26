@@ -121,6 +121,9 @@ if(defined('SHWCP_PLUGIN_VERSION') ) {
 	// Gutenberg or Classic editor - load files and scripts for whats used
 	add_action( 'plugins_loaded', array( $main_wcp, 'shwcp_editor_check') );
 
+	// Automatic user addition on registration
+	add_action( 'user_register', array( $main_wcp, 'shwcp_auto_role') );
+
 	/* Form Plugin integrations (Contact Form 7, Ninja, Gravity */
 	require_once SHWCP_ROOT_PATH . '/includes/class-form-integration.php';
 	$form_integration = new form_integration;

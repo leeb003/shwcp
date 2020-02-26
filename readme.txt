@@ -32,6 +32,9 @@ management.
 
 == Changelog ==
 
+= 3.3.1 =
+* Added Automatic role selection for new users
+
 = 3.3.0 = 
 * Added print page for individual entries option
 * Added notes capabilities - links and image insertion as well as quite a few other formatting options
