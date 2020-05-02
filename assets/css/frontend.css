@@ -1994,17 +1994,19 @@ i.add-filter {
 }
 .input-field .wp-color-result {
 	border-radius: 0;
-	height: 23px;
 }
 
 .input-field .wp-picker-container {
 	background-color: #fff;
-	border: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-    padding: 20px;
+	border: 1px solid #9e9e9e;
+    padding: 15px;
+}
+
+.input-field .wp-color-result {
+	border: 1px solid #9e9e9e;
+	cursor: pointer;	
 }
 	
-
 span.non-edit-label {
     font-size: 1em;
 	padding: 15px 0 5px;

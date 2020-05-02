@@ -2,6 +2,7 @@ jQuery(function ($) {  // use $ for jQuery
 	"use strict";
 	// Load events to calendar
     $(document).ready(function() {
+		// Load events to calendar
 		var date = new Date();
   		var d = date.getDate();
   		var m = ('0' + (date.getMonth() + 1)).slice(-2);
@@ -352,15 +353,25 @@ jQuery(function ($) {  // use $ for jQuery
             $('.event-color').wpColorPicker();
 
 			// initialize tinymce
-			tinymce.EditorManager.editors = [];  // clear all tinymce instances
             tinyMCE.init({
                 mode: 'exact',
+				schema: 'html5',
                 elements: 'event-description',
+				plugins: 'link lists textcolor colorpicker image',
+				toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | forecolor backcolor link image",
                 menubar: false
             });
         });
         return false;
     });
+
+	$('.wcp-modal').on('shown.bs.modal', function() {
+		tinymce.EditorManager.execCommand('mceAddEditor',true, 'event-description');
+	});
+
+	$('.wcp-modal').on('hide.bs.modal', function() {
+		tinymce.EditorManager.execCommand('mceRemoveEditor',true, 'event-description');
+	});	
 
 	$(document).on('click', '.alert-enable', function() {
 		if( $(this).is(':checked') ) {

@@ -3,7 +3,11 @@ All notable changes to WP Contacts will be documented in this file starting with
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## 3.3.0 -2020-2-24
+## 3.3.1 - 2020-5-1
+### Fixed
+- Event notes editor and some styling fixes for events
+
+## 3.3.0 - 2020-2-24
 ### Added 
 - Print page for individual entries option
 - Notes capabilities - links and image insertion as well as quite a few other formatting options

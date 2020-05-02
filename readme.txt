@@ -34,6 +34,7 @@ management.
 
 = 3.3.1 =
 * Added Automatic role selection for new users
+* Event notes editor and some styling fixes for events
 
 = 3.3.0 = 
 * Added print page for individual entries option
