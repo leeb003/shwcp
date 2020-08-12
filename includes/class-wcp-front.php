@@ -196,7 +196,7 @@
 					wp_enqueue_script('iris', admin_url( 'js/iris.min.js', $this->scheme ),
         				array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ),false,1);
     				wp_enqueue_script('wp-color-picker', admin_url( 'js/color-picker.min.js', $this->scheme ),
-        				array( 'iris' ),false,1);
+        				array( 'iris', 'wp-i18n' ),false,1);
 					$colorpicker_l10n = array(
         				'clear' => __( 'Clear', 'shwcp' ),
         				'defaultString' => __( 'Default', 'shwcp' ),
