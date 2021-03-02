@@ -3,6 +3,10 @@ All notable changes to WP Contacts will be documented in this file starting with
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 3.3.3 - 2021-3-2
+### Fixed
+- Fullcalendar (Events page) version update for WordPress 5.6.2
+
 ## 3.3.1 - 2020-5-1
 ### Fixed
 - Event notes editor and some styling fixes for events

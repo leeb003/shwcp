@@ -32,6 +32,9 @@ management.
 
 == Changelog ==
 
+= 3.3.3 = 
+* Fix for fullcalendar, update to version v3.10.2 from v2.5.0 for WordPress 5.6.2 
+
 = 3.3.1 =
 * Added Automatic role selection for new users
 * Event notes editor and some styling fixes for events
