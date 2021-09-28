@@ -27,7 +27,7 @@ Installing "WP Contacts" can be done by using the following steps:
 = What does this plugin do? =
 This plugin is for tracking and managing your leads and contacts.  Built as a
 plugin for Wordpress, installation is easy and painless.  WP Contacts gives you
-the control to customize all sorts of aspects of your lead and contact
+the control and flexibility to customize all sorts of aspects of your lead and contact
 management.
 
 == Changelog ==
