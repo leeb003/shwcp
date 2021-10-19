@@ -941,7 +941,7 @@ EOC;
 							 . $get_params . '</div></div>';
 			/* Custom Roles Top Access */
             } elseif ($custom_role['access']) {                        
-				if ($custom_role['perms']['entries_add'] == 'yes') {   // Can add entries
+				if ($custom_role['perms']['entries_add'] == 'yes' && $this->curr_page != 'entry') {   // Can add entries
 					$top_search .= '<div class="add-holder"><i class="add-lead wcp-white wcp-sm md-add-circle-outline hidden-xs" '
                                  . 'title="' . __('Add Entry', 'shwcp') . '"> </i></div>';
 				} 
