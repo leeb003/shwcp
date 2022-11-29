@@ -29,6 +29,7 @@ This plugin is for tracking and managing your leads and contacts.  Built as a
 plugin for Wordpress, installation is easy and painless.  WP Contacts gives you
 the control and flexibility to customize all sorts of aspects of your lead and contact
 management.
+Full Documentation located at https://www.scripthat.com/kbt/wp-contacts/
 
 == Changelog ==
 
