@@ -1,5 +1,5 @@
 === WordPress Plugin Template ===
-Contributors: sh-themes
+Contributors: ScriptHat 
 Tags: wordpress, plugin, leads, contacts
 Requires at least: 4.9
 Tested up to: 5.3
