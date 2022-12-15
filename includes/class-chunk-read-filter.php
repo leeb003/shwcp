@@ -1,6 +1,6 @@
 <?php
-/**  Define a Read Filter class implementing PHPExcel_Reader_IReadFilter  */ 
-class chunkReadFilter implements PHPExcel_Reader_IReadFilter {
+/**  Define a Read Filter class implementing \PhpOffice\PhpSpreadsheet\Reader\IReadFilter  */
+class chunkReadFilter implements \PhpOffice\PhpSpreadsheet\Reader\IReadFilter {
     private $_startRow = 0;
     private $_endRow = 0;
 
@@ -10,8 +10,8 @@ class chunkReadFilter implements PHPExcel_Reader_IReadFilter {
         $this->_endRow      = $startRow + $chunkSize;
     } 
 
-    public function readCell($column, $row, $worksheetName = '') {
-        //  Only read the heading row, and the rows that are configured in $this->_startRow and $this->_endRow 
+	public function readCell($column, $row, $worksheetName = '') {
+		//  Only read the heading row, and the configured rows
         if (($row == 1) || ($row >= $this->_startRow && $row < $this->_endRow)) { 
            return true;
         }

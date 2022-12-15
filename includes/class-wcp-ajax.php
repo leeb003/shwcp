@@ -28,7 +28,7 @@
 
 			$shwcp_upload     = $this->shwcp_upload     . $current_db;
 			$shwcp_upload_url = $this->shwcp_upload_url . $current_db;
-			
+
 			$this->load_db_options($postID);
 
 			$logged_in = is_user_logged_in();
@@ -93,7 +93,7 @@
 					$translated_fields = $this->shwcp_return_entry($output_fields, $v, $sorting, $sst);
 					// action hook delete entry
                 	do_action('wcp_del_entry_action', $translated_fields,$environment);
-									
+
 					$removed[$i] = $v;
 					$wpdb->delete(
                     	$this->table_main,
@@ -118,7 +118,8 @@
 				|| isset($_POST['new_lead']) && $_POST['new_lead'] == 'true'
 			) {
 				$new = false;
-				$lead_id = intval($_POST['lead_id']);
+				//$lead_id = intval($_POST['lead_id']);
+				$lead_id = trim($_POST['lead_id']);
 
 				// Manage Own can or can't change ownership
 				$response['access'] = $this->current_access;
@@ -146,13 +147,14 @@
                    		$lead_pre[$column_name] = "";
                 	}
 				} else { // existing lead
+					$lead_id = intval($_POST['lead_id']);
 					$lead_pre = $wpdb->get_row(
                     	"
                         	SELECT l.* FROM $this->table_main l WHERE l.id = $lead_id;
                     	"
                 	);
 				}
-				
+
 				$sorting = $wpdb->get_results (
                     "
                         SELECT * from $this->table_sort order by sort_ind_number asc
@@ -229,7 +231,7 @@
 						$translated[$k]['trans'] = $k;
 					}
 				} 
-			
+
 				//$response['sorting'] = $sorting;
 				//$response['data'] = $lead;
 				$response['sst'] = $sst;
@@ -396,7 +398,7 @@
 			// Save Lead
 			} elseif (isset($_POST['save_lead']) && $_POST['save_lead'] == 'true') {  // save the lead updates
 				$new = false;
-				$lead_id = intval($_POST['lead_id']);
+				$lead_id = trim($_POST['lead_id']);
 
 				// Get the sorting info for returning fields to frontend and updating the table and for checking required
                 $sorting = $wpdb->get_results (
@@ -497,7 +499,7 @@
 						}
 						$format[] = '%s';
 					}
-				
+
 					if ($new) {   	// New Lead
 						$wpdb->insert(
 							$this->table_main,
@@ -528,7 +530,7 @@
 					// files display
 					$max_display = 4;
                     $file_data = unserialize($lead_files);
-					
+
 					$td_content = '<div class="files-preview">';
 					$count = 0;
 					if (!empty($file_data)) {
@@ -558,7 +560,7 @@
                         }
                     }
                     $td_content .= '</div>';
-					
+
 					// field override check
                     $access_display = $this->check_field_override('lead_files');
                     if ($access_display) {	
@@ -607,7 +609,7 @@
 							}
 						}
 					}
-		
+
 					$sst = $wpdb->get_results ("SELECT * from $this->table_sst order by sst_order");	
 					$environment = array(
                         'user_login' => $this->current_user->user_login,
@@ -722,7 +724,7 @@
             	foreach ($export_fields as $k => $v) {
 					// Check our individual field overrides for adding to the main content
                     $access_display = $this->check_field_override($v->orig_name);
-					
+
 					if ($v->field_type != 99
                     	&& $v->orig_name != 'lead_files'
 						&& $access_display
@@ -882,11 +884,11 @@
 						$filtered_files[$k]['ext']=$matches[2];
 					}
 				}
-				
+
 				foreach ($filtered_files as $k => $v) {
 					//print_r($v['name']);
 					//print_r($v['ext']);
-						
+
 					$file = $shwcp_upload. '/' . $v['name'] .'.'.$v['ext'];
 					//print_r($thumb);	
 					$thumb = wp_get_image_editor( $file );	
@@ -894,7 +896,7 @@
                     	$thumb->resize($size, $size, true);
                     	$thumb->save( $shwcp_upload . '/' . $v['name'] . '_th.' . $v['ext'] );
 					}
-					
+
 				}
 				// default image resize
 				$image_id = intval($this->first_tab['contact_image_id']);
@@ -916,7 +918,7 @@
                 		$thumb->save($small_thumb);
 					}
 				}
-						
+
 				$event = __('Thumbnails', 'shwcp');
                 $detail = __('All thumbnails have been regenerated.', 'shwcp');
                 $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
@@ -924,7 +926,7 @@
 
                 //$response['message'] = 'success';
 				// be sure to regen default as well
-	
+
 			// Manage Dropdowns
 			} elseif (isset($_POST['manage_dropdowns']) && $_POST['manage_dropdowns'] == 'true') {
 				$dropdowns = array();
@@ -1100,7 +1102,7 @@
                         	);
                         	$insert_id = $wpdb->insert_id;
 						}
-							
+
 						$i++;
 						$c_inc++;
 					} elseif ( $v['action'] == 'delete' ) {
@@ -1140,7 +1142,7 @@
 								&& $last_field_type != 'na') { 
 								$response['last_field_type'] = $last_field_type;
                             	$response['orig_name'] = $v['orig_name'];
-						
+
 								if ($v['field_type'] == '7' || $v['field_type'] == '11') {  // changed to date, date time type
                             		$field_type = "datetime NOT NULL DEFAULT '000-00-00 00:00:00'";
 									$wpdb->query("ALTER TABLE $this->table_main modify column {$v['orig_name']} $field_type");
@@ -1416,15 +1418,15 @@
 					$orig_name = sanitize_file_name($_POST['name']);
                     move_uploaded_file($_FILES["file"]["tmp_name"], $new_file);
 
-					require_once SHWCP_ROOT_PATH . '/includes/PHPExcel/Classes/PHPExcel.php';
+					require_once SHWCP_ROOT_PATH . '/includes/vendor/autoload.php';
                     $inputFileName = $new_file;
-                    $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
-                    $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-                    $objPHPExcel = $objReader->load($inputFileName);
-                    $worksheet = $objPHPExcel->getActiveSheet();
+                    $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($inputFileName);
+                    $objReader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+                    $objPHPSpreadsheet = $objReader->load($inputFileName);
+                    $worksheet = $objPHPSpreadsheet->getActiveSheet();
 
 					$topRow = 1; // Get the first row only for the columns
-					$topColumns = $worksheet->rangeToArray('A' . $topRow . ':' . $worksheet->getHighestColumn() . $topRow);
+					$topColumns = $worksheet->rangeToArray('A' . $topRow . ':' . $worksheet->getHighestDataColumn() . $topRow);
 
 					//Check for id for updating entries
 					$update_entries = 0;
@@ -1438,12 +1440,12 @@
 						}
 					}
 
-					$lastRow = $objPHPExcel->getActiveSheet()->getHighestRow();  // another way to get total
-		
+					$lastRow = $objPHPSpreadsheet->getActiveSheet()->getHighestRow();  // another way to get total
+
 					// Get the actual db columns to return for selection
                     global $wpdb;
                     $sorting = $wpdb->get_results ("SELECT * from $this->table_sort");
-				
+
 					$response['new_file'] = $new_file;	
 					$response['none'] = __('No Assignment', 'shwcp');
 					$response['continue'] = __('Import Now', 'shwcp');
@@ -1512,12 +1514,12 @@
 					}
 
 					// start importing
-					require_once SHWCP_ROOT_PATH . '/includes/PHPExcel/Classes/PHPExcel.php';
+					require_once SHWCP_ROOT_PATH . '/includes/vendor/autoload.php';
 					// use the chunk read filter class
 					require_once SHWCP_ROOT_PATH . '/includes/class-chunk-read-filter.php';
                     $inputFileName = $new_file;
-                    $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
-                    $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                    $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($inputFileName);
+                    $objReader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
 					$chunkSize = $chunks;
 					$chunkFilter = new chunkReadFilter();
 					$objReader->setReadFilter($chunkFilter);
@@ -1535,9 +1537,9 @@
     					/**  Tell the Read Filter which rows we want this iteration  **/ 
     					$chunkFilter->setRows($startRow,$chunkSize); 
     					/**  Load only the rows that match our filter  **/ 
-    					$objPHPExcel = $objReader->load($inputFileName); 
+    					$objPHPSpreadsheet = $objReader->load($inputFileName); 
     					//    Do some processing here 
-						$worksheet = $objPHPExcel->getActiveSheet();
+						$worksheet = $objPHPSpreadsheet->getActiveSheet();
 						foreach ($worksheet->getRowIterator() as $row) {
 							// only process rows in this batch for incrementing
 							// even though the others aren't loaded into memory, the spreadsheet still reads to the start number
@@ -1551,8 +1553,8 @@
                         		foreach ($cellIterator as $cell) {
                             		if (!is_null($cell)) {
 										$cell_val = $cell->getValue();
-										if(PHPExcel_Shared_Date::isDateTime($cell)) {  // Check if it's an excel formatted date
-     										$cell_val = date('Y-m-d H:i:s', PHPExcel_Shared_Date::ExcelToPHP($cell_val)); 
+										if(\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {  // Check if it's an excel formatted date
+     										$cell_val = date('Y-m-d H:i:s', \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($cell_val)); 
 										}
                                    		foreach($fieldMap as $k => $v) {
                                        		if ($k == $col) { // Importing this column, add to import array
@@ -1638,7 +1640,7 @@
 								$insert_array['creation_date'] = current_time( 'mysql' );
 								$insert_array['updated_date']  = current_time( 'mysql' );
 							}
-								
+
 
 							// Actual insert and clear array
 							// set the formats
@@ -1803,7 +1805,7 @@
 				} else {
 					$response['removed'] = 'no';
 				}
-		
+
 				$files = preg_grep('/^([^.])/', scandir($lead_dir));
                 // get sizes and dates
                 $files_info = array();
@@ -1814,7 +1816,7 @@
                     $files_info[$i]['date'] = date("m-d-Y H:i:s", filemtime($lead_dir . '/' . $v));
                     $i++;
                 }
-                
+
                 $files_info_ser = serialize($files_info);
                 $wpdb->update(
                     $this->table_main,
@@ -1872,7 +1874,7 @@
 						}
 						$i++;
 					}
-				
+
 					$files_info_ser = serialize($files_info);
 					$wpdb->update(
 						$this->table_main,
@@ -2006,7 +2008,7 @@
                     'settings'   => $this->first_tab,
                 );
                 do_action('wcp_updatenote_entry_action', $lead_id, $note, $note_id, $environment);
-				
+
 				$response['note_id'] = $note_id;
 				$response['note'] = stripslashes($note);
 
@@ -2097,7 +2099,7 @@
 							} elseif ($k2 == $v->orig_name && $v->field_type == '777') {
                             	$field_vals[$k2] = json_encode($field_vals[$k2]);
                             } 
-							
+
                         }
                     }
 
@@ -2164,7 +2166,7 @@
                     //$detail = __('Entry ID ', 'shwcp') . $lead_id;
 					$detail = __('Entry ID', 'shwcp') . ' ' . $lead_id . __(' Fields-> ', 'shwcp') . $output_string;
                     $wcp_logging->log($event, $detail, $this->current_user->ID, $this->current_user->user_login, $postID);
-		
+
 
 					$response['lead_id'] = $lead_id;
 					$response['field_vals'] = array_merge($output_fields, $field_vals);
@@ -2307,7 +2309,7 @@
 							$week = $week->format('W');
 						}
 					}
-												
+
 
 					//$response['curr_year'] = $curr_year;
 					//$response['curr_week'] = $curr_week;
@@ -2491,7 +2493,7 @@
 							// set for the 31st and the month is shorter (logically), maybe we'll add an end of month
 							// or maybe this is ok
 						}
-							
+
 					    if ($reoccur_start != $orig_start
 							&& $reoccur_start > $orig_start ) {
 							$matches[$inc]['title'] = stripslashes($v->title);
@@ -2534,7 +2536,7 @@
 						foreach ($period as $key => $date ) {
 							if ($date->format('Y-m-d H:i:s') != $orig_start) { // no duplicating
 								$new_start = $date->format('Y-m-d H:i:s');
-								
+
 								$matches[$inc]['title'] = stripslashes($v->title);
                             	$matches[$inc]['creation_date'] = $new_start;
                             	$matches[$inc]['stop'] = isset($end_times[$i]) ? $end_times[$i] : $new_start; // protect overlap
@@ -2575,7 +2577,7 @@
                         foreach ($period as $key => $date ) {
                             if ($date->format('Y-m-d H:i:s') != $orig_start) { // no duplicating
                                 $new_start = $date->format('Y-m-d H:i:s');
-                                
+
                                 $matches[$inc]['title'] = stripslashes($v->title);
                                 $matches[$inc]['creation_date'] = $new_start;
                                 $matches[$inc]['stop'] = isset($end_times[$i]) ? $end_times[$i] : $new_start;  //protect overlap
@@ -2710,7 +2712,7 @@
 							$time_math = '+';
 						}
 				  		$notify_at = date('Y-m-d H:i:s', strtotime("$time_math $alert_notify_inc $alert_notify_sel", $start_time));
-					
+
 					}
 					$response['notify_at'] = $notify_at;
 					if ($event_id != 'new') {             // Existing event
@@ -3042,7 +3044,7 @@
 				if ( !file_exists($file_loc) ) {
                 	wp_mkdir_p( $file_loc );
             	}
-				
+
 
 				// responses
 				$response['created'] = 'true';

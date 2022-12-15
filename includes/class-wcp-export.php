@@ -36,7 +36,7 @@
 			/* Front page export current view */
 			if (isset($_POST['front_page'])) { // front end export
 				$params = isset($_POST['get_params']) ? $_POST['get_params'] : array();
-	
+
 				$sorting   = $wpdb->get_results("SELECT * from $this->table_sort where sort_active=1 order by sort_number");
             	$all_sort  = $wpdb->get_results("SELECT * from $this->table_sort");
             	$filtering = $wpdb->get_results(
@@ -77,7 +77,7 @@
             	// get sst info for filtering
             	$sst_pre = __('All', 'shwcp');
             	$sst_all = $wpdb->get_results("select * from $this->table_sst order by sst_order asc");
-			
+
             	// Searching query
             	if (isset($params['wcp_search']) && $params['wcp_search'] == 'true') {
                 	$searchset = true;
@@ -142,7 +142,7 @@
                     	}
 
                     	// sort search results
-					
+
                     	if (isset($params['sort'])) {  // Sorting query
 
                         	if ('asc' == $params['sort']) {
@@ -328,13 +328,13 @@
 				}
             }
 
-			require_once(SHWCP_ROOT_PATH . '/includes/PHPExcel/Classes/PHPExcel.php');
+			require_once SHWCP_ROOT_PATH . '/includes/vendor/autoload.php';
 
-			// Create new PHPExcel object
-			$objPHPExcel = new PHPExcel();
+			// Create new PHPSpreadsheet object
+			$objPHPSpreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
 			// Set document properties
-			$objPHPExcel->getProperties()->setCreator("WP Contacts")
+			$objPHPSpreadsheet->getProperties()->setCreator("WP Contacts")
 							 ->setLastModifiedBy("WP Contacts")
 							 ->setTitle("Export")
 							 ->setSubject("Export")
@@ -343,19 +343,19 @@
 
 			// Add some data
 			// Sheet 0 //
-			$objPHPExcel->setActiveSheetIndex(0);
+			$objPHPSpreadsheet->setActiveSheetIndex(0);
 			// Header Row
 			$row = 1;
-			$col = 0;
+			$col = 1;
 			foreach ($headers as $val) {
 				if ('small_image' == $val) {
 					$small_image_header = __('Image Link', 'shwcp');
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $small_image_header);
+					$objPHPSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $small_image_header);
 				} elseif ('lead_files' == $val) {
 					$lead_files_header = __('File Links', 'shwcp');
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $lead_files_header);
+					$objPHPSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $lead_files_header);
 				} else {
-    				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $val->translated_name);
+    				$objPHPSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $val->translated_name);
 				}
     			$col++;
 			}
@@ -363,7 +363,7 @@
 			// Lead Data
 			$row++;
             foreach ($entries as $k => $v) {
-				$col = 0;
+				$col = 1;
                 foreach ($headers as $hv) {  // use header to get them in order
 					if ($hv == 'small_image') {   // small image links
 						if ($entries[$k]->small_image !='') {
@@ -371,7 +371,7 @@
 						} else {
 							$small_image = '';
 						}
-                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $small_image);
+                        $objPHPSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $small_image);
 						$col++;
 					} elseif ($hv == 'lead_files') { // lead file links
 						$lead_links = '';
@@ -384,15 +384,15 @@
 						} else {
 							$lead_links = '';
 						}
-						$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $lead_links);
-						$colStr = PHPExcel_Cell::stringFromColumnIndex($col);
-						$objPHPExcel->getActiveSheet()->getStyle($colStr . $row)->getAlignment()->setWrapText(true);
+						$objPHPSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $lead_links);
+						$colStr = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+						$objPHPSpreadsheet->getActiveSheet()->getStyle($colStr . $row)->getAlignment()->setWrapText(true);
                         $col++;
 					} else {  // all other fields
                     	foreach ($v as $k2 => $v2) {
                         	if ($k2 == $hv->orig_name) {
                             	$trans = $k2; 
-								
+
 								$real_value = $entries[$k]->$trans;
 								/* 
 								 * check for dropdown type to lookup real value instead of integer
@@ -420,7 +420,7 @@
 									}
 								}
 
-								$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $real_value);
+								$objPHPSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $real_value);
 								$col++;
 							}
                         }
@@ -429,15 +429,15 @@
 				$row++;
             }
 			// Rename worksheet
-			$objPHPExcel->getActiveSheet()->setTitle('Export');
+			$objPHPSpreadsheet->getActiveSheet()->setTitle('Export');
 
 			// Set active sheet index to the first sheet, so Excel opens this as the first sheet
-			$objPHPExcel->setActiveSheetIndex(0);
+			$objPHPSpreadsheet->setActiveSheetIndex(0);
 			$export_file = $this->first_tab['export_file'];
 			// Choose output format 
 			if ($type == 'csv') {    // Save csv FILE
 
-    			$objWriter = new PHPExcel_Writer_CSV($objPHPExcel);
+    			$objWriter = new \PhpOffice\PhpSpreadsheet\Writer\Csv($objPHPSpreadsheet);
     			header('Content-Encoding: UTF-8');
    	 			header('Content-type: text/csv; charset=UTF-8');
     			header("Content-Disposition: attachment; filename=$export_file.csv");
@@ -445,7 +445,7 @@
                 $objWriter->save('php://output');
 
 			} elseif ($type == 'excel') {  // Save Excel 2007 file
-    			$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+    			$objWriter = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($objPHPSpreadsheet);
     			header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
     			header('Cache-Control: no-store, no-cache, must-revalidate');
     			header('Cache-Control: post-check=0, pre-check=0', false);

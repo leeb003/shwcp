@@ -3,6 +3,11 @@ All notable changes to WP Contacts will be documented in this file starting with
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 3.3.4 - 2022-12-14
+### Fixed
+- PHP 8x support
+- Wordpress 6.1.1 support
+
 ## 3.3.3 - 2021-3-2
 ### Fixed
 - Fullcalendar (Events page) version update for WordPress 5.6.2

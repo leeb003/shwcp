@@ -2,8 +2,8 @@
 Contributors: ScriptHat 
 Tags: wordpress, plugin, leads, contacts
 Requires at least: 4.9
-Tested up to: 5.3
-Stable tag: 5.3
+Tested up to: 6.1.1
+Stable tag: 6.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Leads and Contacts manager used as a WordPress plugin
@@ -32,6 +32,10 @@ management.
 Full Documentation located at https://www.scripthat.com/kbt/wp-contacts/
 
 == Changelog ==
+
+= 3.3.4 = 
+* PHP 8x support
+* Wordpress 6.1.1 support
 
 = 3.3.3 = 
 * Fix for fullcalendar, update to version v3.10.2 from v2.5.0 for WordPress 5.6.2 
