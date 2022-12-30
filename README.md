@@ -25,11 +25,11 @@ permissions for who can access your leads, automatic updates, along with many ot
 ### Quick Start - Install
 
 Installing "WP Contacts" can be done by using the following steps:
-- Download the plugin after purchase
+- Download the plugin as a zip
 - Upload the ZIP file (shwcp.zip) through the 'Plugins > Add New > Upload' screen in your WordPress dashboard
 - Activate the plugin through the 'Plugins' menu in WordPress
 
-[Installing WP Contacts](assets/InstallingWPContacts.mp4)
+[Installing WP Contacts Video](assets/InstallingWPContacts.mp4)
 
 ---
 
