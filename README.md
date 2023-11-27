@@ -79,7 +79,7 @@ This message is typically related to PHP limitations on your server (upload size
 
 This indicates that you have some form of caching enabled (Either in a plugin or a server setting).  You will want to disable caching for WP Contacts to prevent this behavior.  You’ll know if by reloading the page after login (ctrl + R or refresh button) and the page shows up correctly. 
 
-#### Full Documentation located at https://www.scripthat.com/kbt/wp-contacts/
+#### Full Documentation located at https://www.scripthat.com/wpcontacts/
 
 ---
 
