@@ -41,6 +41,44 @@ plugin for Wordpress, installation is easy and painless.  WP Contacts gives you
 the control and flexibility to customize all sorts of aspects of your lead and contact
 management.
 
+#### I am unable to interact with WP Contacts Frontend
+
+
+Although rare, you may come across logging into the front end of WP Contacts after setting up the backend only to find you are unable to Add new entries, edit or save anything.  Or, all of the styles are not what’s shown in the demo.  These issues are indicative of a plugin or theme adding javascript that is throwing errors on the page, or injecting styles on the page.
+
+To verify, you can use Firebug or Chrome Inspector to see if there are any Javascript errors on page load.  You can also try switching themes (to something like twentysixteen) and disabling other plugins to see if it clears up.
+
+Themes and Plugins these days are supposed to follow certain standards for WordPress and the cause of this issue every time has been someone not ‘enqueuing’ their scripts and styles the correct way.  Take a look at the following articles for more information
+
+- http://www.wpbeginner.com/wp-tutorials/how-to-properly-add-javascripts-and-styles-in-wordpress/
+- https://premium.wpmudev.org/blog/adding-scripts-and-styles-wordpress-enqueueing/
+
+The good news is most theme and plugin authors want to follow WordPress standards and will take care of that if they are made aware of the problem.
+
+If in the case you must use a theme or plugin that is conflicting and you cannot resolve it any other way, here are some things you can do:
+
+Some of our users have reported using the Multiple Themes plugin successfully to switch themes for the Contacts page https://wordpress.org/plugins/jonradio-multiple-themes/
+
+If you have a plugin that you know is the cause of a conflict (by testing disabling them one by one mentioned above) and you MUST use this plugin…you can try using the Plugin Organizer plugin to disable the conflicting plugin only on the WP Contacts page -> https://wordpress.org/plugins/plugin-organizer
+
+We include the troubleshooting backend setting (at the bottom of your Default database -> Main Settings tab) that will accomplish the below adjustment for you.  All you need to do is set it to true and save.
+
+Working around other plugins / theme javascript errors
+
+We enqueue our scripts in the footer to optimize page loading, you can change all scripts to load in the header to avoid conflicts as a last resort.
+
+#### I am getting Error 200 on file imports
+
+
+This message is typically related to PHP limitations on your server (upload size, memory limit etc.) or the permissions in the WordPress upload directory, possibly even a missing PHP dependency.  Since it is a generic response from the server, you need to see what the underlying issue is that needs to be changed.
+
+- First of all check your server error log.  This will tell you what the problem is.  You can also go to the WP Contacts Site Information tab in the backend settings to see what some of the current PHP values are set to for a reference as well.
+- Make sure your WordPress upload directory has the correct permissions to write files – a quick test for this is to try adding an image to your Library through the WordPress admin.  If you can’t upload an image, you’ll need to make changes to your WordPress installation to allow access.
+
+#### I am getting the login window with undefined buttons
+
+This indicates that you have some form of caching enabled (Either in a plugin or a server setting).  You will want to disable caching for WP Contacts to prevent this behavior.  You’ll know if by reloading the page after login (ctrl + R or refresh button) and the page shows up correctly. 
+
 #### Full Documentation located at https://www.scripthat.com/kbt/wp-contacts/
 
 ---
